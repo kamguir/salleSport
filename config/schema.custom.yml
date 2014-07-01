@@ -1,0 +1,10 @@
+propel:
+  tbl_adherent:
+    _propel_behaviors:
+      soft_delete:
+  tbl_facture:
+    _propel_behaviors:
+      soft_delete:
+  tbl_sport:
+    _propel_behaviors:
+      soft_delete:
