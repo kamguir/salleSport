@@ -84,16 +84,21 @@ class TblAdherent extends BaseTblAdherent {
 
     public function PlanningEntrainneurstoArrayString() {
         $joursPlanning = '';
+        $horaire = '';
         if ($objJours = $this->getLnkJourEntrainementAdherents()) {
             foreach ($objJours as $objJour) {
                 $joursPlanning .= $objJour->getRefJour()->getLibelleJour() . " </br> ";
             }
+        }
+        if ($this->getSeanceHoraireId()) {
+            $horaire .= $this->getRefSeanceHoraire()->getSeanceHoraire() . " </br> ";
         }
 
         return array(
             $this->getRefCivilite()->getLibelleCivilite() . ' ' . ucfirst($this->getNomAdherent()) . ',' . ucfirst($this->getPrenomAdherent()),
             $this->getRefTypeSport()->getLibelle(),
             $joursPlanning,
+            $horaire,
             "DT_RowId" => "row_" . $this->getIdAdherent()
         );
     }

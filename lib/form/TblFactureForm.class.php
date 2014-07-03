@@ -16,6 +16,12 @@ class TblFactureForm extends BaseTblFactureForm {
         $this->widgetSchema['id_adherent'] = new sfWidgetFormPropelChoice(array('model' => 'tblAdherent','criteria' => $qlisteAdherents));
         $this->validatorSchema['id_adherent'] = new sfValidatorPropelChoice(array('model' => 'tblAdherent'));
         $this->widgetSchema['id_adherent']->setAttribute("class","form-control");
+        $this->getWidget("id_adherent")->setOption("add_empty", '-- Aucun --');
+        
+        $this->widgetSchema['type_sport'] = new sfWidgetFormInputText(array());
+        $this->validatorSchema['type_sport'] = new sfValidatorInteger(array('required' => true));
+        $this->widgetSchema['type_sport']->setAttribute('disabled', 'disabled');
+        $this->widgetSchema['type_sport']->setAttribute("class","form-control");
         
         $this->widgetSchema['prix_facture'] = new sfWidgetFormInputText(array());
         $this->validatorSchema['prix_facture'] = new sfValidatorInteger(array('required' => true));
@@ -35,7 +41,8 @@ class TblFactureForm extends BaseTblFactureForm {
         $this->widgetSchema['commentaire']->setAttribute("class","form-control");
         
         $this->getWidgetSchema()->setLabels(array(
-            'id_adherent' => 'Nom Prenom Adherent '
+            'id_adherent' => 'Nom Prenom Adherent ',
+            'type_sport' => 'Type Sport ',
         ));
         
     }

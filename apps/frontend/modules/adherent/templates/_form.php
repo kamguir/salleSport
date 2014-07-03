@@ -104,7 +104,7 @@
         </div>
         <div class="col-xs-8 col-md-offset-6" style="margin-left: 46%;width: 40%;margin-left: 60%;float: none;">
             <label class="col-xs-4" style="width: 21%;"><?php echo $form['niveau_adherent_id']->renderLabel() ?></label>
-            <div class="col-xs-8">
+            <div class="col-xs-8" style="margin-top: 2px;">
                 <?php echo $form['niveau_adherent_id']->renderError() ?>
                 <?php echo $form['niveau_adherent_id'] ?>
             </div>

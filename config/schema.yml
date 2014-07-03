@@ -7,20 +7,29 @@ propel:
     id_jour: { phpName: IdJour, type: INTEGER, primaryKey: true, required: true, foreignTable: ref_jour, foreignReference: id_jour }
     id_adherent: { phpName: IdAdherent, type: INTEGER, primaryKey: true, required: true, foreignTable: tbl_adherent, foreignReference: id_adherent }
     _indexes: { FK_lnk_jour_entrainement_adherent: [id_adherent] }
-  lnk_sport_adherent:
-    _attributes: { phpName: LnkSportAdherent, idMethod: native }
-    id_sport: { phpName: IdSport, type: INTEGER, primaryKey: true, required: true, foreignTable: tbl_sport, foreignReference: id_sport }
-    id_adherent: { phpName: IdAdherent, type: INTEGER, primaryKey: true, required: true, foreignTable: tbl_adherent, foreignReference: id_adherent }
-    _indexes: { FK_lnk_sport_adherent_: [id_adherent] }
   lnk_user_profil:
     _attributes: { phpName: LnkUserProfil, idMethod: native }
     user_id: { phpName: UserId, type: INTEGER, primaryKey: true, required: true, foreignTable: tbl_user, foreignReference: user_id }
     profil_id: { phpName: ProfilId, type: INTEGER, primaryKey: true, required: true, foreignTable: ref_profil, foreignReference: profil_id }
     _indexes: { FK_lnk_user_profil2: [profil_id] }
+  ref_assurance:
+    _attributes: { phpName: RefAssurance, idMethod: native }
+    assurance_id: { phpName: AssuranceId, type: INTEGER, primaryKey: true, autoIncrement: true, required: true }
+    libelle_assurance: { phpName: LibelleAssurance, type: VARCHAR, size: '256', required: false }
+    prix_assurance: { phpName: PrixAssurance, type: DOUBLE, required: false }
+  ref_ceinture_couleur:
+    _attributes: { phpName: RefCeintureCouleur, idMethod: native }
+    ceinture_couleur_id: { phpName: CeintureCouleurId, type: INTEGER, primaryKey: true, autoIncrement: true, required: true }
+    ceinture_couleur: { phpName: CeintureCouleur, type: VARCHAR, size: '256', required: false }
+    path_image: { phpName: PathImage, type: VARCHAR, size: '256', required: false }
   ref_civilite:
     _attributes: { phpName: RefCivilite, idMethod: native }
     id_civilite: { phpName: IdCivilite, type: INTEGER, primaryKey: true, autoIncrement: true, required: true }
     libelle_civilite: { phpName: LibelleCivilite, type: VARCHAR, size: '255', required: false }
+  ref_competance:
+    _attributes: { phpName: RefCompetance, idMethod: native }
+    competance_id: { phpName: CompetanceId, type: INTEGER, primaryKey: true, autoIncrement: true, required: true }
+    competance_libelle: { phpName: CompetanceLibelle, type: VARCHAR, size: '256', required: false }
   ref_couleur:
     _attributes: { phpName: RefCouleur, idMethod: native }
     id_couleur: { phpName: IdCouleur, type: INTEGER, primaryKey: true, required: true }
@@ -30,18 +39,34 @@ propel:
     _attributes: { phpName: RefDepenses, idMethod: native }
     id_ref_depenses: { phpName: IdRefDepenses, type: INTEGER, primaryKey: true, required: true }
     libelle_depenses: { phpName: LibelleDepenses, type: VARCHAR, size: '255', required: false }
+  ref_grade_ceinture:
+    _attributes: { phpName: RefGradeCeinture, idMethod: native }
+    grade_id: { phpName: GradeId, type: INTEGER, primaryKey: true, autoIncrement: true, required: true }
+    grade_niveau: { phpName: GradeNiveau, type: VARCHAR, size: '20', required: false }
   ref_jour:
     _attributes: { phpName: RefJour, idMethod: native }
     id_jour: { phpName: IdJour, type: INTEGER, primaryKey: true, required: true }
     libelle_jour: { phpName: LibelleJour, type: VARCHAR, size: '255', required: false }
+  ref_niveau_adherent:
+    _attributes: { phpName: RefNiveauAdherent, idMethod: native }
+    niveau_adherent_id: { phpName: NiveauAdherentId, type: INTEGER, primaryKey: true, autoIncrement: true, required: true }
+    niveau_adherent_libelle: { phpName: NiveauAdherentLibelle, type: VARCHAR, size: '256', required: false }
   ref_profil:
     _attributes: { phpName: RefProfil, idMethod: native }
     profil_id: { phpName: ProfilId, type: INTEGER, primaryKey: true, required: true }
     profil_libelle: { phpName: ProfilLibelle, type: VARCHAR, size: '200', required: false }
+  ref_seance_horaire:
+    _attributes: { phpName: RefSeanceHoraire, idMethod: native }
+    seance_horaire_id: { phpName: SeanceHoraireId, type: INTEGER, primaryKey: true, autoIncrement: true, required: true }
+    seance_horaire: { phpName: SeanceHoraire, type: VARCHAR, size: '256', required: false }
   ref_situation:
     _attributes: { phpName: RefSituation, idMethod: native }
     id_situation: { phpName: IdSituation, type: INTEGER, size: '10', primaryKey: true, required: true }
     situation: { phpName: Situation, type: VARCHAR, size: '255', required: false }
+  ref_titre_entraineur:
+    _attributes: { phpName: RefTitreEntraineur, idMethod: native }
+    titre_entraineur_id: { phpName: TitreEntraineurId, type: INTEGER, primaryKey: true, autoIncrement: true, required: true }
+    titre_entraineur_libelle: { phpName: TitreEntraineurLibelle, type: VARCHAR, size: '256', required: false }
   ref_type_adherent:
     _attributes: { phpName: RefTypeAdherent, idMethod: native }
     id_type_adherent: { phpName: IdTypeAdherent, type: INTEGER, primaryKey: true, autoIncrement: true, required: true }
@@ -60,16 +85,41 @@ propel:
     prenom_adherent: { phpName: PrenomAdherent, type: VARCHAR, size: '255', required: false }
     id_civilite: { phpName: IdCivilite, type: INTEGER, required: false, foreignTable: ref_civilite, foreignReference: id_civilite }
     id_situation: { phpName: IdSituation, type: INTEGER, required: false, foreignTable: ref_situation, foreignReference: id_situation }
+    id_type_adherent: { phpName: IdTypeAdherent, type: INTEGER, required: false, foreignTable: ref_type_adherent, foreignReference: id_type_adherent }
+    niveau_adherent_id: { phpName: NiveauAdherentId, type: INTEGER, required: false, foreignTable: ref_niveau_adherent, foreignReference: niveau_adherent_id }
+    id_type_sport: { phpName: IdTypeSport, type: INTEGER, required: false, foreignTable: ref_type_sport, foreignReference: id_type_sport }
     age_adherent: { phpName: AgeAdherent, type: INTEGER, required: false }
     num_tel: { phpName: NumTel, type: INTEGER, required: false }
     adresse_adherent: { phpName: AdresseAdherent, type: VARCHAR, size: '255', required: false }
-    date_adhesion: { phpName: DateAdhesion, type: TIMESTAMP, required: false }
-    id_type_sport: { phpName: IdTypeSport, type: INTEGER, required: false, foreignTable: ref_type_sport, foreignReference: id_type_sport }
-    id_type_adherent: { phpName: IdTypeAdherent, type: INTEGER, required: false, foreignTable: ref_type_adherent, foreignReference: id_type_adherent }
     image_adherent: { phpName: ImageAdherent, type: VARCHAR, size: '128', required: false }
+    date_adhesion: { phpName: DateAdhesion, type: TIMESTAMP, required: false }
+    seance_horaire_id: { phpName: SeanceHoraireId, type: INTEGER, required: false, foreignTable: ref_seance_horaire, foreignReference: seance_horaire_id }
     updated_at: { phpName: UpdatedAt, type: TIMESTAMP, required: false }
     deleted_at: { phpName: DeletedAt, type: TIMESTAMP, required: false }
-    _indexes: { FK_tbl_client: [id_situation], FK_tbl_adherent_type_fonction: [id_type_adherent], FK_tbl_adherent_ref_type_sport: [id_type_sport], FK_tbl_adherent_civilite: [id_civilite] }
+    _indexes: { FK_tbl_client: [id_situation], FK_tbl_adherent_type_fonction: [id_type_adherent], FK_tbl_adherent_ref_type_sport: [id_type_sport], FK_tbl_adherent_civilite: [id_civilite], FK_tbl_adherent_niveau: [niveau_adherent_id], FK_tbl_adherent_horaire: [seance_horaire_id] }
+  tbl_assurance:
+    _attributes: { phpName: TblAssurance, idMethod: native }
+    assurance_id: { phpName: AssuranceId, type: INTEGER, primaryKey: true, autoIncrement: true, required: true }
+    adherent_id: { phpName: AdherentId, type: INTEGER, required: false, foreignTable: tbl_adherent, foreignReference: id_adherent }
+    ref_assurance_id: { phpName: RefAssuranceId, type: INTEGER, required: false, foreignTable: ref_assurance, foreignReference: assurance_id }
+    prix_assurance: { phpName: PrixAssurance, type: DOUBLE, required: false }
+    etat_paiement: { phpName: EtatPaiement, type: BOOLEAN, size: '1', required: false, defaultValue: false }
+    date_assurance: { phpName: DateAssurance, type: TIMESTAMP, required: false }
+    created_at: { phpName: CreatedAt, type: TIMESTAMP, required: false }
+    deleted_at: { phpName: DeletedAt, type: TIMESTAMP, required: false }
+    _indexes: { FK_tbl_assurance_adherent: [adherent_id], FK_tbl_assurance: [ref_assurance_id] }
+  tbl_ceinture:
+    _attributes: { phpName: TblCeinture, idMethod: native }
+    ceinture_id: { phpName: CeintureId, type: INTEGER, primaryKey: true, autoIncrement: true, required: true }
+    adherent_id: { phpName: AdherentId, type: INTEGER, required: false, foreignTable: tbl_adherent, foreignReference: id_adherent }
+    grade_id: { phpName: GradeId, type: INTEGER, required: false, foreignTable: ref_grade_ceinture, foreignReference: grade_id }
+    competance_id: { phpName: CompetanceId, type: INTEGER, required: false, foreignTable: ref_competance, foreignReference: competance_id }
+    titre_entraineur_id: { phpName: TitreEntraineurId, type: INTEGER, required: false, foreignTable: ref_titre_entraineur, foreignReference: titre_entraineur_id }
+    ceinture_couleur_id: { phpName: CeintureCouleurId, type: INTEGER, required: false, foreignTable: ref_ceinture_couleur, foreignReference: ceinture_couleur_id }
+    date_acquisition: { phpName: DateAcquisition, type: TIMESTAMP, required: false }
+    created_at: { phpName: CreatedAt, type: TIMESTAMP, required: false }
+    deleted_at: { phpName: DeletedAt, type: TIMESTAMP, required: false }
+    _indexes: { FK_tbl_ceinture_: [adherent_id], FK_tbl_ceinture_titre: [titre_entraineur_id], FK_tbl_ceinture_competance: [competance_id], FK_tbl_ceinture_grade: [grade_id], FK_tbl_ceinture_couleur: [ceinture_couleur_id] }
   tbl_depenses:
     _attributes: { phpName: TblDepenses, idMethod: native }
     id_depenses: { phpName: IdDepenses, type: INTEGER, primaryKey: true, autoIncrement: true, required: true }
@@ -98,15 +148,6 @@ propel:
     id: { phpName: Id, type: INTEGER, primaryKey: true, autoIncrement: true, required: true }
     param_lib: { phpName: ParamLib, type: VARCHAR, size: '127', required: false }
     param_value: { phpName: ParamValue, type: VARCHAR, size: '255', required: false }
-  tbl_sport:
-    _attributes: { phpName: TblSport, idMethod: native }
-    id_sport: { phpName: IdSport, type: INTEGER, primaryKey: true, autoIncrement: true, required: true }
-    id_type_sport: { phpName: IdTypeSport, type: INTEGER, required: false, foreignTable: ref_type_sport, foreignReference: id_type_sport }
-    id_moniteur: { phpName: IdMoniteur, type: INTEGER, required: false, foreignTable: tbl_adherent, foreignReference: id_adherent }
-    commentaire: { phpName: Commentaire, type: VARCHAR, size: '255', required: false }
-    created_at: { phpName: CreatedAt, type: TIMESTAMP, required: false }
-    deleted_at: { phpName: DeletedAt, type: TIMESTAMP, required: false }
-    _indexes: { FK_tbl_sport: [id_type_sport], FK_tbl_sporth: [id_moniteur] }
   tbl_user:
     _attributes: { phpName: TblUser, idMethod: native }
     user_id: { phpName: UserId, type: INTEGER, primaryKey: true, autoIncrement: true, required: true }

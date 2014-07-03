@@ -68,8 +68,8 @@
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-original-title="" title="">Adherents <b class="caret"></b></a>
                             <ul class="dropdown-menu">
                                 <li><a href="<?php echo url_for('adherent/new') ?>" data-original-title="" title="">Nouveau Membre</a></li>
-                                <li><a href="<?php echo url_for('adherent/listeAdherents') ?>" data-original-title="" title="">Liste Adherents</a></li>
-                                <li><a href="<?php echo url_for('adherent/listeEntraineurs') ?>" data-original-title="" title="">Liste Entraîneurs</a></li>
+<!--                                <li><a href="<?php echo url_for('adherent/listeAdherents') ?>" data-original-title="" title="">Liste Adherents</a></li>
+                                <li><a href="<?php echo url_for('adherent/listeEntraineurs') ?>" data-original-title="" title="">Liste Entraîneurs</a></li>-->
                                 <li><a href="<?php echo url_for('adherent/listeMembres') ?>" data-original-title="" title="">Liste Membres</a></li>
                                 <!--                <li class="divider"></li>
                                                 <li><a href="grid.html" data-original-title="" title="">Grid</a></li>
@@ -83,16 +83,15 @@
                                 <li><a href="<?php echo url_for('facture/new') ?>" data-original-title="" title="">Nouvelle Facture</a></li>
                                 <li><a href="<?php echo url_for('facture/listeFactures') ?>" data-original-title="" title="">Liste Factures</a></li>
                                 <li><a href="<?php echo url_for('assurance/listeAssurances') ?>" data-original-title="" title="">Assurances</a></li>
+                                <li><a href="<?php echo url_for('depenses/listeDepenses') ?>" data-original-title="" title="">Gestion Dépenses</a></li>
                             </ul>
                         </li>
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-original-title="" title="">Gestion <b class="caret"></b></a>
                             <ul class="dropdown-menu">
-                                <li><a href="<?php echo url_for('depenses/new') ?>" data-original-title="" title="">Nouvelle Dépense</a></li>
-                                <li><a href="<?php echo url_for('depenses/listeDepenses') ?>" data-original-title="" title="">Liste Dépenses</a></li>
                                 <li><a href="<?php echo url_for('adherent/planningEntraineurs') ?>" data-original-title="" title="">Planning</a></li>
-                                <li><a href="<?php echo url_for('depenses/alertes') ?>" data-original-title="" title="">Alerts</a></li>
                                 <li><a href="<?php echo url_for('ceinture/listeCeintures') ?>" data-original-title="" title="">Ceinture</a></li>
+                                <!--<li><a href="<?php echo url_for('depenses/alertes') ?>" data-original-title="" title="">Alerts</a></li>-->
                             </ul>
                         </li>
                         <li class="dropdown">
@@ -102,6 +101,9 @@
                                 <li><a href="<?php echo url_for('adminSeance/index') ?>" data-original-title="" title="">Séances</a></li>
                                 <li><a href="<?php echo url_for('adminAssurance/index') ?>" data-original-title="" title="">Assurances</a></li>
                             </ul>
+                        </li>
+                        <li>
+                            <a href="<?php echo url_for('depenses/alertes') ?>" data-original-title="" title="">Alerts</a>
                         </li>
                     </ul>
 
