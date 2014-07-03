@@ -1,0 +1,24 @@
+.sf_admin_actions
+{
+    list-style: none;
+}
+.sf_admin_actions li
+{
+    float: left;
+    margin: 5px;
+    margin-left: 0px;
+}
+
+.lien a
+{
+    display: block;
+    width: 100%;
+    text-decoration: none;
+    color: black;
+}
+
+.sf_admin_row:hover
+{
+    background-color: #ED8000;
+}
+
