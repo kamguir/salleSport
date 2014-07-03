@@ -1,0 +1,15 @@
+indexSuccess:
+  javascripts:    
+    - highcharts.js
+    - exporting.js
+    - jquery.dataTables.min.js
+    - jquery.dataTables.min.js
+    - highcharts.js
+  stylesheets:    
+    - main.css
+    - dataTable/table_jui.css
+    - ui-lightness/jquery-ui-1.8.17.custom.css
+    - font-awesome.css
+
+
+  layout:         layout  

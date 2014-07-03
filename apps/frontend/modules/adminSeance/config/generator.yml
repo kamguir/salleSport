@@ -1,0 +1,22 @@
+generator:
+  class: sfPropelGenerator
+  param:
+    css: adminGenGemb      
+    model_class:           refSeanceHoraire
+    theme:                 admin15
+    non_verbose_templates: true
+    with_show:             false
+    singular:              refSeanceHoraire
+    plural:                refSeanceHoraires
+    route_prefix:          ref_seance_horaire
+    with_propel_route:     1
+    actions_base_class:    sfActions
+
+    config:
+      actions: ~
+      fields:  ~
+      list:    ~
+      filter:  ~
+      form:    ~
+      edit:    ~
+      new:     ~

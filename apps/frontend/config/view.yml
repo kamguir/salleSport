@@ -1,0 +1,20 @@
+# You can find more information about this file on the symfony website:
+# http://www.symfony-project.org/reference/1_4/en/13-View
+
+default:
+  http_metas:
+    content-type: text/html
+
+  metas:
+    #title:        symfony project
+    #description:  symfony project
+    #keywords:     symfony, project
+    #language:     en
+    #robots:       index, follow
+
+  stylesheets:    [main.css, daterange.css, font-awesome.css , bootstrap/bootstrap-theme.css,bootstrap/bootstrap-theme.min.css,bootstrap/bootstrap.css,bootstrap/bootstrap.min.css, notif.css ,ui-lightness/jquery-ui-1.8.17.custom.css ,dataTable/table_jui.css]
+
+  javascripts:    [bootstrap/bootstrap.js ,bootstrap/bootstrap-hover-dropdown.js ,bootstrap/bootstrap-hover-dropdown.min.js ,jquery.min.js , bootstrap/bootstrap.min.js, jquery-1.5.2.min.js, jquery-ui-1.8.17.custom.min.js, jquery-ui-i18n.js, FR_fr.js ,jquery.orca.notif.js,mustache.js,jquery.dataTables.min.js ]
+
+  has_layout:     true
+  layout:         layout
