@@ -36,10 +36,11 @@ class RefProfilTableMap extends TableMap
 		$this->setPhpName('RefProfil');
 		$this->setClassname('RefProfil');
 		$this->setPackage('lib.model');
-		$this->setUseIdGenerator(false);
+		$this->setUseIdGenerator(true);
 		// columns
 		$this->addPrimaryKey('PROFIL_ID', 'ProfilId', 'INTEGER', true, null, null);
-		$this->addColumn('PROFIL_LIBELLE', 'ProfilLibelle', 'VARCHAR', false, 200, null);
+		$this->addColumn('PROFIL_LIB', 'ProfilLib', 'VARCHAR', false, 127, null);
+		$this->addColumn('PROFIL_LIB_COURT', 'ProfilLibCourt', 'VARCHAR', false, 127, null);
 		// validators
 	} // initialize()
 

@@ -13,19 +13,8 @@
             <?php echo $form['id_adherent'] ?>
         </div>
     </div>
-    <div class="row">
-        <label class="col-xs-5" ><?php echo $form['type_sport']->renderLabel() ?></label>
-        <div class="col-xs-4">
-            <?php echo $form['type_sport']->renderError() ?>
-            <?php echo $form['type_sport'] ?>
-        </div>
-    </div>
-    <div class="row">
-        <label class="col-xs-5" ><?php echo $form['prix_facture']->renderLabel() ?></label>
-        <div class="col-xs-4">
-            <?php echo $form['prix_facture']->renderError() ?>
-            <?php echo $form['prix_facture'] ?>
-        </div>
+    <div id="typeSport_form">
+        <?php include_partial('frmTypeSportPrix', array('form' => $form)) ?>
     </div>
     <div class="row">
         <label class="col-xs-5" ><?php echo $form['date_reglement']->renderLabel() ?></label>
@@ -58,3 +47,14 @@
         <input class="btn btn-primary" id="valider" type="submit" value="Enregistrer" />
     </div>
 </form>
+
+<script>
+    $(document).ready(function() {
+        $("#tbl_facture_id_adherent").live("change", function() {
+            adherent_id = $('#tbl_facture_id_adherent').val();
+            $.post("<?php echo url_for("facture/prixByIdAdherentAjax") ?>", {adherent_id: adherent_id}, function(html) {
+                $('#typeSport_form').html(html);
+            });
+        });
+    });
+</script>

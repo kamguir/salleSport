@@ -23,19 +23,22 @@ abstract class BaseRefProfilPeer {
 	const TM_CLASS = 'RefProfilTableMap';
 
 	/** The total number of columns. */
-	const NUM_COLUMNS = 2;
+	const NUM_COLUMNS = 3;
 
 	/** The number of lazy-loaded columns. */
 	const NUM_LAZY_LOAD_COLUMNS = 0;
 
 	/** The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS) */
-	const NUM_HYDRATE_COLUMNS = 2;
+	const NUM_HYDRATE_COLUMNS = 3;
 
 	/** the column name for the PROFIL_ID field */
 	const PROFIL_ID = 'ref_profil.PROFIL_ID';
 
-	/** the column name for the PROFIL_LIBELLE field */
-	const PROFIL_LIBELLE = 'ref_profil.PROFIL_LIBELLE';
+	/** the column name for the PROFIL_LIB field */
+	const PROFIL_LIB = 'ref_profil.PROFIL_LIB';
+
+	/** the column name for the PROFIL_LIB_COURT field */
+	const PROFIL_LIB_COURT = 'ref_profil.PROFIL_LIB_COURT';
 
 	/** The default string format for model objects of the related table **/
 	const DEFAULT_STRING_FORMAT = 'YAML';
@@ -56,12 +59,12 @@ abstract class BaseRefProfilPeer {
 	 * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
 	 */
 	protected static $fieldNames = array (
-		BasePeer::TYPE_PHPNAME => array ('ProfilId', 'ProfilLibelle', ),
-		BasePeer::TYPE_STUDLYPHPNAME => array ('profilId', 'profilLibelle', ),
-		BasePeer::TYPE_COLNAME => array (self::PROFIL_ID, self::PROFIL_LIBELLE, ),
-		BasePeer::TYPE_RAW_COLNAME => array ('PROFIL_ID', 'PROFIL_LIBELLE', ),
-		BasePeer::TYPE_FIELDNAME => array ('profil_id', 'profil_libelle', ),
-		BasePeer::TYPE_NUM => array (0, 1, )
+		BasePeer::TYPE_PHPNAME => array ('ProfilId', 'ProfilLib', 'ProfilLibCourt', ),
+		BasePeer::TYPE_STUDLYPHPNAME => array ('profilId', 'profilLib', 'profilLibCourt', ),
+		BasePeer::TYPE_COLNAME => array (self::PROFIL_ID, self::PROFIL_LIB, self::PROFIL_LIB_COURT, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('PROFIL_ID', 'PROFIL_LIB', 'PROFIL_LIB_COURT', ),
+		BasePeer::TYPE_FIELDNAME => array ('profil_id', 'profil_lib', 'profil_lib_court', ),
+		BasePeer::TYPE_NUM => array (0, 1, 2, )
 	);
 
 	/**
@@ -71,12 +74,12 @@ abstract class BaseRefProfilPeer {
 	 * e.g. self::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
 	 */
 	protected static $fieldKeys = array (
-		BasePeer::TYPE_PHPNAME => array ('ProfilId' => 0, 'ProfilLibelle' => 1, ),
-		BasePeer::TYPE_STUDLYPHPNAME => array ('profilId' => 0, 'profilLibelle' => 1, ),
-		BasePeer::TYPE_COLNAME => array (self::PROFIL_ID => 0, self::PROFIL_LIBELLE => 1, ),
-		BasePeer::TYPE_RAW_COLNAME => array ('PROFIL_ID' => 0, 'PROFIL_LIBELLE' => 1, ),
-		BasePeer::TYPE_FIELDNAME => array ('profil_id' => 0, 'profil_libelle' => 1, ),
-		BasePeer::TYPE_NUM => array (0, 1, )
+		BasePeer::TYPE_PHPNAME => array ('ProfilId' => 0, 'ProfilLib' => 1, 'ProfilLibCourt' => 2, ),
+		BasePeer::TYPE_STUDLYPHPNAME => array ('profilId' => 0, 'profilLib' => 1, 'profilLibCourt' => 2, ),
+		BasePeer::TYPE_COLNAME => array (self::PROFIL_ID => 0, self::PROFIL_LIB => 1, self::PROFIL_LIB_COURT => 2, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('PROFIL_ID' => 0, 'PROFIL_LIB' => 1, 'PROFIL_LIB_COURT' => 2, ),
+		BasePeer::TYPE_FIELDNAME => array ('profil_id' => 0, 'profil_lib' => 1, 'profil_lib_court' => 2, ),
+		BasePeer::TYPE_NUM => array (0, 1, 2, )
 	);
 
 	/**
@@ -149,10 +152,12 @@ abstract class BaseRefProfilPeer {
 	{
 		if (null === $alias) {
 			$criteria->addSelectColumn(RefProfilPeer::PROFIL_ID);
-			$criteria->addSelectColumn(RefProfilPeer::PROFIL_LIBELLE);
+			$criteria->addSelectColumn(RefProfilPeer::PROFIL_LIB);
+			$criteria->addSelectColumn(RefProfilPeer::PROFIL_LIB_COURT);
 		} else {
 			$criteria->addSelectColumn($alias . '.PROFIL_ID');
-			$criteria->addSelectColumn($alias . '.PROFIL_LIBELLE');
+			$criteria->addSelectColumn($alias . '.PROFIL_LIB');
+			$criteria->addSelectColumn($alias . '.PROFIL_LIB_COURT');
 		}
 	}
 
@@ -504,6 +509,10 @@ abstract class BaseRefProfilPeer {
 			$criteria = clone $values; // rename for clarity
 		} else {
 			$criteria = $values->buildCriteria(); // build Criteria from RefProfil object
+		}
+
+		if ($criteria->containsKey(RefProfilPeer::PROFIL_ID) && $criteria->keyContainsValue(RefProfilPeer::PROFIL_ID) ) {
+			throw new PropelException('Cannot insert a value for auto-increment primary key ('.RefProfilPeer::PROFIL_ID.')');
 		}
 
 

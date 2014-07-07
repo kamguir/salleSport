@@ -19,12 +19,8 @@
             <?php echo $form['ref_assurance_id'] ?>
         </div>
     </div>
-    <div class="row">
-        <label class="col-xs-5" ><?php echo $form['prix_assurance']->renderLabel() ?></label>
-        <div class="col-xs-5">
-            <?php echo $form['prix_assurance']->renderError() ?>
-            <?php echo $form['prix_assurance'] ?>
-        </div>
+    <div id="prixAssurance_form">
+        <?php include_partial('frmPrixAssurance', array('form' => $form)) ?>
     </div>
     <div class="row">
         <label class="col-xs-5" ><?php echo $form['etat_paiement']->renderLabel() ?></label>
@@ -50,3 +46,14 @@
         <input class="btn btn-primary" id="valider" type="submit" value="Enregistrer" />
     </div>
 </form>
+
+<script>
+    $(document).ready(function() {
+        $("#tbl_assurance_ref_assurance_id").live("change", function() {
+            assurance_id = $('#tbl_assurance_ref_assurance_id').val();
+            $.post("<?php echo url_for("assurance/prixByTypeAssuranceAjax") ?>", {assurance_id: assurance_id}, function(html) {
+                $('#prixAssurance_form').html(html);
+            });
+        });
+    });
+</script>

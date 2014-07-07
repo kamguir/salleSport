@@ -85,6 +85,7 @@ class TblAdherent extends BaseTblAdherent {
     public function PlanningEntrainneurstoArrayString() {
         $joursPlanning = '';
         $horaire = '';
+        $competance = ' -- ';
         if ($objJours = $this->getLnkJourEntrainementAdherents()) {
             foreach ($objJours as $objJour) {
                 $joursPlanning .= $objJour->getRefJour()->getLibelleJour() . " </br> ";
@@ -93,10 +94,52 @@ class TblAdherent extends BaseTblAdherent {
         if ($this->getSeanceHoraireId()) {
             $horaire .= $this->getRefSeanceHoraire()->getSeanceHoraire() . " </br> ";
         }
+        if ($tblCeintures = $this->getTblCeintures()) {
+            foreach ($tblCeintures as $value) {
+                $competance = $value->getRefCompetance()->getCompetanceLibelle();
+            }
+        }
 
         return array(
             $this->getRefCivilite()->getLibelleCivilite() . ' ' . ucfirst($this->getNomAdherent()) . ',' . ucfirst($this->getPrenomAdherent()),
+            $competance,
             $this->getRefTypeSport()->getLibelle(),
+            $joursPlanning,
+            $horaire,
+            "DT_RowId" => "row_" . $this->getIdAdherent()
+        );
+    }
+
+    public function MesAdherentstoArrayString() {
+        $niveau = ' -- ';
+        $joursPlanning = '';
+        $pathCeinture = '75px-Ceinture_blanche.png';
+        $libelleSport = ' -- ';
+        $horaire ='';
+        if ($this->getRefTypeSport()) {
+            $libelleSport = $this->getRefTypeSport()->getLibelle();
+        }
+        if ($this->getRefNiveauAdherent()) {
+            $niveau = $this->getRefNiveauAdherent()->getNiveauAdherentLibelle();
+        }
+        if ($objJours = $this->getLnkJourEntrainementAdherents()) {
+            foreach ($objJours as $objJour) {
+                $joursPlanning .= $objJour->getRefJour()->getLibelleJour() . " </br> ";
+            }
+        }
+        if ($objCeintures = $this->getTblCeintures()) {
+            foreach ($objCeintures as $objCeinture) {
+                $pathCeinture = $objCeinture->getRefCeintureCouleur()->getPathImage();
+            }
+        }
+        if ($this->getSeanceHoraireId()) {
+            $horaire .= $this->getRefSeanceHoraire()->getSeanceHoraire() . " </br> ";
+        }
+        return array(
+            $this->getRefCivilite()->getLibelleCivilite() . ' ' . ucfirst($this->getNomAdherent()) . ',' . ucfirst($this->getPrenomAdherent()),
+            $libelleSport,
+            $niveau,
+            "<img src=/images/niveau_ceinture/" . $pathCeinture . ">",
             $joursPlanning,
             $horaire,
             "DT_RowId" => "row_" . $this->getIdAdherent()

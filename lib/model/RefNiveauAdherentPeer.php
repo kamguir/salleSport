@@ -1,7 +1,5 @@
 <?php
 
-
-
 /**
  * Skeleton subclass for performing query and update operations on the 'ref_niveau_adherent' table.
  *
@@ -15,4 +13,11 @@
  */
 class RefNiveauAdherentPeer extends BaseRefNiveauAdherentPeer {
 
-} // RefNiveauAdherentPeer
+    const DEBUTANT = 1;
+    const CADETS = 2;
+    const SENIORS = 3;
+    const JUNIORS = 4;
+
+}
+
+// RefNiveauAdherentPeer

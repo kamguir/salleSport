@@ -7,10 +7,12 @@
  * 
  *
  * @method     RefProfilQuery orderByProfilId($order = Criteria::ASC) Order by the profil_id column
- * @method     RefProfilQuery orderByProfilLibelle($order = Criteria::ASC) Order by the profil_libelle column
+ * @method     RefProfilQuery orderByProfilLib($order = Criteria::ASC) Order by the profil_lib column
+ * @method     RefProfilQuery orderByProfilLibCourt($order = Criteria::ASC) Order by the profil_lib_court column
  *
  * @method     RefProfilQuery groupByProfilId() Group by the profil_id column
- * @method     RefProfilQuery groupByProfilLibelle() Group by the profil_libelle column
+ * @method     RefProfilQuery groupByProfilLib() Group by the profil_lib column
+ * @method     RefProfilQuery groupByProfilLibCourt() Group by the profil_lib_court column
  *
  * @method     RefProfilQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     RefProfilQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
@@ -24,10 +26,12 @@
  * @method     RefProfil findOneOrCreate(PropelPDO $con = null) Return the first RefProfil matching the query, or a new RefProfil object populated from the query conditions when no match is found
  *
  * @method     RefProfil findOneByProfilId(int $profil_id) Return the first RefProfil filtered by the profil_id column
- * @method     RefProfil findOneByProfilLibelle(string $profil_libelle) Return the first RefProfil filtered by the profil_libelle column
+ * @method     RefProfil findOneByProfilLib(string $profil_lib) Return the first RefProfil filtered by the profil_lib column
+ * @method     RefProfil findOneByProfilLibCourt(string $profil_lib_court) Return the first RefProfil filtered by the profil_lib_court column
  *
  * @method     array findByProfilId(int $profil_id) Return RefProfil objects filtered by the profil_id column
- * @method     array findByProfilLibelle(string $profil_libelle) Return RefProfil objects filtered by the profil_libelle column
+ * @method     array findByProfilLib(string $profil_lib) Return RefProfil objects filtered by the profil_lib column
+ * @method     array findByProfilLibCourt(string $profil_lib_court) Return RefProfil objects filtered by the profil_lib_court column
  *
  * @package    propel.generator.lib.model.om
  */
@@ -116,7 +120,7 @@ abstract class BaseRefProfilQuery extends ModelCriteria
 	 */
 	protected function findPkSimple($key, $con)
 	{
-		$sql = 'SELECT `PROFIL_ID`, `PROFIL_LIBELLE` FROM `ref_profil` WHERE `PROFIL_ID` = :p0';
+		$sql = 'SELECT `PROFIL_ID`, `PROFIL_LIB`, `PROFIL_LIB_COURT` FROM `ref_profil` WHERE `PROFIL_ID` = :p0';
 		try {
 			$stmt = $con->prepare($sql);
 			$stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -228,31 +232,59 @@ abstract class BaseRefProfilQuery extends ModelCriteria
 	}
 
 	/**
-	 * Filter the query on the profil_libelle column
+	 * Filter the query on the profil_lib column
 	 *
 	 * Example usage:
 	 * <code>
-	 * $query->filterByProfilLibelle('fooValue');   // WHERE profil_libelle = 'fooValue'
-	 * $query->filterByProfilLibelle('%fooValue%'); // WHERE profil_libelle LIKE '%fooValue%'
+	 * $query->filterByProfilLib('fooValue');   // WHERE profil_lib = 'fooValue'
+	 * $query->filterByProfilLib('%fooValue%'); // WHERE profil_lib LIKE '%fooValue%'
 	 * </code>
 	 *
-	 * @param     string $profilLibelle The value to use as filter.
+	 * @param     string $profilLib The value to use as filter.
 	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    RefProfilQuery The current query, for fluid interface
 	 */
-	public function filterByProfilLibelle($profilLibelle = null, $comparison = null)
+	public function filterByProfilLib($profilLib = null, $comparison = null)
 	{
 		if (null === $comparison) {
-			if (is_array($profilLibelle)) {
+			if (is_array($profilLib)) {
 				$comparison = Criteria::IN;
-			} elseif (preg_match('/[\%\*]/', $profilLibelle)) {
-				$profilLibelle = str_replace('*', '%', $profilLibelle);
+			} elseif (preg_match('/[\%\*]/', $profilLib)) {
+				$profilLib = str_replace('*', '%', $profilLib);
 				$comparison = Criteria::LIKE;
 			}
 		}
-		return $this->addUsingAlias(RefProfilPeer::PROFIL_LIBELLE, $profilLibelle, $comparison);
+		return $this->addUsingAlias(RefProfilPeer::PROFIL_LIB, $profilLib, $comparison);
+	}
+
+	/**
+	 * Filter the query on the profil_lib_court column
+	 *
+	 * Example usage:
+	 * <code>
+	 * $query->filterByProfilLibCourt('fooValue');   // WHERE profil_lib_court = 'fooValue'
+	 * $query->filterByProfilLibCourt('%fooValue%'); // WHERE profil_lib_court LIKE '%fooValue%'
+	 * </code>
+	 *
+	 * @param     string $profilLibCourt The value to use as filter.
+	 *              Accepts wildcards (* and % trigger a LIKE)
+	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+	 *
+	 * @return    RefProfilQuery The current query, for fluid interface
+	 */
+	public function filterByProfilLibCourt($profilLibCourt = null, $comparison = null)
+	{
+		if (null === $comparison) {
+			if (is_array($profilLibCourt)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $profilLibCourt)) {
+				$profilLibCourt = str_replace('*', '%', $profilLibCourt);
+				$comparison = Criteria::LIKE;
+			}
+		}
+		return $this->addUsingAlias(RefProfilPeer::PROFIL_LIB_COURT, $profilLibCourt, $comparison);
 	}
 
 	/**

@@ -100,4 +100,15 @@ class assuranceActions extends sfActions {
                     "aaData" => $data)));
     }
 
+    public function executePrixByTypeAssuranceAjax(sfWebRequest $request) {
+        $this->assurance_id = $request->getParameter('assurance_id');
+        $this->typeAssurance = RefAssuranceQuery::create()
+                ->filterByAssuranceId($this->assurance_id)
+                ->findOne();
+        $this->form = new TblAssuranceForm(null, array('objTypeAssurance' => $this->typeAssurance));
+        if ($request->isXmlHttpRequest()) {
+            return $this->renderPartial('assurance/frmPrixAssurance', array('form' => $this->form));
+        }
+    }
+
 }

@@ -78,19 +78,21 @@
                             </ul>
                         </li>
                         <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-original-title="" title="">Factures <b class="caret"></b></a>
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-original-title="" title="">Facturation <b class="caret"></b></a>
                             <ul class="dropdown-menu">
                                 <li><a href="<?php echo url_for('facture/new') ?>" data-original-title="" title="">Nouvelle Facture</a></li>
-                                <li><a href="<?php echo url_for('facture/listeFactures') ?>" data-original-title="" title="">Liste Factures</a></li>
+                                <li><a href="<?php echo url_for('facture/listeFactures') ?>" data-original-title="" title="">Mes Factures</a></li>
+                                <li><a href="<?php echo url_for('depenses/listeDepenses') ?>" data-original-title="" title="">Mes Dépenses</a></li>
                                 <li><a href="<?php echo url_for('assurance/listeAssurances') ?>" data-original-title="" title="">Assurances</a></li>
-                                <li><a href="<?php echo url_for('depenses/listeDepenses') ?>" data-original-title="" title="">Gestion Dépenses</a></li>
                             </ul>
                         </li>
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-original-title="" title="">Gestion <b class="caret"></b></a>
                             <ul class="dropdown-menu">
-                                <li><a href="<?php echo url_for('adherent/planningEntraineurs') ?>" data-original-title="" title="">Planning</a></li>
+                                <li><a href="<?php echo url_for('adherent/planningEntraineurs') ?>" data-original-title="" title="">Planning Entraineurs</a></li>
+                                <li><a href="<?php echo url_for('adherent/mesAdherents') ?>" data-original-title="" title="">Planning Adhérents</a></li>
                                 <li><a href="<?php echo url_for('ceinture/listeCeintures') ?>" data-original-title="" title="">Ceinture</a></li>
+                                <li><a href="<?php echo url_for('competition/index') ?>" data-original-title="" title="">Competitions</a></li>
                                 <!--<li><a href="<?php echo url_for('depenses/alertes') ?>" data-original-title="" title="">Alerts</a></li>-->
                             </ul>
                         </li>
@@ -103,7 +105,7 @@
                             </ul>
                         </li>
                         <li>
-                            <a href="<?php echo url_for('depenses/alertes') ?>" data-original-title="" title="">Alerts</a>
+                            <a href="<?php echo url_for('depenses/mesAlertes') ?>" data-original-title="" title="">Alerts</a>
                         </li>
                     </ul>
 
@@ -114,6 +116,7 @@
                             <ul class="dropdown-menu">
                                 <li><h5>&nbsp;&nbsp;Nom : <?php echo $sf_user->getAttribute('user_nom') ?></h5></li>
                                 <li><h5>&nbsp;&nbsp;Prénom : <?php echo $sf_user->getAttribute('user_prenom') ?></h5></li>
+                                <li><h5>&nbsp;&nbsp;Prénom : <?php echo $sf_user->getAttribute('fonction') ?></h5></li>
                                 <!--<li><h5>&nbsp;&nbsp;Fonction : <?php echo $sf_user->getAttribute('user_prenom') ?></h5></li>-->
                                 <li class="divider"></li>
                                 <li><a href="<?php echo url_for('auth/logout') ?>" data-original-title="" title="">Logout</a></li>

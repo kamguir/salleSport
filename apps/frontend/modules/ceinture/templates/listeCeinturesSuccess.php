@@ -20,6 +20,7 @@
                             <th><?php echo __('Compétance') ?></th>
                             <th><?php echo __('Titre Entraineur') ?></th>
                             <th><?php echo __('Couleur Ceinture') ?></th>
+                            <th><?php echo __('Ceinture') ?></th>
                             <th><?php echo __('Date Aquisition') ?></th>
                         </tr>   
                     </thead>

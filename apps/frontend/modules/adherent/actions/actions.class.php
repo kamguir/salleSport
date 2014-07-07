@@ -7,6 +7,8 @@
  * @subpackage adherent
  * @author     Your name here
  */
+//listes des membres par jour / par entraineur / type de sport / pr categorie age / horaire
+// tbl competition
 class adherentActions extends sfActions {
 
     public function executeIndex(sfWebRequest $request) {
@@ -174,7 +176,7 @@ class adherentActions extends sfActions {
                     "iTotalDisplayRecords" => $nb,
                     "aaData" => $data)));
     }
-    
+
     public function executePlanningEntraineurs(sfWebRequest $request) {
         $sf_user = $this->getUser();
         $this->formFilter = new TblAdherentFormFilter(null, array('sf_user' => $sf_user), false);
@@ -209,5 +211,51 @@ class adherentActions extends sfActions {
                     "iTotalDisplayRecords" => $nb,
                     "aaData" => $data)));
     }
-   
+
+    public function executeMesAdherents(sfWebRequest $request) {
+        $sf_user = $this->getUser();
+        $this->formFilter = new TblAdherentFormFilter(null, array('sf_user' => $sf_user), false);
+        $this->formFilter->bind($request->isMethod("post") ? $request->getParameter($this->formFilter->getName()) : $sf_user->getAttribute("dataTableFilterMesAdherents", array()));
+
+        if ($this->formFilter->isValid()) {
+            $sf_user->setAttribute("dataTableFilterMesAdherents", $this->formFilter->getValues());
+        }
+    }
+
+    public function executeMesAdherentsAjax(sfWebRequest $request) {
+
+        $sf_user = $this->getUser();
+        $data = array();
+
+        $formFilter = new TblAdherentFormFilter();
+
+        $tblAdherents = TblAdherentQuery::create()
+                ->filterByIdTypeAdherent(RefTypeAdherent::ADHERENT)
+//                ->joinRefTypeSport()
+                ->mergeWith($formFilter->buildCriteria($sf_user->getAttribute("dataTableFilterMesAdherents", array())))
+                ->orderByDatatable($request->getParameter("iSortCol_0"), $request->getParameter("sSortDir_0", Criteria::ASC))
+                ->filterMesAdherentsByDatatable($request->getParameter("sSearch"))
+                ->paginate(($request->getParameter('iDisplayStart') / $request->getParameter('iDisplayLength')) + 1, $request->getParameter("iDisplayLength"));
+
+        foreach ($tblAdherents as $tblAdherent) /* @var $tblAdherents TblAdherent */ {
+            $data[] = $tblAdherent->MesAdherentstoArrayString();
+        }
+        $nb = $tblAdherents->count();
+
+        return $this->renderText(json_encode(array("sEcho" => $request->getParameter("sEcho") + 1,
+                    "iTotalDisplayRecords" => $nb,
+                    "aaData" => $data)));
+    }
+
+    public function executeJourhoraireByIdEntraineurAjax(sfWebRequest $request) {
+        $this->adherent_id = $request->getParameter('adherent_id');
+        $this->joursHoraires = LnkJourEntrainementAdherentQuery::create()
+                ->filterByIdAdherent($this->adherent_id)
+                ->find();
+        $this->form = new TblAdherentForm(null, array('objJoursHoraires' => $this->joursHoraires));
+        if ($request->isXmlHttpRequest()) {
+            return $this->renderPartial('adherent/frmJoursHoraires', array('form' => $this->form));
+        }
+    }
+
 }

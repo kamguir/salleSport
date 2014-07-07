@@ -69,6 +69,7 @@ class TblAdherentTableMap extends TableMap
 		$this->addRelation('RefNiveauAdherent', 'RefNiveauAdherent', RelationMap::MANY_TO_ONE, array('niveau_adherent_id' => 'niveau_adherent_id', ), null, null);
 		$this->addRelation('RefTypeSport', 'RefTypeSport', RelationMap::MANY_TO_ONE, array('id_type_sport' => 'id_type_sport', ), null, null);
 		$this->addRelation('RefSeanceHoraire', 'RefSeanceHoraire', RelationMap::MANY_TO_ONE, array('seance_horaire_id' => 'seance_horaire_id', ), null, null);
+		$this->addRelation('LnkAdherentCompetition', 'LnkAdherentCompetition', RelationMap::ONE_TO_MANY, array('id_adherent' => 'adherent_id', ), null, null, 'LnkAdherentCompetitions');
 		$this->addRelation('LnkJourEntrainementAdherent', 'LnkJourEntrainementAdherent', RelationMap::ONE_TO_MANY, array('id_adherent' => 'id_adherent', ), null, null, 'LnkJourEntrainementAdherents');
 		$this->addRelation('TblAssurance', 'TblAssurance', RelationMap::ONE_TO_MANY, array('id_adherent' => 'adherent_id', ), null, null, 'TblAssurances');
 		$this->addRelation('TblCeinture', 'TblCeinture', RelationMap::ONE_TO_MANY, array('id_adherent' => 'adherent_id', ), null, null, 'TblCeintures');

@@ -163,6 +163,11 @@ abstract class BaseTblAdherent extends BaseObject  implements Persistent
 	protected $aRefSeanceHoraire;
 
 	/**
+	 * @var        array LnkAdherentCompetition[] Collection to store aggregation of LnkAdherentCompetition objects.
+	 */
+	protected $collLnkAdherentCompetitions;
+
+	/**
 	 * @var        array LnkJourEntrainementAdherent[] Collection to store aggregation of LnkJourEntrainementAdherent objects.
 	 */
 	protected $collLnkJourEntrainementAdherents;
@@ -195,6 +200,12 @@ abstract class BaseTblAdherent extends BaseObject  implements Persistent
 	 * @var        boolean
 	 */
 	protected $alreadyInValidation = false;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $lnkAdherentCompetitionsScheduledForDeletion = null;
 
 	/**
 	 * An array of objects scheduled for deletion.
@@ -987,6 +998,8 @@ abstract class BaseTblAdherent extends BaseObject  implements Persistent
 			$this->aRefNiveauAdherent = null;
 			$this->aRefTypeSport = null;
 			$this->aRefSeanceHoraire = null;
+			$this->collLnkAdherentCompetitions = null;
+
 			$this->collLnkJourEntrainementAdherents = null;
 
 			$this->collTblAssurances = null;
@@ -1208,6 +1221,23 @@ abstract class BaseTblAdherent extends BaseObject  implements Persistent
 				}
 				$affectedRows += 1;
 				$this->resetModified();
+			}
+
+			if ($this->lnkAdherentCompetitionsScheduledForDeletion !== null) {
+				if (!$this->lnkAdherentCompetitionsScheduledForDeletion->isEmpty()) {
+					LnkAdherentCompetitionQuery::create()
+						->filterByPrimaryKeys($this->lnkAdherentCompetitionsScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->lnkAdherentCompetitionsScheduledForDeletion = null;
+				}
+			}
+
+			if ($this->collLnkAdherentCompetitions !== null) {
+				foreach ($this->collLnkAdherentCompetitions as $referrerFK) {
+					if (!$referrerFK->isDeleted()) {
+						$affectedRows += $referrerFK->save($con);
+					}
+				}
 			}
 
 			if ($this->lnkJourEntrainementAdherentsScheduledForDeletion !== null) {
@@ -1555,6 +1585,14 @@ abstract class BaseTblAdherent extends BaseObject  implements Persistent
 			}
 
 
+				if ($this->collLnkAdherentCompetitions !== null) {
+					foreach ($this->collLnkAdherentCompetitions as $referrerFK) {
+						if (!$referrerFK->validate($columns)) {
+							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
+						}
+					}
+				}
+
 				if ($this->collLnkJourEntrainementAdherents !== null) {
 					foreach ($this->collLnkJourEntrainementAdherents as $referrerFK) {
 						if (!$referrerFK->validate($columns)) {
@@ -1736,6 +1774,9 @@ abstract class BaseTblAdherent extends BaseObject  implements Persistent
 			}
 			if (null !== $this->aRefSeanceHoraire) {
 				$result['RefSeanceHoraire'] = $this->aRefSeanceHoraire->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+			}
+			if (null !== $this->collLnkAdherentCompetitions) {
+				$result['LnkAdherentCompetitions'] = $this->collLnkAdherentCompetitions->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
 			}
 			if (null !== $this->collLnkJourEntrainementAdherents) {
 				$result['LnkJourEntrainementAdherents'] = $this->collLnkJourEntrainementAdherents->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
@@ -1985,6 +2026,12 @@ abstract class BaseTblAdherent extends BaseObject  implements Persistent
 			$copyObj->setNew(false);
 			// store object hash to prevent cycle
 			$this->startCopy = true;
+
+			foreach ($this->getLnkAdherentCompetitions() as $relObj) {
+				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+					$copyObj->addLnkAdherentCompetition($relObj->copy($deepCopy));
+				}
+			}
 
 			foreach ($this->getLnkJourEntrainementAdherents() as $relObj) {
 				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
@@ -2363,6 +2410,9 @@ abstract class BaseTblAdherent extends BaseObject  implements Persistent
 	 */
 	public function initRelation($relationName)
 	{
+		if ('LnkAdherentCompetition' == $relationName) {
+			return $this->initLnkAdherentCompetitions();
+		}
 		if ('LnkJourEntrainementAdherent' == $relationName) {
 			return $this->initLnkJourEntrainementAdherents();
 		}
@@ -2375,6 +2425,179 @@ abstract class BaseTblAdherent extends BaseObject  implements Persistent
 		if ('TblFacture' == $relationName) {
 			return $this->initTblFactures();
 		}
+	}
+
+	/**
+	 * Clears out the collLnkAdherentCompetitions collection
+	 *
+	 * This does not modify the database; however, it will remove any associated objects, causing
+	 * them to be refetched by subsequent calls to accessor method.
+	 *
+	 * @return     void
+	 * @see        addLnkAdherentCompetitions()
+	 */
+	public function clearLnkAdherentCompetitions()
+	{
+		$this->collLnkAdherentCompetitions = null; // important to set this to NULL since that means it is uninitialized
+	}
+
+	/**
+	 * Initializes the collLnkAdherentCompetitions collection.
+	 *
+	 * By default this just sets the collLnkAdherentCompetitions collection to an empty array (like clearcollLnkAdherentCompetitions());
+	 * however, you may wish to override this method in your stub class to provide setting appropriate
+	 * to your application -- for example, setting the initial array to the values stored in database.
+	 *
+	 * @param      boolean $overrideExisting If set to true, the method call initializes
+	 *                                        the collection even if it is not empty
+	 *
+	 * @return     void
+	 */
+	public function initLnkAdherentCompetitions($overrideExisting = true)
+	{
+		if (null !== $this->collLnkAdherentCompetitions && !$overrideExisting) {
+			return;
+		}
+		$this->collLnkAdherentCompetitions = new PropelObjectCollection();
+		$this->collLnkAdherentCompetitions->setModel('LnkAdherentCompetition');
+	}
+
+	/**
+	 * Gets an array of LnkAdherentCompetition objects which contain a foreign key that references this object.
+	 *
+	 * If the $criteria is not null, it is used to always fetch the results from the database.
+	 * Otherwise the results are fetched from the database the first time, then cached.
+	 * Next time the same method is called without $criteria, the cached collection is returned.
+	 * If this TblAdherent is new, it will return
+	 * an empty collection or the current collection; the criteria is ignored on a new object.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @return     PropelCollection|array LnkAdherentCompetition[] List of LnkAdherentCompetition objects
+	 * @throws     PropelException
+	 */
+	public function getLnkAdherentCompetitions($criteria = null, PropelPDO $con = null)
+	{
+		if(null === $this->collLnkAdherentCompetitions || null !== $criteria) {
+			if ($this->isNew() && null === $this->collLnkAdherentCompetitions) {
+				// return empty collection
+				$this->initLnkAdherentCompetitions();
+			} else {
+				$collLnkAdherentCompetitions = LnkAdherentCompetitionQuery::create(null, $criteria)
+					->filterByTblAdherent($this)
+					->find($con);
+				if (null !== $criteria) {
+					return $collLnkAdherentCompetitions;
+				}
+				$this->collLnkAdherentCompetitions = $collLnkAdherentCompetitions;
+			}
+		}
+		return $this->collLnkAdherentCompetitions;
+	}
+
+	/**
+	 * Sets a collection of LnkAdherentCompetition objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $lnkAdherentCompetitions A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setLnkAdherentCompetitions(PropelCollection $lnkAdherentCompetitions, PropelPDO $con = null)
+	{
+		$this->lnkAdherentCompetitionsScheduledForDeletion = $this->getLnkAdherentCompetitions(new Criteria(), $con)->diff($lnkAdherentCompetitions);
+
+		foreach ($lnkAdherentCompetitions as $lnkAdherentCompetition) {
+			// Fix issue with collection modified by reference
+			if ($lnkAdherentCompetition->isNew()) {
+				$lnkAdherentCompetition->setTblAdherent($this);
+			}
+			$this->addLnkAdherentCompetition($lnkAdherentCompetition);
+		}
+
+		$this->collLnkAdherentCompetitions = $lnkAdherentCompetitions;
+	}
+
+	/**
+	 * Returns the number of related LnkAdherentCompetition objects.
+	 *
+	 * @param      Criteria $criteria
+	 * @param      boolean $distinct
+	 * @param      PropelPDO $con
+	 * @return     int Count of related LnkAdherentCompetition objects.
+	 * @throws     PropelException
+	 */
+	public function countLnkAdherentCompetitions(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+	{
+		if(null === $this->collLnkAdherentCompetitions || null !== $criteria) {
+			if ($this->isNew() && null === $this->collLnkAdherentCompetitions) {
+				return 0;
+			} else {
+				$query = LnkAdherentCompetitionQuery::create(null, $criteria);
+				if($distinct) {
+					$query->distinct();
+				}
+				return $query
+					->filterByTblAdherent($this)
+					->count($con);
+			}
+		} else {
+			return count($this->collLnkAdherentCompetitions);
+		}
+	}
+
+	/**
+	 * Method called to associate a LnkAdherentCompetition object to this object
+	 * through the LnkAdherentCompetition foreign key attribute.
+	 *
+	 * @param      LnkAdherentCompetition $l LnkAdherentCompetition
+	 * @return     TblAdherent The current object (for fluent API support)
+	 */
+	public function addLnkAdherentCompetition(LnkAdherentCompetition $l)
+	{
+		if ($this->collLnkAdherentCompetitions === null) {
+			$this->initLnkAdherentCompetitions();
+		}
+		if (!$this->collLnkAdherentCompetitions->contains($l)) { // only add it if the **same** object is not already associated
+			$this->doAddLnkAdherentCompetition($l);
+		}
+
+		return $this;
+	}
+
+	/**
+	 * @param	LnkAdherentCompetition $lnkAdherentCompetition The lnkAdherentCompetition object to add.
+	 */
+	protected function doAddLnkAdherentCompetition($lnkAdherentCompetition)
+	{
+		$this->collLnkAdherentCompetitions[]= $lnkAdherentCompetition;
+		$lnkAdherentCompetition->setTblAdherent($this);
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this TblAdherent is new, it will return
+	 * an empty collection; or if this TblAdherent has previously
+	 * been saved, it will retrieve related LnkAdherentCompetitions from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in TblAdherent.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array LnkAdherentCompetition[] List of LnkAdherentCompetition objects
+	 */
+	public function getLnkAdherentCompetitionsJoinTblCompetition($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = LnkAdherentCompetitionQuery::create(null, $criteria);
+		$query->joinWith('TblCompetition', $join_behavior);
+
+		return $this->getLnkAdherentCompetitions($query, $con);
 	}
 
 	/**
@@ -3161,6 +3384,11 @@ abstract class BaseTblAdherent extends BaseObject  implements Persistent
 	public function clearAllReferences($deep = false)
 	{
 		if ($deep) {
+			if ($this->collLnkAdherentCompetitions) {
+				foreach ($this->collLnkAdherentCompetitions as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
 			if ($this->collLnkJourEntrainementAdherents) {
 				foreach ($this->collLnkJourEntrainementAdherents as $o) {
 					$o->clearAllReferences($deep);
@@ -3183,6 +3411,10 @@ abstract class BaseTblAdherent extends BaseObject  implements Persistent
 			}
 		} // if ($deep)
 
+		if ($this->collLnkAdherentCompetitions instanceof PropelCollection) {
+			$this->collLnkAdherentCompetitions->clearIterator();
+		}
+		$this->collLnkAdherentCompetitions = null;
 		if ($this->collLnkJourEntrainementAdherents instanceof PropelCollection) {
 			$this->collLnkJourEntrainementAdherents->clearIterator();
 		}

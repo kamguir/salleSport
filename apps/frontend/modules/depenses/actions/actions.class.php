@@ -99,6 +99,10 @@ class depensesActions extends sfActions {
                     "aaData" => $data)));
     }
 
+    public function executeMesAlertes(sfWebRequest $request) {
+//        $this->tblDepensess = tblDepensesQuery::create()->find();
+    }
+   
     public function executeAlertes(sfWebRequest $request) {
 //        $this->tblDepensess = tblDepensesQuery::create()->find();
     }

@@ -15,13 +15,15 @@ abstract class BaseRefProfilForm extends BaseFormPropel
   {
     $this->setWidgets(array(
       'profil_id'            => new sfWidgetFormInputHidden(),
-      'profil_libelle'       => new sfWidgetFormInputText(),
+      'profil_lib'           => new sfWidgetFormInputText(),
+      'profil_lib_court'     => new sfWidgetFormInputText(),
       'lnk_user_profil_list' => new sfWidgetFormPropelChoice(array('multiple' => true, 'model' => 'TblUser')),
     ));
 
     $this->setValidators(array(
       'profil_id'            => new sfValidatorChoice(array('choices' => array($this->getObject()->getProfilId()), 'empty_value' => $this->getObject()->getProfilId(), 'required' => false)),
-      'profil_libelle'       => new sfValidatorString(array('max_length' => 200, 'required' => false)),
+      'profil_lib'           => new sfValidatorString(array('max_length' => 127, 'required' => false)),
+      'profil_lib_court'     => new sfValidatorString(array('max_length' => 127, 'required' => false)),
       'lnk_user_profil_list' => new sfValidatorPropelChoice(array('multiple' => true, 'model' => 'TblUser', 'required' => false)),
     ));
 

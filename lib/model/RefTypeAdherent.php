@@ -19,7 +19,7 @@ class RefTypeAdherent extends BaseRefTypeAdherent {
 
     const ADHERENT = 1;
     const ENTRAINEUR = 2;
-    const EMPLOYE = 2;
+    const EMPLOYE = 3;
 
     public function __toString() {
         return $this->getLibelleTypeAdherent();

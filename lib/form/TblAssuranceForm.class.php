@@ -10,6 +10,9 @@
 class TblAssuranceForm extends BaseTblAssuranceForm {
 
     public function configure() {
+        
+        $myObjPrixAssurance = $this->getOption('objTypeAssurance');
+        
         $this->setWidget('date_assurance', new orcaWidgetFormJQueryDate(array(
             'image' => "/images/pictos/calendar.png",
             'config' => '{firstDay: 1, buttonText: \'Changer la date\'}',
@@ -34,6 +37,9 @@ class TblAssuranceForm extends BaseTblAssuranceForm {
         $this->validatorSchema['prix_assurance'] = new sfValidatorInteger(array('required' => true));
         $this->widgetSchema['prix_assurance']->setAttribute('required', true);
         $this->widgetSchema['prix_assurance']->setAttribute("class", "form-control");
+        if ($myObjPrixAssurance) {
+            $this->getWidget("prix_assurance")->setDefault($myObjPrixAssurance->getPrixAssurance());
+        }
 
 
         $widgetDateTime = new orcaWidgetFormDateText(array('format' => 'Y-m-d H:i:s', 'form' => $this));

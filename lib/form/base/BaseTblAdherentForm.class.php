@@ -31,6 +31,7 @@ abstract class BaseTblAdherentForm extends BaseFormPropel
       'seance_horaire_id'                   => new sfWidgetFormPropelChoice(array('model' => 'RefSeanceHoraire', 'add_empty' => true)),
       'updated_at'                          => new sfWidgetFormDateTime(),
       'deleted_at'                          => new sfWidgetFormDateTime(),
+      'lnk_adherent_competition_list'       => new sfWidgetFormPropelChoice(array('multiple' => true, 'model' => 'TblCompetition')),
       'lnk_jour_entrainement_adherent_list' => new sfWidgetFormPropelChoice(array('multiple' => true, 'model' => 'RefJour')),
     ));
 
@@ -52,6 +53,7 @@ abstract class BaseTblAdherentForm extends BaseFormPropel
       'seance_horaire_id'                   => new sfValidatorPropelChoice(array('model' => 'RefSeanceHoraire', 'column' => 'seance_horaire_id', 'required' => false)),
       'updated_at'                          => new sfValidatorDateTime(array('required' => false)),
       'deleted_at'                          => new sfValidatorDateTime(array('required' => false)),
+      'lnk_adherent_competition_list'       => new sfValidatorPropelChoice(array('multiple' => true, 'model' => 'TblCompetition', 'required' => false)),
       'lnk_jour_entrainement_adherent_list' => new sfValidatorPropelChoice(array('multiple' => true, 'model' => 'RefJour', 'required' => false)),
     ));
 
@@ -72,6 +74,17 @@ abstract class BaseTblAdherentForm extends BaseFormPropel
   {
     parent::updateDefaultsFromObject();
 
+    if (isset($this->widgetSchema['lnk_adherent_competition_list']))
+    {
+      $values = array();
+      foreach ($this->object->getLnkAdherentCompetitions() as $obj)
+      {
+        $values[] = $obj->getCompetitionId();
+      }
+
+      $this->setDefault('lnk_adherent_competition_list', $values);
+    }
+
     if (isset($this->widgetSchema['lnk_jour_entrainement_adherent_list']))
     {
       $values = array();
@@ -89,7 +102,43 @@ abstract class BaseTblAdherentForm extends BaseFormPropel
   {
     parent::doSave($con);
 
+    $this->saveLnkAdherentCompetitionList($con);
     $this->saveLnkJourEntrainementAdherentList($con);
+  }
+
+  public function saveLnkAdherentCompetitionList($con = null)
+  {
+    if (!$this->isValid())
+    {
+      throw $this->getErrorSchema();
+    }
+
+    if (!isset($this->widgetSchema['lnk_adherent_competition_list']))
+    {
+      // somebody has unset this widget
+      return;
+    }
+
+    if (null === $con)
+    {
+      $con = $this->getConnection();
+    }
+
+    $c = new Criteria();
+    $c->add(LnkAdherentCompetitionPeer::ADHERENT_ID, $this->object->getPrimaryKey());
+    LnkAdherentCompetitionPeer::doDelete($c, $con);
+
+    $values = $this->getValue('lnk_adherent_competition_list');
+    if (is_array($values))
+    {
+      foreach ($values as $value)
+      {
+        $obj = new LnkAdherentCompetition();
+        $obj->setAdherentId($this->object->getPrimaryKey());
+        $obj->setCompetitionId($value);
+        $obj->save();
+      }
+    }
   }
 
   public function saveLnkJourEntrainementAdherentList($con = null)

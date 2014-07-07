@@ -70,6 +70,10 @@
  * @method     TblAdherentQuery rightJoinRefSeanceHoraire($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RefSeanceHoraire relation
  * @method     TblAdherentQuery innerJoinRefSeanceHoraire($relationAlias = null) Adds a INNER JOIN clause to the query using the RefSeanceHoraire relation
  *
+ * @method     TblAdherentQuery leftJoinLnkAdherentCompetition($relationAlias = null) Adds a LEFT JOIN clause to the query using the LnkAdherentCompetition relation
+ * @method     TblAdherentQuery rightJoinLnkAdherentCompetition($relationAlias = null) Adds a RIGHT JOIN clause to the query using the LnkAdherentCompetition relation
+ * @method     TblAdherentQuery innerJoinLnkAdherentCompetition($relationAlias = null) Adds a INNER JOIN clause to the query using the LnkAdherentCompetition relation
+ *
  * @method     TblAdherentQuery leftJoinLnkJourEntrainementAdherent($relationAlias = null) Adds a LEFT JOIN clause to the query using the LnkJourEntrainementAdherent relation
  * @method     TblAdherentQuery rightJoinLnkJourEntrainementAdherent($relationAlias = null) Adds a RIGHT JOIN clause to the query using the LnkJourEntrainementAdherent relation
  * @method     TblAdherentQuery innerJoinLnkJourEntrainementAdherent($relationAlias = null) Adds a INNER JOIN clause to the query using the LnkJourEntrainementAdherent relation
@@ -1367,6 +1371,79 @@ abstract class BaseTblAdherentQuery extends ModelCriteria
 		return $this
 			->joinRefSeanceHoraire($relationAlias, $joinType)
 			->useQuery($relationAlias ? $relationAlias : 'RefSeanceHoraire', 'RefSeanceHoraireQuery');
+	}
+
+	/**
+	 * Filter the query by a related LnkAdherentCompetition object
+	 *
+	 * @param     LnkAdherentCompetition $lnkAdherentCompetition  the related object to use as filter
+	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+	 *
+	 * @return    TblAdherentQuery The current query, for fluid interface
+	 */
+	public function filterByLnkAdherentCompetition($lnkAdherentCompetition, $comparison = null)
+	{
+		if ($lnkAdherentCompetition instanceof LnkAdherentCompetition) {
+			return $this
+				->addUsingAlias(TblAdherentPeer::ID_ADHERENT, $lnkAdherentCompetition->getAdherentId(), $comparison);
+		} elseif ($lnkAdherentCompetition instanceof PropelCollection) {
+			return $this
+				->useLnkAdherentCompetitionQuery()
+				->filterByPrimaryKeys($lnkAdherentCompetition->getPrimaryKeys())
+				->endUse();
+		} else {
+			throw new PropelException('filterByLnkAdherentCompetition() only accepts arguments of type LnkAdherentCompetition or PropelCollection');
+		}
+	}
+
+	/**
+	 * Adds a JOIN clause to the query using the LnkAdherentCompetition relation
+	 *
+	 * @param     string $relationAlias optional alias for the relation
+	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+	 *
+	 * @return    TblAdherentQuery The current query, for fluid interface
+	 */
+	public function joinLnkAdherentCompetition($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+	{
+		$tableMap = $this->getTableMap();
+		$relationMap = $tableMap->getRelation('LnkAdherentCompetition');
+
+		// create a ModelJoin object for this join
+		$join = new ModelJoin();
+		$join->setJoinType($joinType);
+		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
+
+		// add the ModelJoin to the current object
+		if($relationAlias) {
+			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+			$this->addJoinObject($join, $relationAlias);
+		} else {
+			$this->addJoinObject($join, 'LnkAdherentCompetition');
+		}
+
+		return $this;
+	}
+
+	/**
+	 * Use the LnkAdherentCompetition relation LnkAdherentCompetition object
+	 *
+	 * @see       useQuery()
+	 *
+	 * @param     string $relationAlias optional alias for the relation,
+	 *                                   to be used as main alias in the secondary query
+	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+	 *
+	 * @return    LnkAdherentCompetitionQuery A secondary query class using the current class as primary query
+	 */
+	public function useLnkAdherentCompetitionQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+	{
+		return $this
+			->joinLnkAdherentCompetition($relationAlias, $joinType)
+			->useQuery($relationAlias ? $relationAlias : 'LnkAdherentCompetition', 'LnkAdherentCompetitionQuery');
 	}
 
 	/**

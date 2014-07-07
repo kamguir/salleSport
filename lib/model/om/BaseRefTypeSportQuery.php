@@ -24,6 +24,10 @@
  * @method     RefTypeSportQuery rightJoinTblAdherent($relationAlias = null) Adds a RIGHT JOIN clause to the query using the TblAdherent relation
  * @method     RefTypeSportQuery innerJoinTblAdherent($relationAlias = null) Adds a INNER JOIN clause to the query using the TblAdherent relation
  *
+ * @method     RefTypeSportQuery leftJoinTblCompetition($relationAlias = null) Adds a LEFT JOIN clause to the query using the TblCompetition relation
+ * @method     RefTypeSportQuery rightJoinTblCompetition($relationAlias = null) Adds a RIGHT JOIN clause to the query using the TblCompetition relation
+ * @method     RefTypeSportQuery innerJoinTblCompetition($relationAlias = null) Adds a INNER JOIN clause to the query using the TblCompetition relation
+ *
  * @method     RefTypeSport findOne(PropelPDO $con = null) Return the first RefTypeSport matching the query
  * @method     RefTypeSport findOneOrCreate(PropelPDO $con = null) Return the first RefTypeSport matching the query, or a new RefTypeSport object populated from the query conditions when no match is found
  *
@@ -402,6 +406,79 @@ abstract class BaseRefTypeSportQuery extends ModelCriteria
 		return $this
 			->joinTblAdherent($relationAlias, $joinType)
 			->useQuery($relationAlias ? $relationAlias : 'TblAdherent', 'TblAdherentQuery');
+	}
+
+	/**
+	 * Filter the query by a related TblCompetition object
+	 *
+	 * @param     TblCompetition $tblCompetition  the related object to use as filter
+	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+	 *
+	 * @return    RefTypeSportQuery The current query, for fluid interface
+	 */
+	public function filterByTblCompetition($tblCompetition, $comparison = null)
+	{
+		if ($tblCompetition instanceof TblCompetition) {
+			return $this
+				->addUsingAlias(RefTypeSportPeer::ID_TYPE_SPORT, $tblCompetition->getTypeSportId(), $comparison);
+		} elseif ($tblCompetition instanceof PropelCollection) {
+			return $this
+				->useTblCompetitionQuery()
+				->filterByPrimaryKeys($tblCompetition->getPrimaryKeys())
+				->endUse();
+		} else {
+			throw new PropelException('filterByTblCompetition() only accepts arguments of type TblCompetition or PropelCollection');
+		}
+	}
+
+	/**
+	 * Adds a JOIN clause to the query using the TblCompetition relation
+	 *
+	 * @param     string $relationAlias optional alias for the relation
+	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+	 *
+	 * @return    RefTypeSportQuery The current query, for fluid interface
+	 */
+	public function joinTblCompetition($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+	{
+		$tableMap = $this->getTableMap();
+		$relationMap = $tableMap->getRelation('TblCompetition');
+
+		// create a ModelJoin object for this join
+		$join = new ModelJoin();
+		$join->setJoinType($joinType);
+		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
+
+		// add the ModelJoin to the current object
+		if($relationAlias) {
+			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+			$this->addJoinObject($join, $relationAlias);
+		} else {
+			$this->addJoinObject($join, 'TblCompetition');
+		}
+
+		return $this;
+	}
+
+	/**
+	 * Use the TblCompetition relation TblCompetition object
+	 *
+	 * @see       useQuery()
+	 *
+	 * @param     string $relationAlias optional alias for the relation,
+	 *                                   to be used as main alias in the secondary query
+	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+	 *
+	 * @return    TblCompetitionQuery A secondary query class using the current class as primary query
+	 */
+	public function useTblCompetitionQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+	{
+		return $this
+			->joinTblCompetition($relationAlias, $joinType)
+			->useQuery($relationAlias ? $relationAlias : 'TblCompetition', 'TblCompetitionQuery');
 	}
 
 	/**

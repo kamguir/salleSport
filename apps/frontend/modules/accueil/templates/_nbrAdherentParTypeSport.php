@@ -41,7 +41,7 @@ $libelleforReporting = implode(',', array_values($tblTypeSport));
                 text: ''
             },
             xAxis: {
-                categories: ['FULLCONTACT', 'TEAKWONDO', 'AEROBIC', 'KARATE', 'JUDO', 'MUSCULATION'],
+                categories: [ 'MUSCULATION', 'FULLCONTACT', 'TEAKWONDO', 'AEROBIC', 'KARATE', 'JUDO'],
                 title: {
                     text: null
                 }
@@ -82,8 +82,8 @@ $libelleforReporting = implode(',', array_values($tblTypeSport));
             },
             series: [{
                     name: 'nbr Adherent',
-                    data: [<?php echo $nbrAdherentFULLCONTACT; ?>, <?php echo $nbrAdherentTEAKWONDO; ?>, <?php echo $nbrAdherentAEROBIC; ?>,
-                        <?php echo $nbrAdherentKARATE; ?>, <?php echo $nbrAdherentJUDO; ?>, <?php echo $nbrAdherentMUSCULATION; ?>]
+                    data: [ <?php echo $nbrAdherentMUSCULATION; ?> , <?php echo $nbrAdherentFULLCONTACT; ?>, <?php echo $nbrAdherentTEAKWONDO; ?>, <?php echo $nbrAdherentAEROBIC; ?>,
+                        <?php echo $nbrAdherentKARATE; ?>, <?php echo $nbrAdherentJUDO; ?>]
                 }
             ]
         });

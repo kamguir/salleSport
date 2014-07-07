@@ -1,7 +1,5 @@
 <?php
 
-
-
 /**
  * Skeleton subclass for representing a row from the 'tbl_user' table.
  *
@@ -19,4 +17,23 @@
  */
 class TblUser extends BaseTblUser {
 
-} // TblUser
+    /**
+     * Retourn id du profil le plus fort
+     * @return unknown_type
+     */
+    public function getMaxProfil() {
+        $arrayProfilId = array();
+        $lnkProfils = $this->getLnkUserProfils();
+        foreach ($lnkProfils as $lnkProfil) {
+            $arrayProfilId[] = $lnkProfil->getProfilId();
+        }
+        return min($arrayProfilId);
+    }
+
+    public function isUserAdmin() {
+        return $this->isUserProfilById(1);
+    }
+
+}
+
+// TblUser

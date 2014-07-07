@@ -51,6 +51,7 @@ class RefTypeSportTableMap extends TableMap
 	public function buildRelations()
 	{
 		$this->addRelation('TblAdherent', 'TblAdherent', RelationMap::ONE_TO_MANY, array('id_type_sport' => 'id_type_sport', ), null, null, 'TblAdherents');
+		$this->addRelation('TblCompetition', 'TblCompetition', RelationMap::ONE_TO_MANY, array('id_type_sport' => 'type_sport_id', ), null, null, 'TblCompetitions');
 	} // buildRelations()
 
 	/**

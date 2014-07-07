@@ -60,6 +60,11 @@ abstract class BaseRefTypeSport extends BaseObject  implements Persistent
 	protected $collTblAdherents;
 
 	/**
+	 * @var        array TblCompetition[] Collection to store aggregation of TblCompetition objects.
+	 */
+	protected $collTblCompetitions;
+
+	/**
 	 * Flag to prevent endless save loop, if this object is referenced
 	 * by another object which falls in this transaction.
 	 * @var        boolean
@@ -78,6 +83,12 @@ abstract class BaseRefTypeSport extends BaseObject  implements Persistent
 	 * @var		array
 	 */
 	protected $tblAdherentsScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $tblCompetitionsScheduledForDeletion = null;
 
 	/**
 	 * Get the [id_type_sport] column value.
@@ -307,6 +318,8 @@ abstract class BaseRefTypeSport extends BaseObject  implements Persistent
 
 			$this->collTblAdherents = null;
 
+			$this->collTblCompetitions = null;
+
 		} // if (deep)
 	}
 
@@ -471,6 +484,23 @@ abstract class BaseRefTypeSport extends BaseObject  implements Persistent
 
 			if ($this->collTblAdherents !== null) {
 				foreach ($this->collTblAdherents as $referrerFK) {
+					if (!$referrerFK->isDeleted()) {
+						$affectedRows += $referrerFK->save($con);
+					}
+				}
+			}
+
+			if ($this->tblCompetitionsScheduledForDeletion !== null) {
+				if (!$this->tblCompetitionsScheduledForDeletion->isEmpty()) {
+					TblCompetitionQuery::create()
+						->filterByPrimaryKeys($this->tblCompetitionsScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->tblCompetitionsScheduledForDeletion = null;
+				}
+			}
+
+			if ($this->collTblCompetitions !== null) {
+				foreach ($this->collTblCompetitions as $referrerFK) {
 					if (!$referrerFK->isDeleted()) {
 						$affectedRows += $referrerFK->save($con);
 					}
@@ -642,6 +672,14 @@ abstract class BaseRefTypeSport extends BaseObject  implements Persistent
 					}
 				}
 
+				if ($this->collTblCompetitions !== null) {
+					foreach ($this->collTblCompetitions as $referrerFK) {
+						if (!$referrerFK->validate($columns)) {
+							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
+						}
+					}
+				}
+
 
 			$this->alreadyInValidation = false;
 		}
@@ -724,6 +762,9 @@ abstract class BaseRefTypeSport extends BaseObject  implements Persistent
 		if ($includeForeignObjects) {
 			if (null !== $this->collTblAdherents) {
 				$result['TblAdherents'] = $this->collTblAdherents->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+			}
+			if (null !== $this->collTblCompetitions) {
+				$result['TblCompetitions'] = $this->collTblCompetitions->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
 			}
 		}
 		return $result;
@@ -890,6 +931,12 @@ abstract class BaseRefTypeSport extends BaseObject  implements Persistent
 				}
 			}
 
+			foreach ($this->getTblCompetitions() as $relObj) {
+				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+					$copyObj->addTblCompetition($relObj->copy($deepCopy));
+				}
+			}
+
 			//unflag object copy
 			$this->startCopy = false;
 		} // if ($deepCopy)
@@ -951,6 +998,9 @@ abstract class BaseRefTypeSport extends BaseObject  implements Persistent
 	{
 		if ('TblAdherent' == $relationName) {
 			return $this->initTblAdherents();
+		}
+		if ('TblCompetition' == $relationName) {
+			return $this->initTblCompetitions();
 		}
 	}
 
@@ -1228,6 +1278,179 @@ abstract class BaseRefTypeSport extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Clears out the collTblCompetitions collection
+	 *
+	 * This does not modify the database; however, it will remove any associated objects, causing
+	 * them to be refetched by subsequent calls to accessor method.
+	 *
+	 * @return     void
+	 * @see        addTblCompetitions()
+	 */
+	public function clearTblCompetitions()
+	{
+		$this->collTblCompetitions = null; // important to set this to NULL since that means it is uninitialized
+	}
+
+	/**
+	 * Initializes the collTblCompetitions collection.
+	 *
+	 * By default this just sets the collTblCompetitions collection to an empty array (like clearcollTblCompetitions());
+	 * however, you may wish to override this method in your stub class to provide setting appropriate
+	 * to your application -- for example, setting the initial array to the values stored in database.
+	 *
+	 * @param      boolean $overrideExisting If set to true, the method call initializes
+	 *                                        the collection even if it is not empty
+	 *
+	 * @return     void
+	 */
+	public function initTblCompetitions($overrideExisting = true)
+	{
+		if (null !== $this->collTblCompetitions && !$overrideExisting) {
+			return;
+		}
+		$this->collTblCompetitions = new PropelObjectCollection();
+		$this->collTblCompetitions->setModel('TblCompetition');
+	}
+
+	/**
+	 * Gets an array of TblCompetition objects which contain a foreign key that references this object.
+	 *
+	 * If the $criteria is not null, it is used to always fetch the results from the database.
+	 * Otherwise the results are fetched from the database the first time, then cached.
+	 * Next time the same method is called without $criteria, the cached collection is returned.
+	 * If this RefTypeSport is new, it will return
+	 * an empty collection or the current collection; the criteria is ignored on a new object.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @return     PropelCollection|array TblCompetition[] List of TblCompetition objects
+	 * @throws     PropelException
+	 */
+	public function getTblCompetitions($criteria = null, PropelPDO $con = null)
+	{
+		if(null === $this->collTblCompetitions || null !== $criteria) {
+			if ($this->isNew() && null === $this->collTblCompetitions) {
+				// return empty collection
+				$this->initTblCompetitions();
+			} else {
+				$collTblCompetitions = TblCompetitionQuery::create(null, $criteria)
+					->filterByRefTypeSport($this)
+					->find($con);
+				if (null !== $criteria) {
+					return $collTblCompetitions;
+				}
+				$this->collTblCompetitions = $collTblCompetitions;
+			}
+		}
+		return $this->collTblCompetitions;
+	}
+
+	/**
+	 * Sets a collection of TblCompetition objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $tblCompetitions A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setTblCompetitions(PropelCollection $tblCompetitions, PropelPDO $con = null)
+	{
+		$this->tblCompetitionsScheduledForDeletion = $this->getTblCompetitions(new Criteria(), $con)->diff($tblCompetitions);
+
+		foreach ($tblCompetitions as $tblCompetition) {
+			// Fix issue with collection modified by reference
+			if ($tblCompetition->isNew()) {
+				$tblCompetition->setRefTypeSport($this);
+			}
+			$this->addTblCompetition($tblCompetition);
+		}
+
+		$this->collTblCompetitions = $tblCompetitions;
+	}
+
+	/**
+	 * Returns the number of related TblCompetition objects.
+	 *
+	 * @param      Criteria $criteria
+	 * @param      boolean $distinct
+	 * @param      PropelPDO $con
+	 * @return     int Count of related TblCompetition objects.
+	 * @throws     PropelException
+	 */
+	public function countTblCompetitions(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+	{
+		if(null === $this->collTblCompetitions || null !== $criteria) {
+			if ($this->isNew() && null === $this->collTblCompetitions) {
+				return 0;
+			} else {
+				$query = TblCompetitionQuery::create(null, $criteria);
+				if($distinct) {
+					$query->distinct();
+				}
+				return $query
+					->filterByRefTypeSport($this)
+					->count($con);
+			}
+		} else {
+			return count($this->collTblCompetitions);
+		}
+	}
+
+	/**
+	 * Method called to associate a TblCompetition object to this object
+	 * through the TblCompetition foreign key attribute.
+	 *
+	 * @param      TblCompetition $l TblCompetition
+	 * @return     RefTypeSport The current object (for fluent API support)
+	 */
+	public function addTblCompetition(TblCompetition $l)
+	{
+		if ($this->collTblCompetitions === null) {
+			$this->initTblCompetitions();
+		}
+		if (!$this->collTblCompetitions->contains($l)) { // only add it if the **same** object is not already associated
+			$this->doAddTblCompetition($l);
+		}
+
+		return $this;
+	}
+
+	/**
+	 * @param	TblCompetition $tblCompetition The tblCompetition object to add.
+	 */
+	protected function doAddTblCompetition($tblCompetition)
+	{
+		$this->collTblCompetitions[]= $tblCompetition;
+		$tblCompetition->setRefTypeSport($this);
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this RefTypeSport is new, it will return
+	 * an empty collection; or if this RefTypeSport has previously
+	 * been saved, it will retrieve related TblCompetitions from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in RefTypeSport.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array TblCompetition[] List of TblCompetition objects
+	 */
+	public function getTblCompetitionsJoinRefVille($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = TblCompetitionQuery::create(null, $criteria);
+		$query->joinWith('RefVille', $join_behavior);
+
+		return $this->getTblCompetitions($query, $con);
+	}
+
+	/**
 	 * Clears the current object and sets all attributes to their default values
 	 */
 	public function clear()
@@ -1261,12 +1484,21 @@ abstract class BaseRefTypeSport extends BaseObject  implements Persistent
 					$o->clearAllReferences($deep);
 				}
 			}
+			if ($this->collTblCompetitions) {
+				foreach ($this->collTblCompetitions as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
 		} // if ($deep)
 
 		if ($this->collTblAdherents instanceof PropelCollection) {
 			$this->collTblAdherents->clearIterator();
 		}
 		$this->collTblAdherents = null;
+		if ($this->collTblCompetitions instanceof PropelCollection) {
+			$this->collTblCompetitions->clearIterator();
+		}
+		$this->collTblCompetitions = null;
 	}
 
 	/**

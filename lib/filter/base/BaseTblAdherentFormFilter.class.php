@@ -28,6 +28,7 @@ abstract class BaseTblAdherentFormFilter extends BaseFormFilterPropel
       'seance_horaire_id'                   => new sfWidgetFormPropelChoice(array('model' => 'RefSeanceHoraire', 'add_empty' => true)),
       'updated_at'                          => new sfWidgetFormFilterDate(array('from_date' => new sfWidgetFormDate(), 'to_date' => new sfWidgetFormDate())),
       'deleted_at'                          => new sfWidgetFormFilterDate(array('from_date' => new sfWidgetFormDate(), 'to_date' => new sfWidgetFormDate())),
+      'lnk_adherent_competition_list'       => new sfWidgetFormPropelChoice(array('model' => 'TblCompetition', 'add_empty' => true)),
       'lnk_jour_entrainement_adherent_list' => new sfWidgetFormPropelChoice(array('model' => 'RefJour', 'add_empty' => true)),
     ));
 
@@ -48,6 +49,7 @@ abstract class BaseTblAdherentFormFilter extends BaseFormFilterPropel
       'seance_horaire_id'                   => new sfValidatorPropelChoice(array('required' => false, 'model' => 'RefSeanceHoraire', 'column' => 'seance_horaire_id')),
       'updated_at'                          => new sfValidatorDateRange(array('required' => false, 'from_date' => new sfValidatorDate(array('required' => false)), 'to_date' => new sfValidatorDate(array('required' => false)))),
       'deleted_at'                          => new sfValidatorDateRange(array('required' => false, 'from_date' => new sfValidatorDate(array('required' => false)), 'to_date' => new sfValidatorDate(array('required' => false)))),
+      'lnk_adherent_competition_list'       => new sfValidatorPropelChoice(array('model' => 'TblCompetition', 'required' => false)),
       'lnk_jour_entrainement_adherent_list' => new sfValidatorPropelChoice(array('model' => 'RefJour', 'required' => false)),
     ));
 
@@ -56,6 +58,31 @@ abstract class BaseTblAdherentFormFilter extends BaseFormFilterPropel
     $this->errorSchema = new sfValidatorErrorSchema($this->validatorSchema);
 
     parent::setup();
+  }
+
+  public function addLnkAdherentCompetitionListColumnCriteria(Criteria $criteria, $field, $values)
+  {
+    if (!is_array($values))
+    {
+      $values = array($values);
+    }
+
+    if (!count($values))
+    {
+      return;
+    }
+
+    $criteria->addJoin(LnkAdherentCompetitionPeer::ADHERENT_ID, TblAdherentPeer::ID_ADHERENT);
+
+    $value = array_pop($values);
+    $criterion = $criteria->getNewCriterion(LnkAdherentCompetitionPeer::COMPETITION_ID, $value);
+
+    foreach ($values as $value)
+    {
+      $criterion->addOr($criteria->getNewCriterion(LnkAdherentCompetitionPeer::COMPETITION_ID, $value));
+    }
+
+    $criteria->add($criterion);
   }
 
   public function addLnkJourEntrainementAdherentListColumnCriteria(Criteria $criteria, $field, $values)
@@ -108,6 +135,7 @@ abstract class BaseTblAdherentFormFilter extends BaseFormFilterPropel
       'seance_horaire_id'                   => 'ForeignKey',
       'updated_at'                          => 'Date',
       'deleted_at'                          => 'Date',
+      'lnk_adherent_competition_list'       => 'ManyKey',
       'lnk_jour_entrainement_adherent_list' => 'ManyKey',
     );
   }

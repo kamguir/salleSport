@@ -41,6 +41,27 @@ class TblAdherentQuery extends BaseTblAdherentQuery {
 
         return $this->combine($arrayCombine, 'and');
     }
+    
+    public function filterMesAdherentsByDatatable($searchs = "") {
+        if ($searchs == '')
+            return $this;
+        $arrayCondition = $arrayCombine = array();
+        foreach (explode(" ", $searchs) as $i => $search) {
+            $search = '%' . $search . '%';
+
+            $this->condition('NomAdherent' . $i, 'TblAdherent.NomAdherent LIKE ?', $search)
+                    ->condition('PrenomAdherent' . $i, 'TblAdherent.PrenomAdherent LIKE ?', $search);
+
+            $arrayCondition[] = 'NomAdherent' . $i;
+            $arrayCondition[] = 'PrenomAdherent' . $i;
+
+            $this->combine($arrayCondition, 'or', "combine" . $i);
+            $arrayCombine[] = "combine" . $i;
+            $arrayCondition = array();
+        }
+
+        return $this->combine($arrayCombine, 'and');
+    }
 
     public function orderByDatatable($col, $order) {
         switch ($col) {

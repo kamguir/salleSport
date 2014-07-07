@@ -2,6 +2,11 @@ propel:
   _attributes:
     package: lib.model
     defaultIdMethod: native
+  lnk_adherent_competition:
+    _attributes: { phpName: LnkAdherentCompetition, idMethod: native }
+    adherent_id: { phpName: AdherentId, type: INTEGER, primaryKey: true, required: true, foreignTable: tbl_adherent, foreignReference: id_adherent }
+    competition_id: { phpName: CompetitionId, type: INTEGER, primaryKey: true, required: true, foreignTable: tbl_competition, foreignReference: competition_id }
+    _indexes: { FK_lnk_adherent_competition: [competition_id] }
   lnk_jour_entrainement_adherent:
     _attributes: { phpName: LnkJourEntrainementAdherent, idMethod: native }
     id_jour: { phpName: IdJour, type: INTEGER, primaryKey: true, required: true, foreignTable: ref_jour, foreignReference: id_jour }
@@ -53,8 +58,9 @@ propel:
     niveau_adherent_libelle: { phpName: NiveauAdherentLibelle, type: VARCHAR, size: '256', required: false }
   ref_profil:
     _attributes: { phpName: RefProfil, idMethod: native }
-    profil_id: { phpName: ProfilId, type: INTEGER, primaryKey: true, required: true }
-    profil_libelle: { phpName: ProfilLibelle, type: VARCHAR, size: '200', required: false }
+    profil_id: { phpName: ProfilId, type: INTEGER, primaryKey: true, autoIncrement: true, required: true }
+    profil_lib: { phpName: ProfilLib, type: VARCHAR, size: '127', required: false }
+    profil_lib_court: { phpName: ProfilLibCourt, type: VARCHAR, size: '127', required: false }
   ref_seance_horaire:
     _attributes: { phpName: RefSeanceHoraire, idMethod: native }
     seance_horaire_id: { phpName: SeanceHoraireId, type: INTEGER, primaryKey: true, autoIncrement: true, required: true }
@@ -77,6 +83,10 @@ propel:
     libelle: { phpName: Libelle, type: VARCHAR, size: '250', required: false }
     montant_sport: { phpName: MontantSport, type: DOUBLE, required: false }
     sport_image_path: { phpName: SportImagePath, type: VARCHAR, size: '255', required: false }
+  ref_ville:
+    _attributes: { phpName: RefVille, idMethod: native }
+    ville_id: { phpName: VilleId, type: INTEGER, primaryKey: true, autoIncrement: true, required: true }
+    libelle_ville: { phpName: LibelleVille, type: VARCHAR, size: '128', required: false }
   tbl_adherent:
     _attributes: { phpName: TblAdherent, idMethod: native }
     id_adherent: { phpName: IdAdherent, type: INTEGER, primaryKey: true, autoIncrement: true, required: true }
@@ -120,6 +130,18 @@ propel:
     created_at: { phpName: CreatedAt, type: TIMESTAMP, required: false }
     deleted_at: { phpName: DeletedAt, type: TIMESTAMP, required: false }
     _indexes: { FK_tbl_ceinture_: [adherent_id], FK_tbl_ceinture_titre: [titre_entraineur_id], FK_tbl_ceinture_competance: [competance_id], FK_tbl_ceinture_grade: [grade_id], FK_tbl_ceinture_couleur: [ceinture_couleur_id] }
+  tbl_competition:
+    _attributes: { phpName: TblCompetition, idMethod: native }
+    competition_id: { phpName: CompetitionId, type: INTEGER, primaryKey: true, autoIncrement: true, required: true }
+    competition_libelle: { phpName: CompetitionLibelle, type: VARCHAR, size: '256', required: false }
+    type_sport_id: { phpName: TypeSportId, type: INTEGER, required: false, foreignTable: ref_type_sport, foreignReference: id_type_sport }
+    ville_id: { phpName: VilleId, type: INTEGER, required: false, foreignTable: ref_ville, foreignReference: ville_id }
+    prix_competition: { phpName: PrixCompetition, type: DOUBLE, required: false }
+    adresse_competition: { phpName: AdresseCompetition, type: VARCHAR, size: '256', required: false }
+    date_competition: { phpName: DateCompetition, type: TIMESTAMP, required: false }
+    created_at: { phpName: CreatedAt, type: TIMESTAMP, required: false }
+    deleted_at: { phpName: DeletedAt, type: TIMESTAMP, required: false }
+    _indexes: { FK_tbl_competition_type_sport: [type_sport_id], FK_tbl_competition_ville: [ville_id] }
   tbl_depenses:
     _attributes: { phpName: TblDepenses, idMethod: native }
     id_depenses: { phpName: IdDepenses, type: INTEGER, primaryKey: true, autoIncrement: true, required: true }

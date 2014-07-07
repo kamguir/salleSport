@@ -12,12 +12,14 @@ abstract class BaseRefProfilFormFilter extends BaseFormFilterPropel
   public function setup()
   {
     $this->setWidgets(array(
-      'profil_libelle'       => new sfWidgetFormFilterInput(),
+      'profil_lib'           => new sfWidgetFormFilterInput(),
+      'profil_lib_court'     => new sfWidgetFormFilterInput(),
       'lnk_user_profil_list' => new sfWidgetFormPropelChoice(array('model' => 'TblUser', 'add_empty' => true)),
     ));
 
     $this->setValidators(array(
-      'profil_libelle'       => new sfValidatorPass(array('required' => false)),
+      'profil_lib'           => new sfValidatorPass(array('required' => false)),
+      'profil_lib_court'     => new sfValidatorPass(array('required' => false)),
       'lnk_user_profil_list' => new sfValidatorPropelChoice(array('model' => 'TblUser', 'required' => false)),
     ));
 
@@ -62,7 +64,8 @@ abstract class BaseRefProfilFormFilter extends BaseFormFilterPropel
   {
     return array(
       'profil_id'            => 'Number',
-      'profil_libelle'       => 'Text',
+      'profil_lib'           => 'Text',
+      'profil_lib_court'     => 'Text',
       'lnk_user_profil_list' => 'ManyKey',
     );
   }

@@ -20,6 +20,7 @@ class TblCeinture extends BaseTblCeinture {
         $titreEntraineur = ' -- ';
         $niveauCeinture = ' -- ';
         $grade = ' -- ';
+        $pathCeinture = 'ko.png';
         if ($this->getTblAdherent()) {
             $nomAdherent = ucfirst($this->getTblAdherent()->getNomAdherent());
             $preNomAdherent =  ucfirst($this->getTblAdherent()->getPrenomAdherent());
@@ -33,6 +34,9 @@ class TblCeinture extends BaseTblCeinture {
         if ($this->getRefCeintureCouleur()) {
             $niveauCeinture = ucfirst($this->getRefCeintureCouleur()->getCeintureCouleur());
         }
+        if ($this->getRefCeintureCouleur()) {
+            $pathCeinture = $this->getRefCeintureCouleur()->getPathImage();
+        }
         if ($this->getRefGradeCeinture()) {
             $grade = ucfirst($this->getRefGradeCeinture()->getGradeNiveau());
         }
@@ -42,6 +46,7 @@ class TblCeinture extends BaseTblCeinture {
             $competanceAdherent,
             $titreEntraineur,
             $niveauCeinture,
+            "<img src=/images/niveau_ceinture/" . $pathCeinture . ">",
             $this->getDateAcquisition(),
             "DT_RowId" => "row_" . $this->getCeintureId()
         );

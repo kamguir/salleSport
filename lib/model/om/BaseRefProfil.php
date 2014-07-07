@@ -37,10 +37,16 @@ abstract class BaseRefProfil extends BaseObject  implements Persistent
 	protected $profil_id;
 
 	/**
-	 * The value for the profil_libelle field.
+	 * The value for the profil_lib field.
 	 * @var        string
 	 */
-	protected $profil_libelle;
+	protected $profil_lib;
+
+	/**
+	 * The value for the profil_lib_court field.
+	 * @var        string
+	 */
+	protected $profil_lib_court;
 
 	/**
 	 * @var        array LnkUserProfil[] Collection to store aggregation of LnkUserProfil objects.
@@ -78,13 +84,23 @@ abstract class BaseRefProfil extends BaseObject  implements Persistent
 	}
 
 	/**
-	 * Get the [profil_libelle] column value.
+	 * Get the [profil_lib] column value.
 	 * 
 	 * @return     string
 	 */
-	public function getProfilLibelle()
+	public function getProfilLib()
 	{
-		return $this->profil_libelle;
+		return $this->profil_lib;
+	}
+
+	/**
+	 * Get the [profil_lib_court] column value.
+	 * 
+	 * @return     string
+	 */
+	public function getProfilLibCourt()
+	{
+		return $this->profil_lib_court;
 	}
 
 	/**
@@ -108,24 +124,44 @@ abstract class BaseRefProfil extends BaseObject  implements Persistent
 	} // setProfilId()
 
 	/**
-	 * Set the value of [profil_libelle] column.
+	 * Set the value of [profil_lib] column.
 	 * 
 	 * @param      string $v new value
 	 * @return     RefProfil The current object (for fluent API support)
 	 */
-	public function setProfilLibelle($v)
+	public function setProfilLib($v)
 	{
 		if ($v !== null) {
 			$v = (string) $v;
 		}
 
-		if ($this->profil_libelle !== $v) {
-			$this->profil_libelle = $v;
-			$this->modifiedColumns[] = RefProfilPeer::PROFIL_LIBELLE;
+		if ($this->profil_lib !== $v) {
+			$this->profil_lib = $v;
+			$this->modifiedColumns[] = RefProfilPeer::PROFIL_LIB;
 		}
 
 		return $this;
-	} // setProfilLibelle()
+	} // setProfilLib()
+
+	/**
+	 * Set the value of [profil_lib_court] column.
+	 * 
+	 * @param      string $v new value
+	 * @return     RefProfil The current object (for fluent API support)
+	 */
+	public function setProfilLibCourt($v)
+	{
+		if ($v !== null) {
+			$v = (string) $v;
+		}
+
+		if ($this->profil_lib_court !== $v) {
+			$this->profil_lib_court = $v;
+			$this->modifiedColumns[] = RefProfilPeer::PROFIL_LIB_COURT;
+		}
+
+		return $this;
+	} // setProfilLibCourt()
 
 	/**
 	 * Indicates whether the columns in this object are only set to default values.
@@ -160,7 +196,8 @@ abstract class BaseRefProfil extends BaseObject  implements Persistent
 		try {
 
 			$this->profil_id = ($row[$startcol + 0] !== null) ? (int) $row[$startcol + 0] : null;
-			$this->profil_libelle = ($row[$startcol + 1] !== null) ? (string) $row[$startcol + 1] : null;
+			$this->profil_lib = ($row[$startcol + 1] !== null) ? (string) $row[$startcol + 1] : null;
+			$this->profil_lib_court = ($row[$startcol + 2] !== null) ? (string) $row[$startcol + 2] : null;
 			$this->resetModified();
 
 			$this->setNew(false);
@@ -169,7 +206,7 @@ abstract class BaseRefProfil extends BaseObject  implements Persistent
 				$this->ensureConsistency();
 			}
 
-			return $startcol + 2; // 2 = RefProfilPeer::NUM_HYDRATE_COLUMNS.
+			return $startcol + 3; // 3 = RefProfilPeer::NUM_HYDRATE_COLUMNS.
 
 		} catch (Exception $e) {
 			throw new PropelException("Error populating RefProfil object", $e);
@@ -422,13 +459,20 @@ abstract class BaseRefProfil extends BaseObject  implements Persistent
 		$modifiedColumns = array();
 		$index = 0;
 
+		$this->modifiedColumns[] = RefProfilPeer::PROFIL_ID;
+		if (null !== $this->profil_id) {
+			throw new PropelException('Cannot insert a value for auto-increment primary key (' . RefProfilPeer::PROFIL_ID . ')');
+		}
 
 		 // check the columns in natural order for more readable SQL queries
 		if ($this->isColumnModified(RefProfilPeer::PROFIL_ID)) {
 			$modifiedColumns[':p' . $index++]  = '`PROFIL_ID`';
 		}
-		if ($this->isColumnModified(RefProfilPeer::PROFIL_LIBELLE)) {
-			$modifiedColumns[':p' . $index++]  = '`PROFIL_LIBELLE`';
+		if ($this->isColumnModified(RefProfilPeer::PROFIL_LIB)) {
+			$modifiedColumns[':p' . $index++]  = '`PROFIL_LIB`';
+		}
+		if ($this->isColumnModified(RefProfilPeer::PROFIL_LIB_COURT)) {
+			$modifiedColumns[':p' . $index++]  = '`PROFIL_LIB_COURT`';
 		}
 
 		$sql = sprintf(
@@ -444,8 +488,11 @@ abstract class BaseRefProfil extends BaseObject  implements Persistent
 					case '`PROFIL_ID`':
 						$stmt->bindValue($identifier, $this->profil_id, PDO::PARAM_INT);
 						break;
-					case '`PROFIL_LIBELLE`':
-						$stmt->bindValue($identifier, $this->profil_libelle, PDO::PARAM_STR);
+					case '`PROFIL_LIB`':
+						$stmt->bindValue($identifier, $this->profil_lib, PDO::PARAM_STR);
+						break;
+					case '`PROFIL_LIB_COURT`':
+						$stmt->bindValue($identifier, $this->profil_lib_court, PDO::PARAM_STR);
 						break;
 				}
 			}
@@ -454,6 +501,13 @@ abstract class BaseRefProfil extends BaseObject  implements Persistent
 			Propel::log($e->getMessage(), Propel::LOG_ERR);
 			throw new PropelException(sprintf('Unable to execute INSERT statement [%s]', $sql), $e);
 		}
+
+		try {
+			$pk = $con->lastInsertId();
+		} catch (Exception $e) {
+			throw new PropelException('Unable to get autoincrement id.', $e);
+		}
+		$this->setProfilId($pk);
 
 		$this->setNew(false);
 	}
@@ -582,7 +636,10 @@ abstract class BaseRefProfil extends BaseObject  implements Persistent
 				return $this->getProfilId();
 				break;
 			case 1:
-				return $this->getProfilLibelle();
+				return $this->getProfilLib();
+				break;
+			case 2:
+				return $this->getProfilLibCourt();
 				break;
 			default:
 				return null;
@@ -614,7 +671,8 @@ abstract class BaseRefProfil extends BaseObject  implements Persistent
 		$keys = RefProfilPeer::getFieldNames($keyType);
 		$result = array(
 			$keys[0] => $this->getProfilId(),
-			$keys[1] => $this->getProfilLibelle(),
+			$keys[1] => $this->getProfilLib(),
+			$keys[2] => $this->getProfilLibCourt(),
 		);
 		if ($includeForeignObjects) {
 			if (null !== $this->collLnkUserProfils) {
@@ -655,7 +713,10 @@ abstract class BaseRefProfil extends BaseObject  implements Persistent
 				$this->setProfilId($value);
 				break;
 			case 1:
-				$this->setProfilLibelle($value);
+				$this->setProfilLib($value);
+				break;
+			case 2:
+				$this->setProfilLibCourt($value);
 				break;
 		} // switch()
 	}
@@ -682,7 +743,8 @@ abstract class BaseRefProfil extends BaseObject  implements Persistent
 		$keys = RefProfilPeer::getFieldNames($keyType);
 
 		if (array_key_exists($keys[0], $arr)) $this->setProfilId($arr[$keys[0]]);
-		if (array_key_exists($keys[1], $arr)) $this->setProfilLibelle($arr[$keys[1]]);
+		if (array_key_exists($keys[1], $arr)) $this->setProfilLib($arr[$keys[1]]);
+		if (array_key_exists($keys[2], $arr)) $this->setProfilLibCourt($arr[$keys[2]]);
 	}
 
 	/**
@@ -695,7 +757,8 @@ abstract class BaseRefProfil extends BaseObject  implements Persistent
 		$criteria = new Criteria(RefProfilPeer::DATABASE_NAME);
 
 		if ($this->isColumnModified(RefProfilPeer::PROFIL_ID)) $criteria->add(RefProfilPeer::PROFIL_ID, $this->profil_id);
-		if ($this->isColumnModified(RefProfilPeer::PROFIL_LIBELLE)) $criteria->add(RefProfilPeer::PROFIL_LIBELLE, $this->profil_libelle);
+		if ($this->isColumnModified(RefProfilPeer::PROFIL_LIB)) $criteria->add(RefProfilPeer::PROFIL_LIB, $this->profil_lib);
+		if ($this->isColumnModified(RefProfilPeer::PROFIL_LIB_COURT)) $criteria->add(RefProfilPeer::PROFIL_LIB_COURT, $this->profil_lib_court);
 
 		return $criteria;
 	}
@@ -758,7 +821,8 @@ abstract class BaseRefProfil extends BaseObject  implements Persistent
 	 */
 	public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
 	{
-		$copyObj->setProfilLibelle($this->getProfilLibelle());
+		$copyObj->setProfilLib($this->getProfilLib());
+		$copyObj->setProfilLibCourt($this->getProfilLibCourt());
 
 		if ($deepCopy && !$this->startCopy) {
 			// important: temporarily setNew(false) because this affects the behavior of
@@ -1016,7 +1080,8 @@ abstract class BaseRefProfil extends BaseObject  implements Persistent
 	public function clear()
 	{
 		$this->profil_id = null;
-		$this->profil_libelle = null;
+		$this->profil_lib = null;
+		$this->profil_lib_court = null;
 		$this->alreadyInSave = false;
 		$this->alreadyInValidation = false;
 		$this->clearAllReferences();
