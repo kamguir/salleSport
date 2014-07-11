@@ -90,6 +90,7 @@ propel:
   tbl_adherent:
     _attributes: { phpName: TblAdherent, idMethod: native }
     id_adherent: { phpName: IdAdherent, type: INTEGER, primaryKey: true, autoIncrement: true, required: true }
+    entraineur_id: { phpName: EntraineurId, type: INTEGER, required: false, foreignTable: tbl_adherent, foreignReference: id_adherent }
     cin_adherent: { phpName: CinAdherent, type: VARCHAR, size: '10', required: false }
     nom_adherent: { phpName: NomAdherent, type: VARCHAR, size: '255', required: false }
     prenom_adherent: { phpName: PrenomAdherent, type: VARCHAR, size: '255', required: false }
@@ -106,7 +107,7 @@ propel:
     seance_horaire_id: { phpName: SeanceHoraireId, type: INTEGER, required: false, foreignTable: ref_seance_horaire, foreignReference: seance_horaire_id }
     updated_at: { phpName: UpdatedAt, type: TIMESTAMP, required: false }
     deleted_at: { phpName: DeletedAt, type: TIMESTAMP, required: false }
-    _indexes: { FK_tbl_client: [id_situation], FK_tbl_adherent_type_fonction: [id_type_adherent], FK_tbl_adherent_ref_type_sport: [id_type_sport], FK_tbl_adherent_civilite: [id_civilite], FK_tbl_adherent_niveau: [niveau_adherent_id], FK_tbl_adherent_horaire: [seance_horaire_id] }
+    _indexes: { FK_tbl_client: [id_situation], FK_tbl_adherent_type_fonction: [id_type_adherent], FK_tbl_adherent_ref_type_sport: [id_type_sport], FK_tbl_adherent_civilite: [id_civilite], FK_tbl_adherent_niveau: [niveau_adherent_id], FK_tbl_adherent_horaire: [seance_horaire_id], FK_tbl_adherent_entraineur: [entraineur_id] }
   tbl_assurance:
     _attributes: { phpName: TblAssurance, idMethod: native }
     assurance_id: { phpName: AssuranceId, type: INTEGER, primaryKey: true, autoIncrement: true, required: true }

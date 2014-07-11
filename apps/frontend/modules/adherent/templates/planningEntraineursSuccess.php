@@ -18,6 +18,7 @@
                             <th><?php echo __('Nom & Prenom Entraineur') ?></th>
                             <th><?php echo __('Compétance') ?></th>
                             <th><?php echo __('Type Sport') ?></th>
+                            <th><?php echo __('Ceinture') ?></th>
                             <th><?php echo __('Jours porogramés') ?></th>
                             <th><?php echo __('Horaires') ?></th>
                         </tr>   

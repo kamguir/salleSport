@@ -79,7 +79,9 @@
                 });
 
         $("#listeDesAssurances .even,#listeDesAssurances .odd").live("click", function() {
+        if($(this).attr("id").substring(4)){
             window.location = "<?php echo url_for("assurance/edit?assurance_id=") ?>" + $(this).attr("id").substring(4);
+        }
         });
     });
 </script>

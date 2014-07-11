@@ -15,6 +15,7 @@ abstract class BaseTblAdherentForm extends BaseFormPropel
   {
     $this->setWidgets(array(
       'id_adherent'                         => new sfWidgetFormInputHidden(),
+      'entraineur_id'                       => new sfWidgetFormPropelChoice(array('model' => 'TblAdherent', 'add_empty' => true)),
       'cin_adherent'                        => new sfWidgetFormInputText(),
       'nom_adherent'                        => new sfWidgetFormInputText(),
       'prenom_adherent'                     => new sfWidgetFormInputText(),
@@ -37,6 +38,7 @@ abstract class BaseTblAdherentForm extends BaseFormPropel
 
     $this->setValidators(array(
       'id_adherent'                         => new sfValidatorChoice(array('choices' => array($this->getObject()->getIdAdherent()), 'empty_value' => $this->getObject()->getIdAdherent(), 'required' => false)),
+      'entraineur_id'                       => new sfValidatorPropelChoice(array('model' => 'TblAdherent', 'column' => 'id_adherent', 'required' => false)),
       'cin_adherent'                        => new sfValidatorString(array('max_length' => 10, 'required' => false)),
       'nom_adherent'                        => new sfValidatorString(array('max_length' => 255, 'required' => false)),
       'prenom_adherent'                     => new sfValidatorString(array('max_length' => 255, 'required' => false)),

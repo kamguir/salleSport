@@ -100,7 +100,6 @@ class adherentActions extends sfActions {
         $nb = $tblAdherents->count();
 
         return $this->renderText(json_encode(array("sEcho" => $request->getParameter("sEcho") + 1,
-//                    "iTotalRecords" => $nbT,
                     "iTotalDisplayRecords" => $nb,
                     "aaData" => $data)));
     }
@@ -136,7 +135,6 @@ class adherentActions extends sfActions {
         $nb = $tblAdherents->count();
 
         return $this->renderText(json_encode(array("sEcho" => $request->getParameter("sEcho") + 1,
-//                    "iTotalRecords" => $nbT,
                     "iTotalDisplayRecords" => $nb,
                     "aaData" => $data)));
     }
@@ -172,7 +170,6 @@ class adherentActions extends sfActions {
         $nb = $tblAdherents->count();
 
         return $this->renderText(json_encode(array("sEcho" => $request->getParameter("sEcho") + 1,
-//                    "iTotalRecords" => $nbT,
                     "iTotalDisplayRecords" => $nb,
                     "aaData" => $data)));
     }
@@ -212,17 +209,17 @@ class adherentActions extends sfActions {
                     "aaData" => $data)));
     }
 
-    public function executeMesAdherents(sfWebRequest $request) {
+    public function executePlanningAdherents(sfWebRequest $request) {
         $sf_user = $this->getUser();
         $this->formFilter = new TblAdherentFormFilter(null, array('sf_user' => $sf_user), false);
-        $this->formFilter->bind($request->isMethod("post") ? $request->getParameter($this->formFilter->getName()) : $sf_user->getAttribute("dataTableFilterMesAdherents", array()));
+        $this->formFilter->bind($request->isMethod("post") ? $request->getParameter($this->formFilter->getName()) : $sf_user->getAttribute("dataTableFilterPlanningAdherents", array()));
 
         if ($this->formFilter->isValid()) {
-            $sf_user->setAttribute("dataTableFilterMesAdherents", $this->formFilter->getValues());
+            $sf_user->setAttribute("dataTableFilterPlanningAdherents", $this->formFilter->getValues());
         }
     }
 
-    public function executeMesAdherentsAjax(sfWebRequest $request) {
+    public function executePlanningAdherentsAjax(sfWebRequest $request) {
 
         $sf_user = $this->getUser();
         $data = array();
@@ -231,10 +228,10 @@ class adherentActions extends sfActions {
 
         $tblAdherents = TblAdherentQuery::create()
                 ->filterByIdTypeAdherent(RefTypeAdherent::ADHERENT)
-//                ->joinRefTypeSport()
-                ->mergeWith($formFilter->buildCriteria($sf_user->getAttribute("dataTableFilterMesAdherents", array())))
+                ->joinRefTypeSport()
+                ->mergeWith($formFilter->buildCriteria($sf_user->getAttribute("dataTableFilterPlanningAdherents", array())))
                 ->orderByDatatable($request->getParameter("iSortCol_0"), $request->getParameter("sSortDir_0", Criteria::ASC))
-                ->filterMesAdherentsByDatatable($request->getParameter("sSearch"))
+                ->filterByDatatable($request->getParameter("sSearch"))
                 ->paginate(($request->getParameter('iDisplayStart') / $request->getParameter('iDisplayLength')) + 1, $request->getParameter("iDisplayLength"));
 
         foreach ($tblAdherents as $tblAdherent) /* @var $tblAdherents TblAdherent */ {
@@ -252,9 +249,25 @@ class adherentActions extends sfActions {
         $this->joursHoraires = LnkJourEntrainementAdherentQuery::create()
                 ->filterByIdAdherent($this->adherent_id)
                 ->find();
+
         $this->form = new TblAdherentForm(null, array('objJoursHoraires' => $this->joursHoraires));
         if ($request->isXmlHttpRequest()) {
             return $this->renderPartial('adherent/frmJoursHoraires', array('form' => $this->form));
+        }
+    }
+
+    public function executeEntraineursByTypeSportAjax(sfWebRequest $request) {
+        $this->entraineur_id = $request->getParameter('entraineur_id');
+        $this->listEntraineurs = TblAdherentQuery::create()
+                ->filterByIdTypeSport($this->entraineur_id)
+                ->find();
+//        echo Propel::getConnection()->getLastExecutedQuery();
+//        die;
+//        var_dump($this->listEntraineurs);
+        $this->form = new TblAdherentForm(null, array('objListEntraineurs' => $this->listEntraineurs));
+        if ($request->isXmlHttpRequest()) {
+
+            return $this->renderPartial('adherent/frmEntraineurID', array('form' => $this->form));
         }
     }
 

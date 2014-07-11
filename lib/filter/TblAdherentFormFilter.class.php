@@ -24,15 +24,7 @@ class TblAdherentFormFilter extends BaseTblAdherentFormFilter {
         $this->getWidget('id_type_sport')->setOption("add_empty", "- Tous -")
                 ->setAttribute("onChange", "submit()");
         $this->setValidator("id_type_sport", new sfValidatorPropelChoice(array('model' => 'RefTypeSport', 'required' => false)));
-      
-        //Jours Entrainement
-        $Jours = RefJourQuery::create()->groupByLibelleJour();
-        $this->setWidget("id_jour", new sfWidgetFormPropelChoice(array('model' => 'RefJour', 'criteria' => $Jours, 'add_empty' => true )));
-        $this->getWidget('id_jour')->setOption("add_empty", "- Tous -")
-                ->setAttribute("onChange", "submit()");
-        $this->setValidator("id_jour", new sfValidatorPropelChoice(array('model' => 'RefJour', 'required' => false)));
 
-        
         $action = sfContext::getInstance()->getActionName();
         $useFilds = array('id_type_sport');
 
@@ -42,9 +34,9 @@ class TblAdherentFormFilter extends BaseTblAdherentFormFilter {
 //                'id_type_adherent' => "Nature :",
 //            ));
         }
-        
-        if ($action == 'mesAdherents') {
-            $useFilds[] = 'id_jour';
+
+        if ($action == 'planningAdherents') {
+//            $useFilds[] = 'id_jour';
         }
         $this->getWidgetSchema()->setLabels(array(
             'id_type_sport' => "Type Sport :",

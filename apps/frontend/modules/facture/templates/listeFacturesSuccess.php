@@ -80,7 +80,10 @@
                 });
 
         $("#listeDesFactures .even,#listeDesFactures .odd").live("click", function() {
+        if($(this).attr("id").substring(4)){
             window.location = "<?php echo url_for("facture/edit?id_facture=") ?>" + $(this).attr("id").substring(4);
+        }
+            
         });
     });
 </script>

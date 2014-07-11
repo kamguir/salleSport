@@ -23,16 +23,19 @@ abstract class BaseTblAdherentPeer {
 	const TM_CLASS = 'TblAdherentTableMap';
 
 	/** The total number of columns. */
-	const NUM_COLUMNS = 17;
+	const NUM_COLUMNS = 18;
 
 	/** The number of lazy-loaded columns. */
 	const NUM_LAZY_LOAD_COLUMNS = 0;
 
 	/** The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS) */
-	const NUM_HYDRATE_COLUMNS = 17;
+	const NUM_HYDRATE_COLUMNS = 18;
 
 	/** the column name for the ID_ADHERENT field */
 	const ID_ADHERENT = 'tbl_adherent.ID_ADHERENT';
+
+	/** the column name for the ENTRAINEUR_ID field */
+	const ENTRAINEUR_ID = 'tbl_adherent.ENTRAINEUR_ID';
 
 	/** the column name for the CIN_ADHERENT field */
 	const CIN_ADHERENT = 'tbl_adherent.CIN_ADHERENT';
@@ -101,12 +104,12 @@ abstract class BaseTblAdherentPeer {
 	 * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
 	 */
 	protected static $fieldNames = array (
-		BasePeer::TYPE_PHPNAME => array ('IdAdherent', 'CinAdherent', 'NomAdherent', 'PrenomAdherent', 'IdCivilite', 'IdSituation', 'IdTypeAdherent', 'NiveauAdherentId', 'IdTypeSport', 'AgeAdherent', 'NumTel', 'AdresseAdherent', 'ImageAdherent', 'DateAdhesion', 'SeanceHoraireId', 'UpdatedAt', 'DeletedAt', ),
-		BasePeer::TYPE_STUDLYPHPNAME => array ('idAdherent', 'cinAdherent', 'nomAdherent', 'prenomAdherent', 'idCivilite', 'idSituation', 'idTypeAdherent', 'niveauAdherentId', 'idTypeSport', 'ageAdherent', 'numTel', 'adresseAdherent', 'imageAdherent', 'dateAdhesion', 'seanceHoraireId', 'updatedAt', 'deletedAt', ),
-		BasePeer::TYPE_COLNAME => array (self::ID_ADHERENT, self::CIN_ADHERENT, self::NOM_ADHERENT, self::PRENOM_ADHERENT, self::ID_CIVILITE, self::ID_SITUATION, self::ID_TYPE_ADHERENT, self::NIVEAU_ADHERENT_ID, self::ID_TYPE_SPORT, self::AGE_ADHERENT, self::NUM_TEL, self::ADRESSE_ADHERENT, self::IMAGE_ADHERENT, self::DATE_ADHESION, self::SEANCE_HORAIRE_ID, self::UPDATED_AT, self::DELETED_AT, ),
-		BasePeer::TYPE_RAW_COLNAME => array ('ID_ADHERENT', 'CIN_ADHERENT', 'NOM_ADHERENT', 'PRENOM_ADHERENT', 'ID_CIVILITE', 'ID_SITUATION', 'ID_TYPE_ADHERENT', 'NIVEAU_ADHERENT_ID', 'ID_TYPE_SPORT', 'AGE_ADHERENT', 'NUM_TEL', 'ADRESSE_ADHERENT', 'IMAGE_ADHERENT', 'DATE_ADHESION', 'SEANCE_HORAIRE_ID', 'UPDATED_AT', 'DELETED_AT', ),
-		BasePeer::TYPE_FIELDNAME => array ('id_adherent', 'cin_adherent', 'nom_adherent', 'prenom_adherent', 'id_civilite', 'id_situation', 'id_type_adherent', 'niveau_adherent_id', 'id_type_sport', 'age_adherent', 'num_tel', 'adresse_adherent', 'image_adherent', 'date_adhesion', 'seance_horaire_id', 'updated_at', 'deleted_at', ),
-		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, )
+		BasePeer::TYPE_PHPNAME => array ('IdAdherent', 'EntraineurId', 'CinAdherent', 'NomAdherent', 'PrenomAdherent', 'IdCivilite', 'IdSituation', 'IdTypeAdherent', 'NiveauAdherentId', 'IdTypeSport', 'AgeAdherent', 'NumTel', 'AdresseAdherent', 'ImageAdherent', 'DateAdhesion', 'SeanceHoraireId', 'UpdatedAt', 'DeletedAt', ),
+		BasePeer::TYPE_STUDLYPHPNAME => array ('idAdherent', 'entraineurId', 'cinAdherent', 'nomAdherent', 'prenomAdherent', 'idCivilite', 'idSituation', 'idTypeAdherent', 'niveauAdherentId', 'idTypeSport', 'ageAdherent', 'numTel', 'adresseAdherent', 'imageAdherent', 'dateAdhesion', 'seanceHoraireId', 'updatedAt', 'deletedAt', ),
+		BasePeer::TYPE_COLNAME => array (self::ID_ADHERENT, self::ENTRAINEUR_ID, self::CIN_ADHERENT, self::NOM_ADHERENT, self::PRENOM_ADHERENT, self::ID_CIVILITE, self::ID_SITUATION, self::ID_TYPE_ADHERENT, self::NIVEAU_ADHERENT_ID, self::ID_TYPE_SPORT, self::AGE_ADHERENT, self::NUM_TEL, self::ADRESSE_ADHERENT, self::IMAGE_ADHERENT, self::DATE_ADHESION, self::SEANCE_HORAIRE_ID, self::UPDATED_AT, self::DELETED_AT, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('ID_ADHERENT', 'ENTRAINEUR_ID', 'CIN_ADHERENT', 'NOM_ADHERENT', 'PRENOM_ADHERENT', 'ID_CIVILITE', 'ID_SITUATION', 'ID_TYPE_ADHERENT', 'NIVEAU_ADHERENT_ID', 'ID_TYPE_SPORT', 'AGE_ADHERENT', 'NUM_TEL', 'ADRESSE_ADHERENT', 'IMAGE_ADHERENT', 'DATE_ADHESION', 'SEANCE_HORAIRE_ID', 'UPDATED_AT', 'DELETED_AT', ),
+		BasePeer::TYPE_FIELDNAME => array ('id_adherent', 'entraineur_id', 'cin_adherent', 'nom_adherent', 'prenom_adherent', 'id_civilite', 'id_situation', 'id_type_adherent', 'niveau_adherent_id', 'id_type_sport', 'age_adherent', 'num_tel', 'adresse_adherent', 'image_adherent', 'date_adhesion', 'seance_horaire_id', 'updated_at', 'deleted_at', ),
+		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, )
 	);
 
 	/**
@@ -116,12 +119,12 @@ abstract class BaseTblAdherentPeer {
 	 * e.g. self::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
 	 */
 	protected static $fieldKeys = array (
-		BasePeer::TYPE_PHPNAME => array ('IdAdherent' => 0, 'CinAdherent' => 1, 'NomAdherent' => 2, 'PrenomAdherent' => 3, 'IdCivilite' => 4, 'IdSituation' => 5, 'IdTypeAdherent' => 6, 'NiveauAdherentId' => 7, 'IdTypeSport' => 8, 'AgeAdherent' => 9, 'NumTel' => 10, 'AdresseAdherent' => 11, 'ImageAdherent' => 12, 'DateAdhesion' => 13, 'SeanceHoraireId' => 14, 'UpdatedAt' => 15, 'DeletedAt' => 16, ),
-		BasePeer::TYPE_STUDLYPHPNAME => array ('idAdherent' => 0, 'cinAdherent' => 1, 'nomAdherent' => 2, 'prenomAdherent' => 3, 'idCivilite' => 4, 'idSituation' => 5, 'idTypeAdherent' => 6, 'niveauAdherentId' => 7, 'idTypeSport' => 8, 'ageAdherent' => 9, 'numTel' => 10, 'adresseAdherent' => 11, 'imageAdherent' => 12, 'dateAdhesion' => 13, 'seanceHoraireId' => 14, 'updatedAt' => 15, 'deletedAt' => 16, ),
-		BasePeer::TYPE_COLNAME => array (self::ID_ADHERENT => 0, self::CIN_ADHERENT => 1, self::NOM_ADHERENT => 2, self::PRENOM_ADHERENT => 3, self::ID_CIVILITE => 4, self::ID_SITUATION => 5, self::ID_TYPE_ADHERENT => 6, self::NIVEAU_ADHERENT_ID => 7, self::ID_TYPE_SPORT => 8, self::AGE_ADHERENT => 9, self::NUM_TEL => 10, self::ADRESSE_ADHERENT => 11, self::IMAGE_ADHERENT => 12, self::DATE_ADHESION => 13, self::SEANCE_HORAIRE_ID => 14, self::UPDATED_AT => 15, self::DELETED_AT => 16, ),
-		BasePeer::TYPE_RAW_COLNAME => array ('ID_ADHERENT' => 0, 'CIN_ADHERENT' => 1, 'NOM_ADHERENT' => 2, 'PRENOM_ADHERENT' => 3, 'ID_CIVILITE' => 4, 'ID_SITUATION' => 5, 'ID_TYPE_ADHERENT' => 6, 'NIVEAU_ADHERENT_ID' => 7, 'ID_TYPE_SPORT' => 8, 'AGE_ADHERENT' => 9, 'NUM_TEL' => 10, 'ADRESSE_ADHERENT' => 11, 'IMAGE_ADHERENT' => 12, 'DATE_ADHESION' => 13, 'SEANCE_HORAIRE_ID' => 14, 'UPDATED_AT' => 15, 'DELETED_AT' => 16, ),
-		BasePeer::TYPE_FIELDNAME => array ('id_adherent' => 0, 'cin_adherent' => 1, 'nom_adherent' => 2, 'prenom_adherent' => 3, 'id_civilite' => 4, 'id_situation' => 5, 'id_type_adherent' => 6, 'niveau_adherent_id' => 7, 'id_type_sport' => 8, 'age_adherent' => 9, 'num_tel' => 10, 'adresse_adherent' => 11, 'image_adherent' => 12, 'date_adhesion' => 13, 'seance_horaire_id' => 14, 'updated_at' => 15, 'deleted_at' => 16, ),
-		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, )
+		BasePeer::TYPE_PHPNAME => array ('IdAdherent' => 0, 'EntraineurId' => 1, 'CinAdherent' => 2, 'NomAdherent' => 3, 'PrenomAdherent' => 4, 'IdCivilite' => 5, 'IdSituation' => 6, 'IdTypeAdherent' => 7, 'NiveauAdherentId' => 8, 'IdTypeSport' => 9, 'AgeAdherent' => 10, 'NumTel' => 11, 'AdresseAdherent' => 12, 'ImageAdherent' => 13, 'DateAdhesion' => 14, 'SeanceHoraireId' => 15, 'UpdatedAt' => 16, 'DeletedAt' => 17, ),
+		BasePeer::TYPE_STUDLYPHPNAME => array ('idAdherent' => 0, 'entraineurId' => 1, 'cinAdherent' => 2, 'nomAdherent' => 3, 'prenomAdherent' => 4, 'idCivilite' => 5, 'idSituation' => 6, 'idTypeAdherent' => 7, 'niveauAdherentId' => 8, 'idTypeSport' => 9, 'ageAdherent' => 10, 'numTel' => 11, 'adresseAdherent' => 12, 'imageAdherent' => 13, 'dateAdhesion' => 14, 'seanceHoraireId' => 15, 'updatedAt' => 16, 'deletedAt' => 17, ),
+		BasePeer::TYPE_COLNAME => array (self::ID_ADHERENT => 0, self::ENTRAINEUR_ID => 1, self::CIN_ADHERENT => 2, self::NOM_ADHERENT => 3, self::PRENOM_ADHERENT => 4, self::ID_CIVILITE => 5, self::ID_SITUATION => 6, self::ID_TYPE_ADHERENT => 7, self::NIVEAU_ADHERENT_ID => 8, self::ID_TYPE_SPORT => 9, self::AGE_ADHERENT => 10, self::NUM_TEL => 11, self::ADRESSE_ADHERENT => 12, self::IMAGE_ADHERENT => 13, self::DATE_ADHESION => 14, self::SEANCE_HORAIRE_ID => 15, self::UPDATED_AT => 16, self::DELETED_AT => 17, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('ID_ADHERENT' => 0, 'ENTRAINEUR_ID' => 1, 'CIN_ADHERENT' => 2, 'NOM_ADHERENT' => 3, 'PRENOM_ADHERENT' => 4, 'ID_CIVILITE' => 5, 'ID_SITUATION' => 6, 'ID_TYPE_ADHERENT' => 7, 'NIVEAU_ADHERENT_ID' => 8, 'ID_TYPE_SPORT' => 9, 'AGE_ADHERENT' => 10, 'NUM_TEL' => 11, 'ADRESSE_ADHERENT' => 12, 'IMAGE_ADHERENT' => 13, 'DATE_ADHESION' => 14, 'SEANCE_HORAIRE_ID' => 15, 'UPDATED_AT' => 16, 'DELETED_AT' => 17, ),
+		BasePeer::TYPE_FIELDNAME => array ('id_adherent' => 0, 'entraineur_id' => 1, 'cin_adherent' => 2, 'nom_adherent' => 3, 'prenom_adherent' => 4, 'id_civilite' => 5, 'id_situation' => 6, 'id_type_adherent' => 7, 'niveau_adherent_id' => 8, 'id_type_sport' => 9, 'age_adherent' => 10, 'num_tel' => 11, 'adresse_adherent' => 12, 'image_adherent' => 13, 'date_adhesion' => 14, 'seance_horaire_id' => 15, 'updated_at' => 16, 'deleted_at' => 17, ),
+		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, )
 	);
 
 	/**
@@ -194,6 +197,7 @@ abstract class BaseTblAdherentPeer {
 	{
 		if (null === $alias) {
 			$criteria->addSelectColumn(TblAdherentPeer::ID_ADHERENT);
+			$criteria->addSelectColumn(TblAdherentPeer::ENTRAINEUR_ID);
 			$criteria->addSelectColumn(TblAdherentPeer::CIN_ADHERENT);
 			$criteria->addSelectColumn(TblAdherentPeer::NOM_ADHERENT);
 			$criteria->addSelectColumn(TblAdherentPeer::PRENOM_ADHERENT);
@@ -212,6 +216,7 @@ abstract class BaseTblAdherentPeer {
 			$criteria->addSelectColumn(TblAdherentPeer::DELETED_AT);
 		} else {
 			$criteria->addSelectColumn($alias . '.ID_ADHERENT');
+			$criteria->addSelectColumn($alias . '.ENTRAINEUR_ID');
 			$criteria->addSelectColumn($alias . '.CIN_ADHERENT');
 			$criteria->addSelectColumn($alias . '.NOM_ADHERENT');
 			$criteria->addSelectColumn($alias . '.PRENOM_ADHERENT');
@@ -1646,6 +1651,78 @@ abstract class BaseTblAdherentPeer {
 
 
 	/**
+	 * Returns the number of rows matching criteria, joining the related TblAdherentRelatedByEntraineurId table
+	 *
+	 * @param      Criteria $criteria
+	 * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
+	 * @param      PropelPDO $con
+	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
+	 * @return     int Number of matching rows.
+	 */
+	public static function doCountJoinAllExceptTblAdherentRelatedByEntraineurId(Criteria $criteria, $distinct = false, PropelPDO $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		// we're going to modify criteria, so copy it first
+		$criteria = clone $criteria;
+
+		// We need to set the primary table name, since in the case that there are no WHERE columns
+		// it will be impossible for the BasePeer::createSelectSql() method to determine which
+		// tables go into the FROM clause.
+		$criteria->setPrimaryTableName(TblAdherentPeer::TABLE_NAME);
+
+		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
+			$criteria->setDistinct();
+		}
+
+		if (!$criteria->hasSelectClause()) {
+			TblAdherentPeer::addSelectColumns($criteria);
+		}
+
+		$criteria->clearOrderByColumns(); // ORDER BY should not affect count
+
+		// Set the correct dbName
+		$criteria->setDbName(self::DATABASE_NAME);
+
+		if ($con === null) {
+			$con = Propel::getConnection(TblAdherentPeer::DATABASE_NAME, Propel::CONNECTION_READ);
+		}
+	
+		$criteria->addJoin(TblAdherentPeer::ID_CIVILITE, RefCivilitePeer::ID_CIVILITE, $join_behavior);
+
+		$criteria->addJoin(TblAdherentPeer::ID_SITUATION, RefSituationPeer::ID_SITUATION, $join_behavior);
+
+		$criteria->addJoin(TblAdherentPeer::ID_TYPE_ADHERENT, RefTypeAdherentPeer::ID_TYPE_ADHERENT, $join_behavior);
+
+		$criteria->addJoin(TblAdherentPeer::NIVEAU_ADHERENT_ID, RefNiveauAdherentPeer::NIVEAU_ADHERENT_ID, $join_behavior);
+
+		$criteria->addJoin(TblAdherentPeer::ID_TYPE_SPORT, RefTypeSportPeer::ID_TYPE_SPORT, $join_behavior);
+
+		$criteria->addJoin(TblAdherentPeer::SEANCE_HORAIRE_ID, RefSeanceHorairePeer::SEANCE_HORAIRE_ID, $join_behavior);
+
+		// soft_delete behavior
+		if (TblAdherentQuery::isSoftDeleteEnabled()) {
+			$criteria->add(TblAdherentPeer::DELETED_AT, null, Criteria::ISNULL);
+		} else {
+			TblAdherentPeer::enableSoftDelete();
+		}
+		// symfony_behaviors behavior
+		foreach (sfMixer::getCallables(self::getMixerPreSelectHook(__FUNCTION__)) as $sf_hook)
+		{
+		  call_user_func($sf_hook, 'BaseTblAdherentPeer', $criteria, $con);
+		}
+
+		$stmt = BasePeer::doCount($criteria, $con);
+
+		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+			$count = (int) $row[0];
+		} else {
+			$count = 0; // no rows returned; we infer that means 0 matches.
+		}
+		$stmt->closeCursor();
+		return $count;
+	}
+
+
+	/**
 	 * Returns the number of rows matching criteria, joining the related RefCivilite table
 	 *
 	 * @param      Criteria $criteria
@@ -2062,6 +2139,211 @@ abstract class BaseTblAdherentPeer {
 		}
 		$stmt->closeCursor();
 		return $count;
+	}
+
+
+	/**
+	 * Selects a collection of TblAdherent objects pre-filled with all related objects except TblAdherentRelatedByEntraineurId.
+	 *
+	 * @param      Criteria  $criteria
+	 * @param      PropelPDO $con
+	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
+	 * @return     array Array of TblAdherent objects.
+	 * @throws     PropelException Any exceptions caught during processing will be
+	 *		 rethrown wrapped into a PropelException.
+	 */
+	public static function doSelectJoinAllExceptTblAdherentRelatedByEntraineurId(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$criteria = clone $criteria;
+
+		// Set the correct dbName if it has not been overridden
+		// $criteria->getDbName() will return the same object if not set to another value
+		// so == check is okay and faster
+		if ($criteria->getDbName() == Propel::getDefaultDB()) {
+			$criteria->setDbName(self::DATABASE_NAME);
+		}
+
+		TblAdherentPeer::addSelectColumns($criteria);
+		$startcol2 = TblAdherentPeer::NUM_HYDRATE_COLUMNS;
+
+		RefCivilitePeer::addSelectColumns($criteria);
+		$startcol3 = $startcol2 + RefCivilitePeer::NUM_HYDRATE_COLUMNS;
+
+		RefSituationPeer::addSelectColumns($criteria);
+		$startcol4 = $startcol3 + RefSituationPeer::NUM_HYDRATE_COLUMNS;
+
+		RefTypeAdherentPeer::addSelectColumns($criteria);
+		$startcol5 = $startcol4 + RefTypeAdherentPeer::NUM_HYDRATE_COLUMNS;
+
+		RefNiveauAdherentPeer::addSelectColumns($criteria);
+		$startcol6 = $startcol5 + RefNiveauAdherentPeer::NUM_HYDRATE_COLUMNS;
+
+		RefTypeSportPeer::addSelectColumns($criteria);
+		$startcol7 = $startcol6 + RefTypeSportPeer::NUM_HYDRATE_COLUMNS;
+
+		RefSeanceHorairePeer::addSelectColumns($criteria);
+		$startcol8 = $startcol7 + RefSeanceHorairePeer::NUM_HYDRATE_COLUMNS;
+
+		$criteria->addJoin(TblAdherentPeer::ID_CIVILITE, RefCivilitePeer::ID_CIVILITE, $join_behavior);
+
+		$criteria->addJoin(TblAdherentPeer::ID_SITUATION, RefSituationPeer::ID_SITUATION, $join_behavior);
+
+		$criteria->addJoin(TblAdherentPeer::ID_TYPE_ADHERENT, RefTypeAdherentPeer::ID_TYPE_ADHERENT, $join_behavior);
+
+		$criteria->addJoin(TblAdherentPeer::NIVEAU_ADHERENT_ID, RefNiveauAdherentPeer::NIVEAU_ADHERENT_ID, $join_behavior);
+
+		$criteria->addJoin(TblAdherentPeer::ID_TYPE_SPORT, RefTypeSportPeer::ID_TYPE_SPORT, $join_behavior);
+
+		$criteria->addJoin(TblAdherentPeer::SEANCE_HORAIRE_ID, RefSeanceHorairePeer::SEANCE_HORAIRE_ID, $join_behavior);
+
+		// soft_delete behavior
+		if (TblAdherentQuery::isSoftDeleteEnabled()) {
+			$criteria->add(TblAdherentPeer::DELETED_AT, null, Criteria::ISNULL);
+		} else {
+			TblAdherentPeer::enableSoftDelete();
+		}
+		// symfony_behaviors behavior
+		foreach (sfMixer::getCallables(self::getMixerPreSelectHook(__FUNCTION__)) as $sf_hook)
+		{
+		  call_user_func($sf_hook, 'BaseTblAdherentPeer', $criteria, $con);
+		}
+
+
+		$stmt = BasePeer::doSelect($criteria, $con);
+		$results = array();
+
+		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+			$key1 = TblAdherentPeer::getPrimaryKeyHashFromRow($row, 0);
+			if (null !== ($obj1 = TblAdherentPeer::getInstanceFromPool($key1))) {
+				// We no longer rehydrate the object, since this can cause data loss.
+				// See http://www.propelorm.org/ticket/509
+				// $obj1->hydrate($row, 0, true); // rehydrate
+			} else {
+				$cls = TblAdherentPeer::getOMClass();
+
+				$obj1 = new $cls();
+				$obj1->hydrate($row);
+				TblAdherentPeer::addInstanceToPool($obj1, $key1);
+			} // if obj1 already loaded
+
+				// Add objects for joined RefCivilite rows
+
+				$key2 = RefCivilitePeer::getPrimaryKeyHashFromRow($row, $startcol2);
+				if ($key2 !== null) {
+					$obj2 = RefCivilitePeer::getInstanceFromPool($key2);
+					if (!$obj2) {
+	
+						$cls = RefCivilitePeer::getOMClass();
+
+					$obj2 = new $cls();
+					$obj2->hydrate($row, $startcol2);
+					RefCivilitePeer::addInstanceToPool($obj2, $key2);
+				} // if $obj2 already loaded
+
+				// Add the $obj1 (TblAdherent) to the collection in $obj2 (RefCivilite)
+				$obj2->addTblAdherent($obj1);
+
+			} // if joined row is not null
+
+				// Add objects for joined RefSituation rows
+
+				$key3 = RefSituationPeer::getPrimaryKeyHashFromRow($row, $startcol3);
+				if ($key3 !== null) {
+					$obj3 = RefSituationPeer::getInstanceFromPool($key3);
+					if (!$obj3) {
+	
+						$cls = RefSituationPeer::getOMClass();
+
+					$obj3 = new $cls();
+					$obj3->hydrate($row, $startcol3);
+					RefSituationPeer::addInstanceToPool($obj3, $key3);
+				} // if $obj3 already loaded
+
+				// Add the $obj1 (TblAdherent) to the collection in $obj3 (RefSituation)
+				$obj3->addTblAdherent($obj1);
+
+			} // if joined row is not null
+
+				// Add objects for joined RefTypeAdherent rows
+
+				$key4 = RefTypeAdherentPeer::getPrimaryKeyHashFromRow($row, $startcol4);
+				if ($key4 !== null) {
+					$obj4 = RefTypeAdherentPeer::getInstanceFromPool($key4);
+					if (!$obj4) {
+	
+						$cls = RefTypeAdherentPeer::getOMClass();
+
+					$obj4 = new $cls();
+					$obj4->hydrate($row, $startcol4);
+					RefTypeAdherentPeer::addInstanceToPool($obj4, $key4);
+				} // if $obj4 already loaded
+
+				// Add the $obj1 (TblAdherent) to the collection in $obj4 (RefTypeAdherent)
+				$obj4->addTblAdherent($obj1);
+
+			} // if joined row is not null
+
+				// Add objects for joined RefNiveauAdherent rows
+
+				$key5 = RefNiveauAdherentPeer::getPrimaryKeyHashFromRow($row, $startcol5);
+				if ($key5 !== null) {
+					$obj5 = RefNiveauAdherentPeer::getInstanceFromPool($key5);
+					if (!$obj5) {
+	
+						$cls = RefNiveauAdherentPeer::getOMClass();
+
+					$obj5 = new $cls();
+					$obj5->hydrate($row, $startcol5);
+					RefNiveauAdherentPeer::addInstanceToPool($obj5, $key5);
+				} // if $obj5 already loaded
+
+				// Add the $obj1 (TblAdherent) to the collection in $obj5 (RefNiveauAdherent)
+				$obj5->addTblAdherent($obj1);
+
+			} // if joined row is not null
+
+				// Add objects for joined RefTypeSport rows
+
+				$key6 = RefTypeSportPeer::getPrimaryKeyHashFromRow($row, $startcol6);
+				if ($key6 !== null) {
+					$obj6 = RefTypeSportPeer::getInstanceFromPool($key6);
+					if (!$obj6) {
+	
+						$cls = RefTypeSportPeer::getOMClass();
+
+					$obj6 = new $cls();
+					$obj6->hydrate($row, $startcol6);
+					RefTypeSportPeer::addInstanceToPool($obj6, $key6);
+				} // if $obj6 already loaded
+
+				// Add the $obj1 (TblAdherent) to the collection in $obj6 (RefTypeSport)
+				$obj6->addTblAdherent($obj1);
+
+			} // if joined row is not null
+
+				// Add objects for joined RefSeanceHoraire rows
+
+				$key7 = RefSeanceHorairePeer::getPrimaryKeyHashFromRow($row, $startcol7);
+				if ($key7 !== null) {
+					$obj7 = RefSeanceHorairePeer::getInstanceFromPool($key7);
+					if (!$obj7) {
+	
+						$cls = RefSeanceHorairePeer::getOMClass();
+
+					$obj7 = new $cls();
+					$obj7->hydrate($row, $startcol7);
+					RefSeanceHorairePeer::addInstanceToPool($obj7, $key7);
+				} // if $obj7 already loaded
+
+				// Add the $obj1 (TblAdherent) to the collection in $obj7 (RefSeanceHoraire)
+				$obj7->addTblAdherent($obj1);
+
+			} // if joined row is not null
+
+			$results[] = $obj1;
+		}
+		$stmt->closeCursor();
+		return $results;
 	}
 
 

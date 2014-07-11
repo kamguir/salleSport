@@ -37,6 +37,12 @@ abstract class BaseTblAdherent extends BaseObject  implements Persistent
 	protected $id_adherent;
 
 	/**
+	 * The value for the entraineur_id field.
+	 * @var        int
+	 */
+	protected $entraineur_id;
+
+	/**
 	 * The value for the cin_adherent field.
 	 * @var        string
 	 */
@@ -133,6 +139,11 @@ abstract class BaseTblAdherent extends BaseObject  implements Persistent
 	protected $deleted_at;
 
 	/**
+	 * @var        TblAdherent
+	 */
+	protected $aTblAdherentRelatedByEntraineurId;
+
+	/**
 	 * @var        RefCivilite
 	 */
 	protected $aRefCivilite;
@@ -171,6 +182,11 @@ abstract class BaseTblAdherent extends BaseObject  implements Persistent
 	 * @var        array LnkJourEntrainementAdherent[] Collection to store aggregation of LnkJourEntrainementAdherent objects.
 	 */
 	protected $collLnkJourEntrainementAdherents;
+
+	/**
+	 * @var        array TblAdherent[] Collection to store aggregation of TblAdherent objects.
+	 */
+	protected $collTblAdherentsRelatedByIdAdherent;
 
 	/**
 	 * @var        array TblAssurance[] Collection to store aggregation of TblAssurance objects.
@@ -217,6 +233,12 @@ abstract class BaseTblAdherent extends BaseObject  implements Persistent
 	 * An array of objects scheduled for deletion.
 	 * @var		array
 	 */
+	protected $tblAdherentsRelatedByIdAdherentScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
 	protected $tblAssurancesScheduledForDeletion = null;
 
 	/**
@@ -239,6 +261,16 @@ abstract class BaseTblAdherent extends BaseObject  implements Persistent
 	public function getIdAdherent()
 	{
 		return $this->id_adherent;
+	}
+
+	/**
+	 * Get the [entraineur_id] column value.
+	 * 
+	 * @return     int
+	 */
+	public function getEntraineurId()
+	{
+		return $this->entraineur_id;
 	}
 
 	/**
@@ -504,6 +536,30 @@ abstract class BaseTblAdherent extends BaseObject  implements Persistent
 
 		return $this;
 	} // setIdAdherent()
+
+	/**
+	 * Set the value of [entraineur_id] column.
+	 * 
+	 * @param      int $v new value
+	 * @return     TblAdherent The current object (for fluent API support)
+	 */
+	public function setEntraineurId($v)
+	{
+		if ($v !== null) {
+			$v = (int) $v;
+		}
+
+		if ($this->entraineur_id !== $v) {
+			$this->entraineur_id = $v;
+			$this->modifiedColumns[] = TblAdherentPeer::ENTRAINEUR_ID;
+		}
+
+		if ($this->aTblAdherentRelatedByEntraineurId !== null && $this->aTblAdherentRelatedByEntraineurId->getIdAdherent() !== $v) {
+			$this->aTblAdherentRelatedByEntraineurId = null;
+		}
+
+		return $this;
+	} // setEntraineurId()
 
 	/**
 	 * Set the value of [cin_adherent] column.
@@ -888,22 +944,23 @@ abstract class BaseTblAdherent extends BaseObject  implements Persistent
 		try {
 
 			$this->id_adherent = ($row[$startcol + 0] !== null) ? (int) $row[$startcol + 0] : null;
-			$this->cin_adherent = ($row[$startcol + 1] !== null) ? (string) $row[$startcol + 1] : null;
-			$this->nom_adherent = ($row[$startcol + 2] !== null) ? (string) $row[$startcol + 2] : null;
-			$this->prenom_adherent = ($row[$startcol + 3] !== null) ? (string) $row[$startcol + 3] : null;
-			$this->id_civilite = ($row[$startcol + 4] !== null) ? (int) $row[$startcol + 4] : null;
-			$this->id_situation = ($row[$startcol + 5] !== null) ? (int) $row[$startcol + 5] : null;
-			$this->id_type_adherent = ($row[$startcol + 6] !== null) ? (int) $row[$startcol + 6] : null;
-			$this->niveau_adherent_id = ($row[$startcol + 7] !== null) ? (int) $row[$startcol + 7] : null;
-			$this->id_type_sport = ($row[$startcol + 8] !== null) ? (int) $row[$startcol + 8] : null;
-			$this->age_adherent = ($row[$startcol + 9] !== null) ? (int) $row[$startcol + 9] : null;
-			$this->num_tel = ($row[$startcol + 10] !== null) ? (int) $row[$startcol + 10] : null;
-			$this->adresse_adherent = ($row[$startcol + 11] !== null) ? (string) $row[$startcol + 11] : null;
-			$this->image_adherent = ($row[$startcol + 12] !== null) ? (string) $row[$startcol + 12] : null;
-			$this->date_adhesion = ($row[$startcol + 13] !== null) ? (string) $row[$startcol + 13] : null;
-			$this->seance_horaire_id = ($row[$startcol + 14] !== null) ? (int) $row[$startcol + 14] : null;
-			$this->updated_at = ($row[$startcol + 15] !== null) ? (string) $row[$startcol + 15] : null;
-			$this->deleted_at = ($row[$startcol + 16] !== null) ? (string) $row[$startcol + 16] : null;
+			$this->entraineur_id = ($row[$startcol + 1] !== null) ? (int) $row[$startcol + 1] : null;
+			$this->cin_adherent = ($row[$startcol + 2] !== null) ? (string) $row[$startcol + 2] : null;
+			$this->nom_adherent = ($row[$startcol + 3] !== null) ? (string) $row[$startcol + 3] : null;
+			$this->prenom_adherent = ($row[$startcol + 4] !== null) ? (string) $row[$startcol + 4] : null;
+			$this->id_civilite = ($row[$startcol + 5] !== null) ? (int) $row[$startcol + 5] : null;
+			$this->id_situation = ($row[$startcol + 6] !== null) ? (int) $row[$startcol + 6] : null;
+			$this->id_type_adherent = ($row[$startcol + 7] !== null) ? (int) $row[$startcol + 7] : null;
+			$this->niveau_adherent_id = ($row[$startcol + 8] !== null) ? (int) $row[$startcol + 8] : null;
+			$this->id_type_sport = ($row[$startcol + 9] !== null) ? (int) $row[$startcol + 9] : null;
+			$this->age_adherent = ($row[$startcol + 10] !== null) ? (int) $row[$startcol + 10] : null;
+			$this->num_tel = ($row[$startcol + 11] !== null) ? (int) $row[$startcol + 11] : null;
+			$this->adresse_adherent = ($row[$startcol + 12] !== null) ? (string) $row[$startcol + 12] : null;
+			$this->image_adherent = ($row[$startcol + 13] !== null) ? (string) $row[$startcol + 13] : null;
+			$this->date_adhesion = ($row[$startcol + 14] !== null) ? (string) $row[$startcol + 14] : null;
+			$this->seance_horaire_id = ($row[$startcol + 15] !== null) ? (int) $row[$startcol + 15] : null;
+			$this->updated_at = ($row[$startcol + 16] !== null) ? (string) $row[$startcol + 16] : null;
+			$this->deleted_at = ($row[$startcol + 17] !== null) ? (string) $row[$startcol + 17] : null;
 			$this->resetModified();
 
 			$this->setNew(false);
@@ -912,7 +969,7 @@ abstract class BaseTblAdherent extends BaseObject  implements Persistent
 				$this->ensureConsistency();
 			}
 
-			return $startcol + 17; // 17 = TblAdherentPeer::NUM_HYDRATE_COLUMNS.
+			return $startcol + 18; // 18 = TblAdherentPeer::NUM_HYDRATE_COLUMNS.
 
 		} catch (Exception $e) {
 			throw new PropelException("Error populating TblAdherent object", $e);
@@ -935,6 +992,9 @@ abstract class BaseTblAdherent extends BaseObject  implements Persistent
 	public function ensureConsistency()
 	{
 
+		if ($this->aTblAdherentRelatedByEntraineurId !== null && $this->entraineur_id !== $this->aTblAdherentRelatedByEntraineurId->getIdAdherent()) {
+			$this->aTblAdherentRelatedByEntraineurId = null;
+		}
 		if ($this->aRefCivilite !== null && $this->id_civilite !== $this->aRefCivilite->getIdCivilite()) {
 			$this->aRefCivilite = null;
 		}
@@ -992,6 +1052,7 @@ abstract class BaseTblAdherent extends BaseObject  implements Persistent
 
 		if ($deep) {  // also de-associate any related objects?
 
+			$this->aTblAdherentRelatedByEntraineurId = null;
 			$this->aRefCivilite = null;
 			$this->aRefSituation = null;
 			$this->aRefTypeAdherent = null;
@@ -1001,6 +1062,8 @@ abstract class BaseTblAdherent extends BaseObject  implements Persistent
 			$this->collLnkAdherentCompetitions = null;
 
 			$this->collLnkJourEntrainementAdherents = null;
+
+			$this->collTblAdherentsRelatedByIdAdherent = null;
 
 			$this->collTblAssurances = null;
 
@@ -1170,6 +1233,13 @@ abstract class BaseTblAdherent extends BaseObject  implements Persistent
 			// method.  This object relates to these object(s) by a
 			// foreign key reference.
 
+			if ($this->aTblAdherentRelatedByEntraineurId !== null) {
+				if ($this->aTblAdherentRelatedByEntraineurId->isModified() || $this->aTblAdherentRelatedByEntraineurId->isNew()) {
+					$affectedRows += $this->aTblAdherentRelatedByEntraineurId->save($con);
+				}
+				$this->setTblAdherentRelatedByEntraineurId($this->aTblAdherentRelatedByEntraineurId);
+			}
+
 			if ($this->aRefCivilite !== null) {
 				if ($this->aRefCivilite->isModified() || $this->aRefCivilite->isNew()) {
 					$affectedRows += $this->aRefCivilite->save($con);
@@ -1257,6 +1327,23 @@ abstract class BaseTblAdherent extends BaseObject  implements Persistent
 				}
 			}
 
+			if ($this->tblAdherentsRelatedByIdAdherentScheduledForDeletion !== null) {
+				if (!$this->tblAdherentsRelatedByIdAdherentScheduledForDeletion->isEmpty()) {
+					TblAdherentQuery::create()
+						->filterByPrimaryKeys($this->tblAdherentsRelatedByIdAdherentScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->tblAdherentsRelatedByIdAdherentScheduledForDeletion = null;
+				}
+			}
+
+			if ($this->collTblAdherentsRelatedByIdAdherent !== null) {
+				foreach ($this->collTblAdherentsRelatedByIdAdherent as $referrerFK) {
+					if (!$referrerFK->isDeleted()) {
+						$affectedRows += $referrerFK->save($con);
+					}
+				}
+			}
+
 			if ($this->tblAssurancesScheduledForDeletion !== null) {
 				if (!$this->tblAssurancesScheduledForDeletion->isEmpty()) {
 					TblAssuranceQuery::create()
@@ -1336,6 +1423,9 @@ abstract class BaseTblAdherent extends BaseObject  implements Persistent
 		if ($this->isColumnModified(TblAdherentPeer::ID_ADHERENT)) {
 			$modifiedColumns[':p' . $index++]  = '`ID_ADHERENT`';
 		}
+		if ($this->isColumnModified(TblAdherentPeer::ENTRAINEUR_ID)) {
+			$modifiedColumns[':p' . $index++]  = '`ENTRAINEUR_ID`';
+		}
 		if ($this->isColumnModified(TblAdherentPeer::CIN_ADHERENT)) {
 			$modifiedColumns[':p' . $index++]  = '`CIN_ADHERENT`';
 		}
@@ -1397,6 +1487,9 @@ abstract class BaseTblAdherent extends BaseObject  implements Persistent
 				switch ($columnName) {
 					case '`ID_ADHERENT`':
 						$stmt->bindValue($identifier, $this->id_adherent, PDO::PARAM_INT);
+						break;
+					case '`ENTRAINEUR_ID`':
+						$stmt->bindValue($identifier, $this->entraineur_id, PDO::PARAM_INT);
 						break;
 					case '`CIN_ADHERENT`':
 						$stmt->bindValue($identifier, $this->cin_adherent, PDO::PARAM_STR);
@@ -1543,6 +1636,12 @@ abstract class BaseTblAdherent extends BaseObject  implements Persistent
 			// method.  This object relates to these object(s) by a
 			// foreign key reference.
 
+			if ($this->aTblAdherentRelatedByEntraineurId !== null) {
+				if (!$this->aTblAdherentRelatedByEntraineurId->validate($columns)) {
+					$failureMap = array_merge($failureMap, $this->aTblAdherentRelatedByEntraineurId->getValidationFailures());
+				}
+			}
+
 			if ($this->aRefCivilite !== null) {
 				if (!$this->aRefCivilite->validate($columns)) {
 					$failureMap = array_merge($failureMap, $this->aRefCivilite->getValidationFailures());
@@ -1595,6 +1694,14 @@ abstract class BaseTblAdherent extends BaseObject  implements Persistent
 
 				if ($this->collLnkJourEntrainementAdherents !== null) {
 					foreach ($this->collLnkJourEntrainementAdherents as $referrerFK) {
+						if (!$referrerFK->validate($columns)) {
+							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
+						}
+					}
+				}
+
+				if ($this->collTblAdherentsRelatedByIdAdherent !== null) {
+					foreach ($this->collTblAdherentsRelatedByIdAdherent as $referrerFK) {
 						if (!$referrerFK->validate($columns)) {
 							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
 						}
@@ -1662,51 +1769,54 @@ abstract class BaseTblAdherent extends BaseObject  implements Persistent
 				return $this->getIdAdherent();
 				break;
 			case 1:
-				return $this->getCinAdherent();
+				return $this->getEntraineurId();
 				break;
 			case 2:
-				return $this->getNomAdherent();
+				return $this->getCinAdherent();
 				break;
 			case 3:
-				return $this->getPrenomAdherent();
+				return $this->getNomAdherent();
 				break;
 			case 4:
-				return $this->getIdCivilite();
+				return $this->getPrenomAdherent();
 				break;
 			case 5:
-				return $this->getIdSituation();
+				return $this->getIdCivilite();
 				break;
 			case 6:
-				return $this->getIdTypeAdherent();
+				return $this->getIdSituation();
 				break;
 			case 7:
-				return $this->getNiveauAdherentId();
+				return $this->getIdTypeAdherent();
 				break;
 			case 8:
-				return $this->getIdTypeSport();
+				return $this->getNiveauAdherentId();
 				break;
 			case 9:
-				return $this->getAgeAdherent();
+				return $this->getIdTypeSport();
 				break;
 			case 10:
-				return $this->getNumTel();
+				return $this->getAgeAdherent();
 				break;
 			case 11:
-				return $this->getAdresseAdherent();
+				return $this->getNumTel();
 				break;
 			case 12:
-				return $this->getImageAdherent();
+				return $this->getAdresseAdherent();
 				break;
 			case 13:
-				return $this->getDateAdhesion();
+				return $this->getImageAdherent();
 				break;
 			case 14:
-				return $this->getSeanceHoraireId();
+				return $this->getDateAdhesion();
 				break;
 			case 15:
-				return $this->getUpdatedAt();
+				return $this->getSeanceHoraireId();
 				break;
 			case 16:
+				return $this->getUpdatedAt();
+				break;
+			case 17:
 				return $this->getDeletedAt();
 				break;
 			default:
@@ -1739,24 +1849,28 @@ abstract class BaseTblAdherent extends BaseObject  implements Persistent
 		$keys = TblAdherentPeer::getFieldNames($keyType);
 		$result = array(
 			$keys[0] => $this->getIdAdherent(),
-			$keys[1] => $this->getCinAdherent(),
-			$keys[2] => $this->getNomAdherent(),
-			$keys[3] => $this->getPrenomAdherent(),
-			$keys[4] => $this->getIdCivilite(),
-			$keys[5] => $this->getIdSituation(),
-			$keys[6] => $this->getIdTypeAdherent(),
-			$keys[7] => $this->getNiveauAdherentId(),
-			$keys[8] => $this->getIdTypeSport(),
-			$keys[9] => $this->getAgeAdherent(),
-			$keys[10] => $this->getNumTel(),
-			$keys[11] => $this->getAdresseAdherent(),
-			$keys[12] => $this->getImageAdherent(),
-			$keys[13] => $this->getDateAdhesion(),
-			$keys[14] => $this->getSeanceHoraireId(),
-			$keys[15] => $this->getUpdatedAt(),
-			$keys[16] => $this->getDeletedAt(),
+			$keys[1] => $this->getEntraineurId(),
+			$keys[2] => $this->getCinAdherent(),
+			$keys[3] => $this->getNomAdherent(),
+			$keys[4] => $this->getPrenomAdherent(),
+			$keys[5] => $this->getIdCivilite(),
+			$keys[6] => $this->getIdSituation(),
+			$keys[7] => $this->getIdTypeAdherent(),
+			$keys[8] => $this->getNiveauAdherentId(),
+			$keys[9] => $this->getIdTypeSport(),
+			$keys[10] => $this->getAgeAdherent(),
+			$keys[11] => $this->getNumTel(),
+			$keys[12] => $this->getAdresseAdherent(),
+			$keys[13] => $this->getImageAdherent(),
+			$keys[14] => $this->getDateAdhesion(),
+			$keys[15] => $this->getSeanceHoraireId(),
+			$keys[16] => $this->getUpdatedAt(),
+			$keys[17] => $this->getDeletedAt(),
 		);
 		if ($includeForeignObjects) {
+			if (null !== $this->aTblAdherentRelatedByEntraineurId) {
+				$result['TblAdherentRelatedByEntraineurId'] = $this->aTblAdherentRelatedByEntraineurId->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+			}
 			if (null !== $this->aRefCivilite) {
 				$result['RefCivilite'] = $this->aRefCivilite->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
 			}
@@ -1780,6 +1894,9 @@ abstract class BaseTblAdherent extends BaseObject  implements Persistent
 			}
 			if (null !== $this->collLnkJourEntrainementAdherents) {
 				$result['LnkJourEntrainementAdherents'] = $this->collLnkJourEntrainementAdherents->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+			}
+			if (null !== $this->collTblAdherentsRelatedByIdAdherent) {
+				$result['TblAdherentsRelatedByIdAdherent'] = $this->collTblAdherentsRelatedByIdAdherent->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
 			}
 			if (null !== $this->collTblAssurances) {
 				$result['TblAssurances'] = $this->collTblAssurances->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
@@ -1825,51 +1942,54 @@ abstract class BaseTblAdherent extends BaseObject  implements Persistent
 				$this->setIdAdherent($value);
 				break;
 			case 1:
-				$this->setCinAdherent($value);
+				$this->setEntraineurId($value);
 				break;
 			case 2:
-				$this->setNomAdherent($value);
+				$this->setCinAdherent($value);
 				break;
 			case 3:
-				$this->setPrenomAdherent($value);
+				$this->setNomAdherent($value);
 				break;
 			case 4:
-				$this->setIdCivilite($value);
+				$this->setPrenomAdherent($value);
 				break;
 			case 5:
-				$this->setIdSituation($value);
+				$this->setIdCivilite($value);
 				break;
 			case 6:
-				$this->setIdTypeAdherent($value);
+				$this->setIdSituation($value);
 				break;
 			case 7:
-				$this->setNiveauAdherentId($value);
+				$this->setIdTypeAdherent($value);
 				break;
 			case 8:
-				$this->setIdTypeSport($value);
+				$this->setNiveauAdherentId($value);
 				break;
 			case 9:
-				$this->setAgeAdherent($value);
+				$this->setIdTypeSport($value);
 				break;
 			case 10:
-				$this->setNumTel($value);
+				$this->setAgeAdherent($value);
 				break;
 			case 11:
-				$this->setAdresseAdherent($value);
+				$this->setNumTel($value);
 				break;
 			case 12:
-				$this->setImageAdherent($value);
+				$this->setAdresseAdherent($value);
 				break;
 			case 13:
-				$this->setDateAdhesion($value);
+				$this->setImageAdherent($value);
 				break;
 			case 14:
-				$this->setSeanceHoraireId($value);
+				$this->setDateAdhesion($value);
 				break;
 			case 15:
-				$this->setUpdatedAt($value);
+				$this->setSeanceHoraireId($value);
 				break;
 			case 16:
+				$this->setUpdatedAt($value);
+				break;
+			case 17:
 				$this->setDeletedAt($value);
 				break;
 		} // switch()
@@ -1897,22 +2017,23 @@ abstract class BaseTblAdherent extends BaseObject  implements Persistent
 		$keys = TblAdherentPeer::getFieldNames($keyType);
 
 		if (array_key_exists($keys[0], $arr)) $this->setIdAdherent($arr[$keys[0]]);
-		if (array_key_exists($keys[1], $arr)) $this->setCinAdherent($arr[$keys[1]]);
-		if (array_key_exists($keys[2], $arr)) $this->setNomAdherent($arr[$keys[2]]);
-		if (array_key_exists($keys[3], $arr)) $this->setPrenomAdherent($arr[$keys[3]]);
-		if (array_key_exists($keys[4], $arr)) $this->setIdCivilite($arr[$keys[4]]);
-		if (array_key_exists($keys[5], $arr)) $this->setIdSituation($arr[$keys[5]]);
-		if (array_key_exists($keys[6], $arr)) $this->setIdTypeAdherent($arr[$keys[6]]);
-		if (array_key_exists($keys[7], $arr)) $this->setNiveauAdherentId($arr[$keys[7]]);
-		if (array_key_exists($keys[8], $arr)) $this->setIdTypeSport($arr[$keys[8]]);
-		if (array_key_exists($keys[9], $arr)) $this->setAgeAdherent($arr[$keys[9]]);
-		if (array_key_exists($keys[10], $arr)) $this->setNumTel($arr[$keys[10]]);
-		if (array_key_exists($keys[11], $arr)) $this->setAdresseAdherent($arr[$keys[11]]);
-		if (array_key_exists($keys[12], $arr)) $this->setImageAdherent($arr[$keys[12]]);
-		if (array_key_exists($keys[13], $arr)) $this->setDateAdhesion($arr[$keys[13]]);
-		if (array_key_exists($keys[14], $arr)) $this->setSeanceHoraireId($arr[$keys[14]]);
-		if (array_key_exists($keys[15], $arr)) $this->setUpdatedAt($arr[$keys[15]]);
-		if (array_key_exists($keys[16], $arr)) $this->setDeletedAt($arr[$keys[16]]);
+		if (array_key_exists($keys[1], $arr)) $this->setEntraineurId($arr[$keys[1]]);
+		if (array_key_exists($keys[2], $arr)) $this->setCinAdherent($arr[$keys[2]]);
+		if (array_key_exists($keys[3], $arr)) $this->setNomAdherent($arr[$keys[3]]);
+		if (array_key_exists($keys[4], $arr)) $this->setPrenomAdherent($arr[$keys[4]]);
+		if (array_key_exists($keys[5], $arr)) $this->setIdCivilite($arr[$keys[5]]);
+		if (array_key_exists($keys[6], $arr)) $this->setIdSituation($arr[$keys[6]]);
+		if (array_key_exists($keys[7], $arr)) $this->setIdTypeAdherent($arr[$keys[7]]);
+		if (array_key_exists($keys[8], $arr)) $this->setNiveauAdherentId($arr[$keys[8]]);
+		if (array_key_exists($keys[9], $arr)) $this->setIdTypeSport($arr[$keys[9]]);
+		if (array_key_exists($keys[10], $arr)) $this->setAgeAdherent($arr[$keys[10]]);
+		if (array_key_exists($keys[11], $arr)) $this->setNumTel($arr[$keys[11]]);
+		if (array_key_exists($keys[12], $arr)) $this->setAdresseAdherent($arr[$keys[12]]);
+		if (array_key_exists($keys[13], $arr)) $this->setImageAdherent($arr[$keys[13]]);
+		if (array_key_exists($keys[14], $arr)) $this->setDateAdhesion($arr[$keys[14]]);
+		if (array_key_exists($keys[15], $arr)) $this->setSeanceHoraireId($arr[$keys[15]]);
+		if (array_key_exists($keys[16], $arr)) $this->setUpdatedAt($arr[$keys[16]]);
+		if (array_key_exists($keys[17], $arr)) $this->setDeletedAt($arr[$keys[17]]);
 	}
 
 	/**
@@ -1925,6 +2046,7 @@ abstract class BaseTblAdherent extends BaseObject  implements Persistent
 		$criteria = new Criteria(TblAdherentPeer::DATABASE_NAME);
 
 		if ($this->isColumnModified(TblAdherentPeer::ID_ADHERENT)) $criteria->add(TblAdherentPeer::ID_ADHERENT, $this->id_adherent);
+		if ($this->isColumnModified(TblAdherentPeer::ENTRAINEUR_ID)) $criteria->add(TblAdherentPeer::ENTRAINEUR_ID, $this->entraineur_id);
 		if ($this->isColumnModified(TblAdherentPeer::CIN_ADHERENT)) $criteria->add(TblAdherentPeer::CIN_ADHERENT, $this->cin_adherent);
 		if ($this->isColumnModified(TblAdherentPeer::NOM_ADHERENT)) $criteria->add(TblAdherentPeer::NOM_ADHERENT, $this->nom_adherent);
 		if ($this->isColumnModified(TblAdherentPeer::PRENOM_ADHERENT)) $criteria->add(TblAdherentPeer::PRENOM_ADHERENT, $this->prenom_adherent);
@@ -2003,6 +2125,7 @@ abstract class BaseTblAdherent extends BaseObject  implements Persistent
 	 */
 	public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
 	{
+		$copyObj->setEntraineurId($this->getEntraineurId());
 		$copyObj->setCinAdherent($this->getCinAdherent());
 		$copyObj->setNomAdherent($this->getNomAdherent());
 		$copyObj->setPrenomAdherent($this->getPrenomAdherent());
@@ -2036,6 +2159,12 @@ abstract class BaseTblAdherent extends BaseObject  implements Persistent
 			foreach ($this->getLnkJourEntrainementAdherents() as $relObj) {
 				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
 					$copyObj->addLnkJourEntrainementAdherent($relObj->copy($deepCopy));
+				}
+			}
+
+			foreach ($this->getTblAdherentsRelatedByIdAdherent() as $relObj) {
+				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+					$copyObj->addTblAdherentRelatedByIdAdherent($relObj->copy($deepCopy));
 				}
 			}
 
@@ -2103,6 +2232,55 @@ abstract class BaseTblAdherent extends BaseObject  implements Persistent
 			self::$peer = new TblAdherentPeer();
 		}
 		return self::$peer;
+	}
+
+	/**
+	 * Declares an association between this object and a TblAdherent object.
+	 *
+	 * @param      TblAdherent $v
+	 * @return     TblAdherent The current object (for fluent API support)
+	 * @throws     PropelException
+	 */
+	public function setTblAdherentRelatedByEntraineurId(TblAdherent $v = null)
+	{
+		if ($v === null) {
+			$this->setEntraineurId(NULL);
+		} else {
+			$this->setEntraineurId($v->getIdAdherent());
+		}
+
+		$this->aTblAdherentRelatedByEntraineurId = $v;
+
+		// Add binding for other direction of this n:n relationship.
+		// If this object has already been added to the TblAdherent object, it will not be re-added.
+		if ($v !== null) {
+			$v->addTblAdherentRelatedByIdAdherent($this);
+		}
+
+		return $this;
+	}
+
+
+	/**
+	 * Get the associated TblAdherent object
+	 *
+	 * @param      PropelPDO Optional Connection object.
+	 * @return     TblAdherent The associated TblAdherent object.
+	 * @throws     PropelException
+	 */
+	public function getTblAdherentRelatedByEntraineurId(PropelPDO $con = null)
+	{
+		if ($this->aTblAdherentRelatedByEntraineurId === null && ($this->entraineur_id !== null)) {
+			$this->aTblAdherentRelatedByEntraineurId = TblAdherentQuery::create()->findPk($this->entraineur_id, $con);
+			/* The following can be used additionally to
+				guarantee the related object contains a reference
+				to this object.  This level of coupling may, however, be
+				undesirable since it could result in an only partially populated collection
+				in the referenced object.
+				$this->aTblAdherentRelatedByEntraineurId->addTblAdherentsRelatedByIdAdherent($this);
+			 */
+		}
+		return $this->aTblAdherentRelatedByEntraineurId;
 	}
 
 	/**
@@ -2415,6 +2593,9 @@ abstract class BaseTblAdherent extends BaseObject  implements Persistent
 		}
 		if ('LnkJourEntrainementAdherent' == $relationName) {
 			return $this->initLnkJourEntrainementAdherents();
+		}
+		if ('TblAdherentRelatedByIdAdherent' == $relationName) {
+			return $this->initTblAdherentsRelatedByIdAdherent();
 		}
 		if ('TblAssurance' == $relationName) {
 			return $this->initTblAssurances();
@@ -2771,6 +2952,304 @@ abstract class BaseTblAdherent extends BaseObject  implements Persistent
 		$query->joinWith('RefJour', $join_behavior);
 
 		return $this->getLnkJourEntrainementAdherents($query, $con);
+	}
+
+	/**
+	 * Clears out the collTblAdherentsRelatedByIdAdherent collection
+	 *
+	 * This does not modify the database; however, it will remove any associated objects, causing
+	 * them to be refetched by subsequent calls to accessor method.
+	 *
+	 * @return     void
+	 * @see        addTblAdherentsRelatedByIdAdherent()
+	 */
+	public function clearTblAdherentsRelatedByIdAdherent()
+	{
+		$this->collTblAdherentsRelatedByIdAdherent = null; // important to set this to NULL since that means it is uninitialized
+	}
+
+	/**
+	 * Initializes the collTblAdherentsRelatedByIdAdherent collection.
+	 *
+	 * By default this just sets the collTblAdherentsRelatedByIdAdherent collection to an empty array (like clearcollTblAdherentsRelatedByIdAdherent());
+	 * however, you may wish to override this method in your stub class to provide setting appropriate
+	 * to your application -- for example, setting the initial array to the values stored in database.
+	 *
+	 * @param      boolean $overrideExisting If set to true, the method call initializes
+	 *                                        the collection even if it is not empty
+	 *
+	 * @return     void
+	 */
+	public function initTblAdherentsRelatedByIdAdherent($overrideExisting = true)
+	{
+		if (null !== $this->collTblAdherentsRelatedByIdAdherent && !$overrideExisting) {
+			return;
+		}
+		$this->collTblAdherentsRelatedByIdAdherent = new PropelObjectCollection();
+		$this->collTblAdherentsRelatedByIdAdherent->setModel('TblAdherent');
+	}
+
+	/**
+	 * Gets an array of TblAdherent objects which contain a foreign key that references this object.
+	 *
+	 * If the $criteria is not null, it is used to always fetch the results from the database.
+	 * Otherwise the results are fetched from the database the first time, then cached.
+	 * Next time the same method is called without $criteria, the cached collection is returned.
+	 * If this TblAdherent is new, it will return
+	 * an empty collection or the current collection; the criteria is ignored on a new object.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @return     PropelCollection|array TblAdherent[] List of TblAdherent objects
+	 * @throws     PropelException
+	 */
+	public function getTblAdherentsRelatedByIdAdherent($criteria = null, PropelPDO $con = null)
+	{
+		if(null === $this->collTblAdherentsRelatedByIdAdherent || null !== $criteria) {
+			if ($this->isNew() && null === $this->collTblAdherentsRelatedByIdAdherent) {
+				// return empty collection
+				$this->initTblAdherentsRelatedByIdAdherent();
+			} else {
+				$collTblAdherentsRelatedByIdAdherent = TblAdherentQuery::create(null, $criteria)
+					->filterByTblAdherentRelatedByEntraineurId($this)
+					->find($con);
+				if (null !== $criteria) {
+					return $collTblAdherentsRelatedByIdAdherent;
+				}
+				$this->collTblAdherentsRelatedByIdAdherent = $collTblAdherentsRelatedByIdAdherent;
+			}
+		}
+		return $this->collTblAdherentsRelatedByIdAdherent;
+	}
+
+	/**
+	 * Sets a collection of TblAdherentRelatedByIdAdherent objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $tblAdherentsRelatedByIdAdherent A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setTblAdherentsRelatedByIdAdherent(PropelCollection $tblAdherentsRelatedByIdAdherent, PropelPDO $con = null)
+	{
+		$this->tblAdherentsRelatedByIdAdherentScheduledForDeletion = $this->getTblAdherentsRelatedByIdAdherent(new Criteria(), $con)->diff($tblAdherentsRelatedByIdAdherent);
+
+		foreach ($tblAdherentsRelatedByIdAdherent as $tblAdherentRelatedByIdAdherent) {
+			// Fix issue with collection modified by reference
+			if ($tblAdherentRelatedByIdAdherent->isNew()) {
+				$tblAdherentRelatedByIdAdherent->setTblAdherentRelatedByEntraineurId($this);
+			}
+			$this->addTblAdherentRelatedByIdAdherent($tblAdherentRelatedByIdAdherent);
+		}
+
+		$this->collTblAdherentsRelatedByIdAdherent = $tblAdherentsRelatedByIdAdherent;
+	}
+
+	/**
+	 * Returns the number of related TblAdherent objects.
+	 *
+	 * @param      Criteria $criteria
+	 * @param      boolean $distinct
+	 * @param      PropelPDO $con
+	 * @return     int Count of related TblAdherent objects.
+	 * @throws     PropelException
+	 */
+	public function countTblAdherentsRelatedByIdAdherent(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+	{
+		if(null === $this->collTblAdherentsRelatedByIdAdherent || null !== $criteria) {
+			if ($this->isNew() && null === $this->collTblAdherentsRelatedByIdAdherent) {
+				return 0;
+			} else {
+				$query = TblAdherentQuery::create(null, $criteria);
+				if($distinct) {
+					$query->distinct();
+				}
+				return $query
+					->filterByTblAdherentRelatedByEntraineurId($this)
+					->count($con);
+			}
+		} else {
+			return count($this->collTblAdherentsRelatedByIdAdherent);
+		}
+	}
+
+	/**
+	 * Method called to associate a TblAdherent object to this object
+	 * through the TblAdherent foreign key attribute.
+	 *
+	 * @param      TblAdherent $l TblAdherent
+	 * @return     TblAdherent The current object (for fluent API support)
+	 */
+	public function addTblAdherentRelatedByIdAdherent(TblAdherent $l)
+	{
+		if ($this->collTblAdherentsRelatedByIdAdherent === null) {
+			$this->initTblAdherentsRelatedByIdAdherent();
+		}
+		if (!$this->collTblAdherentsRelatedByIdAdherent->contains($l)) { // only add it if the **same** object is not already associated
+			$this->doAddTblAdherentRelatedByIdAdherent($l);
+		}
+
+		return $this;
+	}
+
+	/**
+	 * @param	TblAdherentRelatedByIdAdherent $tblAdherentRelatedByIdAdherent The tblAdherentRelatedByIdAdherent object to add.
+	 */
+	protected function doAddTblAdherentRelatedByIdAdherent($tblAdherentRelatedByIdAdherent)
+	{
+		$this->collTblAdherentsRelatedByIdAdherent[]= $tblAdherentRelatedByIdAdherent;
+		$tblAdherentRelatedByIdAdherent->setTblAdherentRelatedByEntraineurId($this);
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this TblAdherent is new, it will return
+	 * an empty collection; or if this TblAdherent has previously
+	 * been saved, it will retrieve related TblAdherentsRelatedByIdAdherent from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in TblAdherent.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array TblAdherent[] List of TblAdherent objects
+	 */
+	public function getTblAdherentsRelatedByIdAdherentJoinRefCivilite($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = TblAdherentQuery::create(null, $criteria);
+		$query->joinWith('RefCivilite', $join_behavior);
+
+		return $this->getTblAdherentsRelatedByIdAdherent($query, $con);
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this TblAdherent is new, it will return
+	 * an empty collection; or if this TblAdherent has previously
+	 * been saved, it will retrieve related TblAdherentsRelatedByIdAdherent from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in TblAdherent.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array TblAdherent[] List of TblAdherent objects
+	 */
+	public function getTblAdherentsRelatedByIdAdherentJoinRefSituation($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = TblAdherentQuery::create(null, $criteria);
+		$query->joinWith('RefSituation', $join_behavior);
+
+		return $this->getTblAdherentsRelatedByIdAdherent($query, $con);
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this TblAdherent is new, it will return
+	 * an empty collection; or if this TblAdherent has previously
+	 * been saved, it will retrieve related TblAdherentsRelatedByIdAdherent from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in TblAdherent.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array TblAdherent[] List of TblAdherent objects
+	 */
+	public function getTblAdherentsRelatedByIdAdherentJoinRefTypeAdherent($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = TblAdherentQuery::create(null, $criteria);
+		$query->joinWith('RefTypeAdherent', $join_behavior);
+
+		return $this->getTblAdherentsRelatedByIdAdherent($query, $con);
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this TblAdherent is new, it will return
+	 * an empty collection; or if this TblAdherent has previously
+	 * been saved, it will retrieve related TblAdherentsRelatedByIdAdherent from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in TblAdherent.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array TblAdherent[] List of TblAdherent objects
+	 */
+	public function getTblAdherentsRelatedByIdAdherentJoinRefNiveauAdherent($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = TblAdherentQuery::create(null, $criteria);
+		$query->joinWith('RefNiveauAdherent', $join_behavior);
+
+		return $this->getTblAdherentsRelatedByIdAdherent($query, $con);
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this TblAdherent is new, it will return
+	 * an empty collection; or if this TblAdherent has previously
+	 * been saved, it will retrieve related TblAdherentsRelatedByIdAdherent from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in TblAdherent.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array TblAdherent[] List of TblAdherent objects
+	 */
+	public function getTblAdherentsRelatedByIdAdherentJoinRefTypeSport($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = TblAdherentQuery::create(null, $criteria);
+		$query->joinWith('RefTypeSport', $join_behavior);
+
+		return $this->getTblAdherentsRelatedByIdAdherent($query, $con);
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this TblAdherent is new, it will return
+	 * an empty collection; or if this TblAdherent has previously
+	 * been saved, it will retrieve related TblAdherentsRelatedByIdAdherent from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in TblAdherent.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array TblAdherent[] List of TblAdherent objects
+	 */
+	public function getTblAdherentsRelatedByIdAdherentJoinRefSeanceHoraire($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = TblAdherentQuery::create(null, $criteria);
+		$query->joinWith('RefSeanceHoraire', $join_behavior);
+
+		return $this->getTblAdherentsRelatedByIdAdherent($query, $con);
 	}
 
 	/**
@@ -3348,6 +3827,7 @@ abstract class BaseTblAdherent extends BaseObject  implements Persistent
 	public function clear()
 	{
 		$this->id_adherent = null;
+		$this->entraineur_id = null;
 		$this->cin_adherent = null;
 		$this->nom_adherent = null;
 		$this->prenom_adherent = null;
@@ -3394,6 +3874,11 @@ abstract class BaseTblAdherent extends BaseObject  implements Persistent
 					$o->clearAllReferences($deep);
 				}
 			}
+			if ($this->collTblAdherentsRelatedByIdAdherent) {
+				foreach ($this->collTblAdherentsRelatedByIdAdherent as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
 			if ($this->collTblAssurances) {
 				foreach ($this->collTblAssurances as $o) {
 					$o->clearAllReferences($deep);
@@ -3419,6 +3904,10 @@ abstract class BaseTblAdherent extends BaseObject  implements Persistent
 			$this->collLnkJourEntrainementAdherents->clearIterator();
 		}
 		$this->collLnkJourEntrainementAdherents = null;
+		if ($this->collTblAdherentsRelatedByIdAdherent instanceof PropelCollection) {
+			$this->collTblAdherentsRelatedByIdAdherent->clearIterator();
+		}
+		$this->collTblAdherentsRelatedByIdAdherent = null;
 		if ($this->collTblAssurances instanceof PropelCollection) {
 			$this->collTblAssurances->clearIterator();
 		}
@@ -3431,6 +3920,7 @@ abstract class BaseTblAdherent extends BaseObject  implements Persistent
 			$this->collTblFactures->clearIterator();
 		}
 		$this->collTblFactures = null;
+		$this->aTblAdherentRelatedByEntraineurId = null;
 		$this->aRefCivilite = null;
 		$this->aRefSituation = null;
 		$this->aRefTypeAdherent = null;

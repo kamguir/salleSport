@@ -3,9 +3,10 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="span5">
-                    <div class="modal-header">
+                    <!--<div class="modal-header">-->
+                    <div class="logoLockOpen">
                         <!--<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>-->
-                        <h1 class="text-center">Authentification</h1>
+                        <h1 class="text-center" style="margin-left: 100%;">Authentification</h1>
                     </div>
                     <div class="modal-body">
                         <form action="<?php echo url_for('auth/login') ?>" method="post" class="form-signin">

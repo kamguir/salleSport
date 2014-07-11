@@ -71,10 +71,10 @@
 <!--                                <li><a href="<?php echo url_for('adherent/listeAdherents') ?>" data-original-title="" title="">Liste Adherents</a></li>
                                 <li><a href="<?php echo url_for('adherent/listeEntraineurs') ?>" data-original-title="" title="">Liste Entraîneurs</a></li>-->
                                 <li><a href="<?php echo url_for('adherent/listeMembres') ?>" data-original-title="" title="">Liste Membres</a></li>
-                                <!--                <li class="divider"></li>
-                                                <li><a href="grid.html" data-original-title="" title="">Grid</a></li>
-                                                <li class="divider"></li>-->
-                                <!--<li><a href="ui-elements.html" data-original-title="" title="">More UI Elements...</a></li>-->
+                                <!--                                                <li class="divider"></li>
+                                                                                <li><a href="grid.html" data-original-title="" title="">Grid</a></li>
+                                                                                <li class="divider"></li>
+                                                                <li><a href="ui-elements.html" data-original-title="" title="">More UI Elements...</a></li>-->
                             </ul>
                         </li>
                         <li class="dropdown">
@@ -90,20 +90,23 @@
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-original-title="" title="">Gestion <b class="caret"></b></a>
                             <ul class="dropdown-menu">
                                 <li><a href="<?php echo url_for('adherent/planningEntraineurs') ?>" data-original-title="" title="">Planning Entraineurs</a></li>
-                                <li><a href="<?php echo url_for('adherent/mesAdherents') ?>" data-original-title="" title="">Planning Adhérents</a></li>
+                                <li><a href="<?php echo url_for('adherent/planningAdherents') ?>" data-original-title="" title="">Planning Adhérents</a></li>
                                 <li><a href="<?php echo url_for('ceinture/listeCeintures') ?>" data-original-title="" title="">Ceinture</a></li>
                                 <li><a href="<?php echo url_for('competition/index') ?>" data-original-title="" title="">Competitions</a></li>
                                 <!--<li><a href="<?php echo url_for('depenses/alertes') ?>" data-original-title="" title="">Alerts</a></li>-->
                             </ul>
                         </li>
-                        <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-original-title="" title="">Administration <b class="caret"></b></a>
-                            <ul class="dropdown-menu">
-                                <li><a href="<?php echo url_for('adminRefTypeSport/index') ?>" data-original-title="" title="">Types Sport</a></li>
-                                <li><a href="<?php echo url_for('adminSeance/index') ?>" data-original-title="" title="">Séances</a></li>
-                                <li><a href="<?php echo url_for('adminAssurance/index') ?>" data-original-title="" title="">Assurances</a></li>
-                            </ul>
-                        </li>
+                        <?php if ($sf_user->hasCredential('super_admin')): ?>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-original-title="" title="">Administration <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    <li><a href="<?php echo url_for('adminRefTypeSport/index') ?>" data-original-title="" title="">Types Sport</a></li>
+                                    <li><a href="<?php echo url_for('adminSeance/index') ?>" data-original-title="" title="">Séances</a></li>
+                                    <li><a href="<?php echo url_for('adminAssurance/index') ?>" data-original-title="" title="">Assurances</a></li>
+                                </ul>
+                            </li>
+                        <?php endif; ?>
+
                         <li>
                             <a href="<?php echo url_for('depenses/mesAlertes') ?>" data-original-title="" title="">Alerts</a>
                         </li>
@@ -152,30 +155,30 @@
                                     </ul>
                                      Mini Nav Right End -->
                         <!-- Stats Start -->
-                        <?php include_component('accueil', 'bandeauInfo')  ?>
-<!--                        <ul class="stats hidden-sm hidden-xs">
-                            <li>
-                                <span id="orders" class="graph"><canvas width="30" height="18" style="display: inline-block; width: 62px; height: 18px; vertical-align: top;"></canvas></span>
-                                <div class="details">
-                                    <span class="big">2,591</span>
-                                    <span class="small">Adherents</span>
-                                </div>
-                            </li>
-                            <li>
-                                <span id="currentBalance" class="graph"><canvas width="30" height="18" style="display: inline-block; width: 62px; height: 18px; vertical-align: top;"></canvas></span>
-                                <div class="details">
-                                    <span class="big">$444</span>
-                                    <span class="small">Factures</span>
-                                </div>
-                            </li>
-                            <li>
-                                <span id="currentBalance" class="graph"><canvas width="30" height="18" style="display: inline-block; width: 62px; height: 18px; vertical-align: top;"></canvas></span>
-                                <div class="details">
-                                    <span class="big">$7,345</span>
-                                    <span class="small">Dépenses</span>
-                                </div>
-                            </li>
-                        </ul>-->
+                        <?php include_component('accueil', 'bandeauInfo') ?>
+                        <!--                        <ul class="stats hidden-sm hidden-xs">
+                                                    <li>
+                                                        <span id="orders" class="graph"><canvas width="30" height="18" style="display: inline-block; width: 62px; height: 18px; vertical-align: top;"></canvas></span>
+                                                        <div class="details">
+                                                            <span class="big">2,591</span>
+                                                            <span class="small">Adherents</span>
+                                                        </div>
+                                                    </li>
+                                                    <li>
+                                                        <span id="currentBalance" class="graph"><canvas width="30" height="18" style="display: inline-block; width: 62px; height: 18px; vertical-align: top;"></canvas></span>
+                                                        <div class="details">
+                                                            <span class="big">$444</span>
+                                                            <span class="small">Factures</span>
+                                                        </div>
+                                                    </li>
+                                                    <li>
+                                                        <span id="currentBalance" class="graph"><canvas width="30" height="18" style="display: inline-block; width: 62px; height: 18px; vertical-align: top;"></canvas></span>
+                                                        <div class="details">
+                                                            <span class="big">$7,345</span>
+                                                            <span class="small">Dépenses</span>
+                                                        </div>
+                                                    </li>
+                                                </ul>-->
                         <!-- Stats End -->
                     </div>
                 </div>

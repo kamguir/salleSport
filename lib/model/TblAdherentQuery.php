@@ -77,7 +77,6 @@ class TblAdherentQuery extends BaseTblAdherentQuery {
         }
         return $this;
     }
-
 }
 
 // TblAdherentQuery

@@ -79,7 +79,9 @@
                 });
 
         $("#listeDesDepenses .even,#listeDesDepenses .odd").live("click", function() {
+        if($(this).attr("id").substring(4)){
             window.location = "<?php echo url_for("depenses/edit?id_depenses=") ?>" + $(this).attr("id").substring(4);
+        }
         });
     });
 </script>

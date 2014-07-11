@@ -13,10 +13,10 @@
         </div>
     </div>
     <div class="row">
-        <label class="col-xs-5" ><?php echo $form['grade_id']->renderLabel() ?></label>
+        <label class="col-xs-5" ><?php echo $form['titre_entraineur_id']->renderLabel() ?></label>
         <div class="col-xs-5">
-            <?php echo $form['grade_id']->renderError() ?>
-            <?php echo $form['grade_id'] ?>
+            <?php echo $form['titre_entraineur_id']->renderError() ?>
+            <?php echo $form['titre_entraineur_id'] ?>
         </div>
     </div>
     <div class="row">
@@ -27,19 +27,20 @@
         </div>
     </div>
     <div class="row">
-        <label class="col-xs-5" ><?php echo $form['titre_entraineur_id']->renderLabel() ?></label>
-        <div class="col-xs-5">
-            <?php echo $form['titre_entraineur_id']->renderError() ?>
-            <?php echo $form['titre_entraineur_id'] ?>
-        </div>
-    </div>
-    <div class="row">
         <label class="col-xs-5" ><?php echo $form['ceinture_couleur_id']->renderLabel() ?></label>
         <div class="col-xs-5">
             <?php echo $form['ceinture_couleur_id']->renderError() ?>
             <?php echo $form['ceinture_couleur_id'] ?>
         </div>
     </div>
+    <div class="row">
+        <label class="col-xs-5" ><?php echo $form['grade_id']->renderLabel() ?></label>
+        <div class="col-xs-5">
+            <?php echo $form['grade_id']->renderError() ?>
+            <?php echo $form['grade_id'] ?>
+        </div>
+    </div>
+
     <div class="row">
         <label class="col-xs-5" ><?php echo $form['date_acquisition']->renderLabel() ?></label>
         <div class="col-xs-5">

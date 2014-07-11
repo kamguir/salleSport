@@ -58,6 +58,7 @@ class TblAdherent extends BaseTblAdherent {
         $libelleSport = ' -- ';
         $situationAdherent = ' -- ';
         $niveauAdherent = ' -- ';
+        $pathCeinture = '75px-Ceinture_blanche.png';
         if ($this->getRefTypeSport()) {
             $libelleSport = $this->getRefTypeSport()->getLibelle();
         }
@@ -67,16 +68,19 @@ class TblAdherent extends BaseTblAdherent {
         if ($this->getRefNiveauAdherent()) {
             $niveauAdherent = $this->getRefNiveauAdherent()->getNiveauAdherentLibelle();
         }
-
+        if ($objCeintures = $this->getTblCeintures()) {
+            foreach ($objCeintures as $objCeinture) {
+                $pathCeinture = $objCeinture->getRefCeintureCouleur()->getPathImage();
+            }
+        }
         return array(
             $this->getRefCivilite()->getLibelleCivilite() . ' ' . ucfirst($this->getNomAdherent()) . ',' . ucfirst($this->getPrenomAdherent()),
-//            $this->getCinAdherent(),
             $situationAdherent,
             $this->getAgeAdherent(),
             $this->getNumTel(),
-//            $this->getAdresseAdherent(),
             $libelleSport,
             $niveauAdherent,
+            "<img src=/images/niveau_ceinture/" . $pathCeinture . ">",
             $this->getDateAdhesion(),
             "DT_RowId" => "row_" . $this->getIdAdherent()
         );
@@ -86,6 +90,7 @@ class TblAdherent extends BaseTblAdherent {
         $joursPlanning = '';
         $horaire = '';
         $competance = ' -- ';
+        $pathCeinture = '75px-Ceinture_blanche.png';
         if ($objJours = $this->getLnkJourEntrainementAdherents()) {
             foreach ($objJours as $objJour) {
                 $joursPlanning .= $objJour->getRefJour()->getLibelleJour() . " </br> ";
@@ -99,11 +104,16 @@ class TblAdherent extends BaseTblAdherent {
                 $competance = $value->getRefCompetance()->getCompetanceLibelle();
             }
         }
-
+        if ($objCeintures = $this->getTblCeintures()) {
+            foreach ($objCeintures as $objCeinture) {
+                $pathCeinture = $objCeinture->getRefCeintureCouleur()->getPathImage();
+            }
+        }
         return array(
             $this->getRefCivilite()->getLibelleCivilite() . ' ' . ucfirst($this->getNomAdherent()) . ',' . ucfirst($this->getPrenomAdherent()),
             $competance,
             $this->getRefTypeSport()->getLibelle(),
+            "<img src=/images/niveau_ceinture/" . $pathCeinture . ">",
             $joursPlanning,
             $horaire,
             "DT_RowId" => "row_" . $this->getIdAdherent()
@@ -115,17 +125,12 @@ class TblAdherent extends BaseTblAdherent {
         $joursPlanning = '';
         $pathCeinture = '75px-Ceinture_blanche.png';
         $libelleSport = ' -- ';
-        $horaire ='';
+        $horaire = '';
         if ($this->getRefTypeSport()) {
             $libelleSport = $this->getRefTypeSport()->getLibelle();
         }
         if ($this->getRefNiveauAdherent()) {
             $niveau = $this->getRefNiveauAdherent()->getNiveauAdherentLibelle();
-        }
-        if ($objJours = $this->getLnkJourEntrainementAdherents()) {
-            foreach ($objJours as $objJour) {
-                $joursPlanning .= $objJour->getRefJour()->getLibelleJour() . " </br> ";
-            }
         }
         if ($objCeintures = $this->getTblCeintures()) {
             foreach ($objCeintures as $objCeinture) {
@@ -135,6 +140,20 @@ class TblAdherent extends BaseTblAdherent {
         if ($this->getSeanceHoraireId()) {
             $horaire .= $this->getRefSeanceHoraire()->getSeanceHoraire() . " </br> ";
         }
+
+        if ($this->getEntraineurId()) {
+            $mesJoursEntrainements = LnkJourEntrainementAdherentQuery::create()
+                    ->filterByIdAdherent($this->getEntraineurId())
+                    ->leftJoinRefJour()
+                    ->withColumn(RefJourPeer::LIBELLE_JOUR, 'libelleJour')
+                    ->find();
+
+
+            foreach ($mesJoursEntrainements as $mesJoursEntrainement) {
+                $joursPlanning .= $mesJoursEntrainement->getLibelleJour() . " </br> ";
+            }
+        }
+
         return array(
             $this->getRefCivilite()->getLibelleCivilite() . ' ' . ucfirst($this->getNomAdherent()) . ',' . ucfirst($this->getPrenomAdherent()),
             $libelleSport,
@@ -159,6 +178,13 @@ class TblAdherent extends BaseTblAdherent {
             $joursPlanning,
             "DT_RowId" => "row_" . $this->getIdAdherent()
         );
+    }
+    
+    public function getEntraineurById($idEntraineur) {
+        $objEntraineur = TblAdherentQuery::create()
+                ->filterByIdAdherent($idEntraineur)
+                ->findOne();
+        return $objEntraineur->getNomAdherent().' '.$objEntraineur->getPrenomAdherent();
     }
 
 }

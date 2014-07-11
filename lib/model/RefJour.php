@@ -1,7 +1,5 @@
 <?php
 
-
-
 /**
  * Skeleton subclass for representing a row from the 'ref_jour' table.
  *
@@ -15,4 +13,10 @@
  */
 class RefJour extends BaseRefJour {
 
-} // RefJour
+    public function __toString() {
+        return $this->getLibelleJour();
+    }
+
+}
+
+// RefJour

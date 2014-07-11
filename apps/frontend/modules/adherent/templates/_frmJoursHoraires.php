@@ -1,14 +1,33 @@
-<div class="col-xs-8 col-md-offset-4" style="margin-left: 46%;width: 60%;float: none;margin-top: 5%;">
-    <label class="col-xs-4" ><?php echo $form['lnk_jour_entrainement_adherent_list']->renderLabel() ?></label>
-    <div class="col-xs-4">
-        <?php echo $form['lnk_jour_entrainement_adherent_list']->renderError() ?>
-        <?php echo $form['lnk_jour_entrainement_adherent_list'] ?>
-    </div>
-</div>
-<div class="col-xs-8 col-md-offset-4" style="width: 60%;float: initial;">
-    <label class="col-xs-4" ><?php echo $form['seance_horaire_id']->renderLabel() ?></label>
-    <div class="col-xs-4">
+<div class="col-xs-8 col-md-offset-3" style="width: 60%;float: initial;margin-top: 4%;">
+    <label class="col-xs-2" ><?php echo $form['seance_horaire_id']->renderLabel() ?></label>
+    <div class="col-xs-3">
         <?php echo $form['seance_horaire_id']->renderError() ?>
         <?php echo $form['seance_horaire_id'] ?>
     </div>
 </div>
+
+<script>
+    $(function() {
+
+        $("#tbl_adherent_id_type_adherent").change(changeTypeAdherent);
+
+        function changeTypeAdherent()
+        {
+            typeAdherent = $("#tbl_adherent_id_type_adherent").val();
+            
+            if (typeAdherent == <?php echo RefTypeAdherentPeer::ENTRAINEUR ?>)
+            {
+                $("#tbl_adherent_seance_horaire_id").attr("disabled","");
+            }
+            else if (typeAdherent == <?php echo RefTypeAdherentPeer::ADHERENT ?>)
+            {
+                $("#tbl_adherent_seance_horaire_id").attr("disabled","disabled");
+            }
+            else if (typeAdherent == <?php echo RefTypeAdherentPeer::EMPLOYE ?>)
+            {
+                $("#tbl_adherent_seance_horaire_id").attr("disabled","");
+            }
+        }
+        changeTypeAdherent();
+    });
+</script>

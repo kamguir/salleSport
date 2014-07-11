@@ -39,6 +39,7 @@ class TblAdherentTableMap extends TableMap
 		$this->setUseIdGenerator(true);
 		// columns
 		$this->addPrimaryKey('ID_ADHERENT', 'IdAdherent', 'INTEGER', true, null, null);
+		$this->addForeignKey('ENTRAINEUR_ID', 'EntraineurId', 'INTEGER', 'tbl_adherent', 'ID_ADHERENT', false, null, null);
 		$this->addColumn('CIN_ADHERENT', 'CinAdherent', 'VARCHAR', false, 10, null);
 		$this->addColumn('NOM_ADHERENT', 'NomAdherent', 'VARCHAR', false, 255, null);
 		$this->addColumn('PRENOM_ADHERENT', 'PrenomAdherent', 'VARCHAR', false, 255, null);
@@ -63,6 +64,7 @@ class TblAdherentTableMap extends TableMap
 	 */
 	public function buildRelations()
 	{
+		$this->addRelation('TblAdherentRelatedByEntraineurId', 'TblAdherent', RelationMap::MANY_TO_ONE, array('entraineur_id' => 'id_adherent', ), null, null);
 		$this->addRelation('RefCivilite', 'RefCivilite', RelationMap::MANY_TO_ONE, array('id_civilite' => 'id_civilite', ), null, null);
 		$this->addRelation('RefSituation', 'RefSituation', RelationMap::MANY_TO_ONE, array('id_situation' => 'id_situation', ), null, null);
 		$this->addRelation('RefTypeAdherent', 'RefTypeAdherent', RelationMap::MANY_TO_ONE, array('id_type_adherent' => 'id_type_adherent', ), null, null);
@@ -71,6 +73,7 @@ class TblAdherentTableMap extends TableMap
 		$this->addRelation('RefSeanceHoraire', 'RefSeanceHoraire', RelationMap::MANY_TO_ONE, array('seance_horaire_id' => 'seance_horaire_id', ), null, null);
 		$this->addRelation('LnkAdherentCompetition', 'LnkAdherentCompetition', RelationMap::ONE_TO_MANY, array('id_adherent' => 'adherent_id', ), null, null, 'LnkAdherentCompetitions');
 		$this->addRelation('LnkJourEntrainementAdherent', 'LnkJourEntrainementAdherent', RelationMap::ONE_TO_MANY, array('id_adherent' => 'id_adherent', ), null, null, 'LnkJourEntrainementAdherents');
+		$this->addRelation('TblAdherentRelatedByIdAdherent', 'TblAdherent', RelationMap::ONE_TO_MANY, array('id_adherent' => 'entraineur_id', ), null, null, 'TblAdherentsRelatedByIdAdherent');
 		$this->addRelation('TblAssurance', 'TblAssurance', RelationMap::ONE_TO_MANY, array('id_adherent' => 'adherent_id', ), null, null, 'TblAssurances');
 		$this->addRelation('TblCeinture', 'TblCeinture', RelationMap::ONE_TO_MANY, array('id_adherent' => 'adherent_id', ), null, null, 'TblCeintures');
 		$this->addRelation('TblFacture', 'TblFacture', RelationMap::ONE_TO_MANY, array('id_adherent' => 'id_adherent', ), null, null, 'TblFactures');

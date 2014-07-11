@@ -1,7 +1,5 @@
 <?php
 
-
-
 /**
  * Skeleton subclass for performing query and update operations on the 'ref_type_adherent' table.
  *
@@ -19,5 +17,10 @@
  */
 class RefTypeAdherentPeer extends BaseRefTypeAdherentPeer {
 
+    const ADHERENT = 1;
+    const ENTRAINEUR = 2;
     const EMPLOYE = 3;
-} // RefTypeAdherentPeer
+
+}
+
+// RefTypeAdherentPeer

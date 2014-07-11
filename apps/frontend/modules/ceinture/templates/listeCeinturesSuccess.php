@@ -2,7 +2,7 @@
     <div class="panel panel-default">
         <div class="panel-heading clearfix">
             <i class="glyphicon glyphicon-list"></i>
-            <h3 class="panel-title">Liste des Dépenses</h3>
+            <h3 class="panel-title">Liste des Ceintures</h3>
         </div>
         <div class="panel-body">
             <div class=" entitefiltre fg-toolbar ui-toolbar ui-widget-header ui-corner-bl ui-corner-br ui-corner-tl ui-corner-tr ui-helper-clearfix">

@@ -6,7 +6,6 @@
         <input type="hidden" name="sf_method" value="put" />
     <?php endif; ?>
     <?php echo $form->renderGlobalErrors() ?>
-
     <!--<div class="panel-body" style="padding: 6px;">-->
     <div class="row">
         <div class="col-xs-8 col-sm-6" style="width: 45%;"> <br>
@@ -15,6 +14,20 @@
                 <div class="col-xs-6">
                     <?php echo $form['id_type_adherent']->renderError() ?>
                     <?php echo $form['id_type_adherent'] ?>
+                </div>
+            </div>
+            <div class="row" id="frmTypeSport">
+                <label class="col-xs-4"><?php echo $form['id_type_sport']->renderLabel() ?></label>
+                <div class="col-xs-6">
+                    <?php echo $form['id_type_sport']->renderError() ?>
+                    <?php echo $form['id_type_sport'] ?>
+                </div>
+            </div>
+            <div class="row" id="frmNiveauAdherent">
+                <label class="col-xs-4"><?php echo $form['niveau_adherent_id']->renderLabel() ?></label>
+                <div class="col-xs-6">
+                    <?php echo $form['niveau_adherent_id']->renderError() ?>
+                    <?php echo $form['niveau_adherent_id'] ?>
                 </div>
             </div>
             <div class="row">
@@ -29,20 +42,6 @@
                 <div class="col-xs-6">
                     <?php echo $form['prenom_adherent']->renderError() ?>
                     <?php echo $form['prenom_adherent'] ?>
-                </div>
-            </div>
-            <div class="row" id="frmTypeSport">
-                <label class="col-xs-4"><?php echo $form['id_type_sport']->renderLabel() ?></label>
-                <div class="col-xs-6">
-                    <?php echo $form['id_type_sport']->renderError() ?>
-                    <?php echo $form['id_type_sport'] ?>
-                </div>
-            </div>
-            <div class="row">
-                <label class="col-xs-4"><?php echo $form['niveau_adherent_id']->renderLabel() ?></label>
-                <div class="col-xs-6">
-                    <?php echo $form['niveau_adherent_id']->renderError() ?>
-                    <?php echo $form['niveau_adherent_id'] ?>
                 </div>
             </div>
             <div class="row">
@@ -96,11 +95,14 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-xs-8 col-md-offset-6" style="margin-left: 46%;width: 60%;float: none;">
-                <label class="col-xs-4" style="width: 21%;"><?php echo $form['id_entraineur']->renderLabel() ?></label>
+            <div id="entraineurID_form">
+                <?php include_partial('frmEntraineurID', array('form' => $form)) ?>
+            </div>
+            <div class="col-xs-8 col-md-offset-4" style="margin-left: 40%;width: 60%;float: none;margin-top: 5%;" id="lnkJours">
+                <label class="col-xs-4" ><?php echo $form['lnk_jour_entrainement_adherent_list']->renderLabel() ?></label>
                 <div class="col-xs-4">
-                    <?php echo $form['id_entraineur']->renderError() ?>
-                    <?php echo $form['id_entraineur'] ?>
+                    <?php echo $form['lnk_jour_entrainement_adherent_list']->renderError() ?>
+                    <?php echo $form['lnk_jour_entrainement_adherent_list'] ?>
                 </div>
             </div>
             <div id="jourHoraire_form">
@@ -128,28 +130,44 @@
         function changeTypeAdherent()
         {
             typeAdherent = $("#tbl_adherent_id_type_adherent").val();
-
-            if (typeAdherent == <?php echo RefTypeAdherentPeer::EMPLOYE ?>)
+            
+            if (typeAdherent == <?php echo RefTypeAdherentPeer::ENTRAINEUR ?>)
             {
-                $("#frmTypeSport").hide();
-                $("#frmNiveauAdherent").hide();
-            }
-            else
-            {
+                $("#entraineurID_form").hide();
+                $("#lnkJours").show();
                 $("#frmTypeSport").show();
                 $("#frmNiveauAdherent").show();
             }
+            else if (typeAdherent == <?php echo RefTypeAdherentPeer::ADHERENT ?>)
+            {
+                $("#lnkJours").hide();
+                $("#entraineurID_form").show();
+                $("#frmTypeSport").show();
+                $("#frmNiveauAdherent").show();
+            }
+            else if (typeAdherent == <?php echo RefTypeAdherentPeer::EMPLOYE ?>)
+            {
+                $("#frmTypeSport").hide();
+                $("#frmNiveauAdherent").hide();
+                $("#entraineurID_form").hide();
+                $("#lnkJours").show();
+            }
         }
-
         changeTypeAdherent();
 
     });
 
     $(document).ready(function() {
-        $("#tbl_adherent_id_entraineur").live("change", function() {
-            adherent_id = $('#tbl_adherent_id_entraineur').val();
+        $("#tbl_adherent_entraineur_id").live("change", function() {
+            adherent_id = $('#tbl_adherent_entraineur_id').val();
             $.post("<?php echo url_for("adherent/jourhoraireByIdEntraineurAjax") ?>", {adherent_id: adherent_id}, function(html) {
                 $('#jourHoraire_form').html(html);
+            });
+        });
+        $("#tbl_adherent_id_type_sport").live("change", function() {
+            entraineur_id = $('#tbl_adherent_id_type_sport').val();
+            $.post("<?php echo url_for("adherent/entraineursByTypeSportAjax") ?>", {entraineur_id: entraineur_id}, function(html) {
+                $('#entraineurID_form').html(html);
             });
         });
     });

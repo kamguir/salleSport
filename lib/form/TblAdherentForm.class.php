@@ -15,13 +15,26 @@ class TblAdherentForm extends BaseTblAdherentForm {
 
         $myObjTypeSport = $this->getOption('objTypesport');
         $myObjJoursHoraires = $this->getOption('objJoursHoraires');
+        $myObjListeEntraineursByTypeSport = $this->getOption('objListEntraineurs');
         $qlisteAdherents = TblAdherentQuery::create()
                 ->filterByIdTypeAdherent(RefTypeAdherent::ENTRAINEUR);
-        $this->widgetSchema['id_entraineur'] = new sfWidgetFormPropelChoice(array('model' => 'tblAdherent', 'criteria' => $qlisteAdherents));
-        $this->validatorSchema['id_entraineur'] = new sfValidatorPropelChoice(array('model' => 'tblAdherent'));
-        $this->widgetSchema['id_entraineur']->setAttribute("class", "form-control");
-        $this->getWidget("id_entraineur")->setOption("add_empty", '-- Aucun --');
-        
+        if ($myObjListeEntraineursByTypeSport) {
+            $values = array();
+            foreach ($myObjListeEntraineursByTypeSport as $value) {
+                $values[] = $value->getIdAdherent();
+            }
+            $qlisteAdherentsBySports = TblAdherentQuery::create()
+                    ->filterByIdAdherent($values)
+                    ->filterByEntraineurID(null);
+            $this->widgetSchema['entraineur_id'] = new sfWidgetFormPropelChoice(array('model' => 'tblAdherent', 'criteria' => $qlisteAdherentsBySports));
+        } else {
+            $this->widgetSchema['entraineur_id'] = new sfWidgetFormPropelChoice(array('model' => 'tblAdherent', 'criteria' => $qlisteAdherents));
+        }
+        $this->validatorSchema['entraineur_id'] = new sfValidatorPropelChoice(array('model' => 'tblAdherent', 'required' => true));
+        $this->widgetSchema['entraineur_id']->setAttribute("class", "form-control");
+        $this->getWidget("entraineur_id")->setOption("add_empty", '-- Aucun --');
+
+
         $this->widgetSchema['cin_adherent'] = new sfWidgetFormInputText(array());
         $this->validatorSchema['cin_adherent'] = new sfValidatorString(array('required' => false));
         $this->widgetSchema['cin_adherent']->setAttribute("class", "form-control");
@@ -65,11 +78,11 @@ class TblAdherentForm extends BaseTblAdherentForm {
         $this->widgetSchema['seance_horaire_id'] = new sfWidgetFormPropelChoice(array('model' => 'refSeanceHoraire'));
         $this->validatorSchema['seance_horaire_id'] = new sfValidatorPropelChoice(array('model' => 'refSeanceHoraire', 'required' => true));
         $this->widgetSchema['seance_horaire_id']->setAttribute("class", "form-control");
-        $this->getWidget("seance_horaire_id")->setOption("add_empty", '-- Aucun --');
+//        $this->widgetSchema['seance_horaire_id']->setAttribute('disabled', 'disabled');
         if ($myObjJoursHoraires) {
-            $values = array();
+            $values = ' -- ';
             foreach ($myObjJoursHoraires as $obj) {
-                $values[] = $obj->getTblAdherent()->getIdTypeSport();
+                $values = $obj->getTblAdherent()->getRefSeanceHoraire()->getSeanceHoraireId();
             }
             $this->getWidget("seance_horaire_id")->setDefault($values);
         }
@@ -89,27 +102,27 @@ class TblAdherentForm extends BaseTblAdherentForm {
         $this->widgetSchema['date_adhesion']->setAttribute("class", "form-control");
 
         //lnk jour entrainement adherent
-        $jourEntrainementSelected = LnkJourEntrainementAdherentQuery::create()
-                ->filterByIdAdherent($this->getObject()->getIdAdherent())
-                ->find();
+//        $jourEntrainementSelected = LnkJourEntrainementAdherentQuery::create()
+//                ->filterByIdAdherent($this->getObject()->getIdAdherent())
+//                ->find();
         $qRefJour = RefJourQuery::Create();
         $this->setWidget("lnk_jour_entrainement_adherent_list", new sfWidgetFormPropelChoice(array('model' => 'refJour', 'criteria' => $qRefJour, 'method' => 'getLibelleJour', 'multiple' => true, 'expanded' => true), array('style' => 'list-style-type:none;')));
         $this->setValidator('lnk_jour_entrainement_adherent_list', new sfValidatorPropelChoice(array('model' => 'refJour', 'multiple' => true, 'required' => true)));
-        if ($jourEntrainementSelected) {
-            // si update chargé les types lavages
-            $values = array();
-            foreach ($jourEntrainementSelected as $obj) {
-                $values[] = $obj->getIdJour();
-            }
-            $this->setDefault('lnk_jour_entrainement_adherent_list', $values);
-        }
-        if ($myObjJoursHoraires) {
-            $values = array();
-            foreach ($myObjJoursHoraires as $obj) {
-                $values[] = $obj->getIdJour();
-            }
-            $this->setDefault('lnk_jour_entrainement_adherent_list', $values);
-        }
+//        if ($jourEntrainementSelected) {
+//            // si update chargé les types lavages
+//            $values = array();
+//            foreach ($jourEntrainementSelected as $obj) {
+//                $values[] = $obj->getIdJour();
+//            }
+//            $this->setDefault('lnk_jour_entrainement_adherent_list', $values);
+//        }
+//        if ($myObjJoursHoraires) {
+//            $values = array();
+//            foreach ($myObjJoursHoraires as $obj) {
+//                $values[] = $obj->getIdJour();
+//            }
+//            $this->setDefault('lnk_jour_entrainement_adherent_list', $values);
+//        }
 
         $this->widgetSchema['image_adherent'] = new sfWidgetFormInputFile(array(
             'label' => 'Image ',
@@ -135,7 +148,7 @@ class TblAdherentForm extends BaseTblAdherentForm {
             'date_adhesion',
             'lnk_jour_entrainement_adherent_list',
             'niveau_adherent_id',
-            'id_entraineur',
+            'entraineur_id',
         );
 
         $this->getWidgetSchema()->setLabels(array(
@@ -149,7 +162,7 @@ class TblAdherentForm extends BaseTblAdherentForm {
             'id_situation' => 'Situation',
             'lnk_jour_entrainement_adherent_list' => 'Jour Entrainement',
             'seance_horaire_id' => 'Horaire ',
-            'id_entraineur' => 'Entraineur ',
+            'entraineur_id' => 'Entraineur ',
             'niveau_adherent_id' => 'Niveau ',
             'id_type_adherent' => 'Type Adherent'
         ));
@@ -159,9 +172,19 @@ class TblAdherentForm extends BaseTblAdherentForm {
 
     public function bind(array $taintedValues = null, array $taintedFiles = null) {
 //        gerer le cas des Employés
-        if ( $taintedValues['id_type_adherent'] == RefTypeAdherent::EMPLOYE ) {
-             $this->getValidator('niveau_adherent_id')->setOption('required', false);
+        if ($taintedValues['id_type_adherent'] == RefTypeAdherent::EMPLOYE) {
+            $this->getValidator('niveau_adherent_id')->setOption('required', false);
+            $this->getValidator('entraineur_id')->setOption('required', false);
+            $this->getValidator('id_type_sport')->setOption('required', false);
+        }
+        if ($taintedValues['id_type_adherent'] == RefTypeAdherent::ADHERENT) {
+            $this->getValidator('lnk_jour_entrainement_adherent_list')->setOption('required', false);
+        }
+        if ($taintedValues['id_type_adherent'] == RefTypeAdherent::ENTRAINEUR) {
+            $taintedValues['entraineur_id'] = null;
+            $this->getValidator('entraineur_id')->setOption('required', false);
         }
         parent::bind($taintedValues, $taintedFiles);
     }
+
 }
