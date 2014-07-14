@@ -1849,8 +1849,8 @@ ul.roman-list {
 }
 .logoLockOpen {
     float:left;
-    height:64px;
-    width:64px;
+/*    height:64px;
+    width:64px;*/
     margin-top:10px;
     margin-bottom: 10px;
     margin-left: 10%;
