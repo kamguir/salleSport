@@ -179,6 +179,7 @@ class TblAdherentForm extends BaseTblAdherentForm {
         }
         if ($taintedValues['id_type_adherent'] == RefTypeAdherent::ADHERENT) {
             $this->getValidator('lnk_jour_entrainement_adherent_list')->setOption('required', false);
+            $this->getValidator('seance_horaire_id')->setOption('required', false);
         }
         if ($taintedValues['id_type_adherent'] == RefTypeAdherent::ENTRAINEUR) {
             $taintedValues['entraineur_id'] = null;

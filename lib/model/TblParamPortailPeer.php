@@ -1,7 +1,5 @@
 <?php
 
-
-
 /**
  * Skeleton subclass for performing query and update operations on the 'tbl_param_portail' table.
  *
@@ -19,4 +17,24 @@
  */
 class TblParamPortailPeer extends BaseTblParamPortailPeer {
 
-} // TblParamPortailPeer
+    public static function getByName($name) {
+        $criteria = new Criteria();
+        $criteria->add(TblParamPortailPeer::PARAM_LIB, $name, Criteria::LIKE);
+        $paramPortail = TblParamPortailPeer::doSelectOne($criteria);
+        if ($paramPortail == null) {
+            $paramPortail = new ParamPortail();
+            $paramPortail->setParamLib($name);
+            $paramPortail->setParamValue("");
+            $paramPortail->save();
+        }
+        return $paramPortail;
+    }
+
+    public static function getValueByName($name) {
+        $param = self::getByName($name);
+        return $param->getParamValue();
+    }
+
+}
+
+// TblParamPortailPeer

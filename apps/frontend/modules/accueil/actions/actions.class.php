@@ -27,7 +27,7 @@ class accueilActions extends sfActions {
         $this->nbrTotalDepenses = TblDepensesQuery::create()
                 ->filterByDateDepenses(array("min" => date('Y') . '-' . date('m') . '-01', "max" => date('Y') . '-' . date('m') . '-31'))
                 ->count();
-       
+
         $this->nbrTotalAssurances = TblAssuranceQuery::create()
                 ->filterByDateAssurance(array("min" => date('Y') . '-' . date('m') . '-01', "max" => date('Y') . '-' . date('m') . '-31'))
                 ->count();
@@ -36,19 +36,59 @@ class accueilActions extends sfActions {
                 ->filterByDateDepenses(array("min" => date('Y') . '-' . date('m') . '-01', "max" => date('Y') . '-' . date('m') . '-31'))
                 ->filterByEtatPaiement(FALSE)
                 ->count();
-        
+
         $this->nbrTotalAssuranceNonPayesduMoisCourant = TblAssuranceQuery::create()
                 ->filterByDateAssurance(array("min" => date('Y') . '-' . date('m') . '-01', "max" => date('Y') . '-' . date('m') . '-31'))
                 ->filterByEtatPaiement(FALSE)
                 ->count();
         
+        $this->totalMontantAssurancePayéParMois = TblAssuranceQuery::create()
+                ->filterByDateAssurance(array("min" => date('Y') . '-' . date('m') . '-01', "max" => date('Y') . '-' . date('m') . '-31'))
+                ->filterByEtatPaiement(TRUE)
+                ->withColumn('SUM(' . TblAssurancePeer::PRIX_ASSURANCE . ')', "montantTotal")
+                ->select('montantTotal')
+                ->findOne();
+        
+        $this->totalMontantAssuranceNonPayéParMois = TblAssuranceQuery::create()
+                ->filterByDateAssurance(array("min" => date('Y') . '-' . date('m') . '-01', "max" => date('Y') . '-' . date('m') . '-31'))
+                ->filterByEtatPaiement(FALSE)
+                ->withColumn('SUM(' . TblAssurancePeer::PRIX_ASSURANCE . ')', "montantTotal")
+                ->select('montantTotal')
+                ->findOne();
+
+        $this->totalMontantAssuranceParMois = TblAssuranceQuery::create()
+                ->filterByDateAssurance(array("min" => date('Y') . '-' . date('m') . '-01', "max" => date('Y') . '-' . date('m') . '-31'))
+                ->withColumn('SUM(' . TblAssurancePeer::PRIX_ASSURANCE . ')', "montantTotal")
+                ->select('montantTotal')
+                ->findOne();
+
         $this->nbrTotalDepensesNonPayes = TblDepensesQuery::create()
                 ->filterByEtatPaiement(FALSE)
                 ->count();
-        
+
         $this->nbrTotalDepensesPayes = TblDepensesQuery::create()
                 ->filterByEtatPaiement(true)
                 ->count();
+
+        $this->totalMontantDepensesParMois = TblDepensesQuery::create()
+                ->filterByDateDepenses(array("min" => date('Y') . '-' . date('m') . '-01', "max" => date('Y') . '-' . date('m') . '-31'))
+                ->withColumn('SUM(' . TblDepensesPeer::MONTANT_DEPENSES . ')', "montantTotal")
+                ->select('montantTotal')
+                ->findOne();
+
+        $this->totalDepensesPayéParMois = TblDepensesQuery::create()
+                ->filterByDateDepenses(array("min" => date('Y') . '-' . date('m') . '-01', "max" => date('Y') . '-' . date('m') . '-31'))
+                ->filterByEtatPaiement(TRUE)
+                ->withColumn('SUM(' . TblDepensesPeer::MONTANT_DEPENSES . ')', "montantTotal")
+                ->select('montantTotal')
+                ->findOne();
+
+        $this->totalDepensesNonPayéParMois = TblDepensesQuery::create()
+                ->filterByDateDepenses(array("min" => date('Y') . '-' . date('m') . '-01', "max" => date('Y') . '-' . date('m') . '-31'))
+                ->filterByEtatPaiement(FALSE)
+                ->withColumn('SUM(' . TblDepensesPeer::MONTANT_DEPENSES . ')', "montantTotal")
+                ->select('montantTotal')
+                ->findOne();
         
         $this->nbrTotalAssurancesPayes = TblAssuranceQuery::create()
                 ->filterByEtatPaiement(true)
@@ -58,17 +98,31 @@ class accueilActions extends sfActions {
                 ->find();
 
         $this->totalFacturesParJour = TblFactureQuery::create()
-                ->filterByDateReglement(array("min" => date('Y') . '-' . date('m') . '-'.date('d'), "max" => date('Y') . '-' . date('m') . '-'.date('d').' 23:59:59'))
+                ->filterByDateReglement(array("min" => date('Y') . '-' . date('m') . '-' . date('d'), "max" => date('Y') . '-' . date('m') . '-' . date('d') . ' 23:59:59'))
                 ->withColumn('SUM(' . TblFacturePeer::PRIX_FACTURE . ')', "montantTotalJour")
                 ->select('montantTotalJour')
                 ->findOne();
-        
+
         $this->totalFacturesParMois = TblFactureQuery::create()
                 ->filterByDateReglement(array("min" => date('Y') . '-' . date('m') . '-01', "max" => date('Y') . '-' . date('m') . '-31'))
                 ->withColumn('SUM(' . TblFacturePeer::PRIX_FACTURE . ')', "montantTotal")
                 ->select('montantTotal')
                 ->findOne();
-        
+
+        $this->totalFacturesPayéParMois = TblFactureQuery::create()
+                ->filterByDateReglement(array("min" => date('Y') . '-' . date('m') . '-01', "max" => date('Y') . '-' . date('m') . '-31'))
+                ->filterByEtatPaiement(TRUE)
+                ->withColumn('SUM(' . TblFacturePeer::PRIX_FACTURE . ')', "montantTotal")
+                ->select('montantTotal')
+                ->findOne();
+
+        $this->totalFacturesNonPayéParMois = TblFactureQuery::create()
+                ->filterByDateReglement(array("min" => date('Y') . '-' . date('m') . '-01', "max" => date('Y') . '-' . date('m') . '-31'))
+                ->filterByEtatPaiement(FALSE)
+                ->withColumn('SUM(' . TblFacturePeer::PRIX_FACTURE . ')', "montantTotal")
+                ->select('montantTotal')
+                ->findOne();
+
         $this->totalFacturesParAnnee = TblFactureQuery::create()
                 ->filterByDateReglement(array("min" => date('Y') . '-' . '1' . '-01', "max" => date('Y') . '-' . '12' . '-31'))
                 ->withColumn('SUM(' . TblFacturePeer::PRIX_FACTURE . ')', "montantTotal")
@@ -100,8 +154,8 @@ class accueilActions extends sfActions {
         $tblFactures = TblFactureQuery::create()
                 ->joinTblAdherent()
                 ->useTblAdherentQuery()
-                    ->useRefTypeSportQuery()
-                    ->endUse()
+                ->useRefTypeSportQuery()
+                ->endUse()
                 ->endUse()
                 ->filterByEtatPaiement(0)
                 ->mergeWith($formFilter->buildCriteria($sf_user->getAttribute("dataTableFilterAdherentNonPaye", array())))

@@ -137,8 +137,8 @@
                     <div class="col-md-3 col-sm-4 col-xs-6">
                         <h2><?php echo $sf_context->getModuleName(); ?></h2>
                         <ul class="breadcrumb">
-                            <li>Home</li>
-                            <li>Gallery</li>
+<!--                            <li>Home</li>
+                            <li>Gallery</li>-->
                         </ul>
                     </div>
                     <!-- Breadcrumb nav end -->

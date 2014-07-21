@@ -26,7 +26,8 @@ test:
 dev:
   mailer:
     param:
-      delivery_strategy: none
+      delivery_strategy: single_address
+      delivery_address: kamguir@orcaformation.fr
 
 all:
   routing:
@@ -40,3 +41,16 @@ all:
     param:
       cache_key_use_vary_headers: true
       cache_key_use_host_name:    true
+
+  mailer:
+    class: sfMailer
+    param:
+      transport:
+        class: Swift_SmtpTransport
+        param:
+#          host:       mail.orcaformation.net
+          host:       smtp.menara.ma
+          port:       25
+          encryption: ~
+          username:   ~
+          password:   ~

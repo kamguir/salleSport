@@ -35,7 +35,7 @@ $libelleforReporting = implode(',', array_values($tblTypeSport));
                 type: 'column'
             },
             title: {
-                text: 'Nombre D\'adhérent Par Type Sport'
+                text: 'Nombre d\'adhérent Par Type Sport'
             },
             subtitle: {
                 text: ''

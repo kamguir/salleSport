@@ -41,7 +41,6 @@ class TblAssuranceForm extends BaseTblAssuranceForm {
             $this->getWidget("prix_assurance")->setDefault($myObjPrixAssurance->getPrixAssurance());
         }
 
-
         $widgetDateTime = new orcaWidgetFormDateText(array('format' => 'Y-m-d H:i:s', 'form' => $this));
         $validatorDateTime = new orcaValidatorDateTimesText(array('with_time' => true, 'format' => 'd/m/Y H:i'));
 

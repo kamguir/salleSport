@@ -61,7 +61,6 @@ class depensesActions extends sfActions {
             $tblDepenses = $form->save();
             $this->getUser()->setFlash('notice', 'Dépense enregistrée.');
             $this->redirect('depenses/listeDepenses');
-//            $this->redirect('depenses/edit?id_depenses=' . $tblDepenses->getIdDepenses());
         }
     }
 
@@ -101,8 +100,10 @@ class depensesActions extends sfActions {
 
     public function executeMesAlertes(sfWebRequest $request) {
 //        $this->tblDepensess = tblDepensesQuery::create()->find();
+        $obj = new TblFacture;
+        $this->mesFacturesNonPayes = $obj->getFactureNonPayes();
     }
-   
+
     public function executeAlertes(sfWebRequest $request) {
 //        $this->tblDepensess = tblDepensesQuery::create()->find();
     }
@@ -129,6 +130,38 @@ class depensesActions extends sfActions {
         return $this->renderText(json_encode(array("sEcho" => $request->getParameter("sEcho") + 1,
                     "iTotalDisplayRecords" => $nb,
                     "aaData" => $data)));
+    }
+
+    public function executeEnvoiMail($param) {
+        
+        $obj = new TblFacture;
+        $this->mesFacturesNonPayes = $obj->getFactureNonPayes();
+
+        $mailer = sfContext::getInstance()->getMailer();
+        $civilite = '';
+        $nomAdherent = '';
+        $preNomAdherent = '';
+        $prixFacture = '';
+        $typeSport = '';
+        $dateReglement = '';
+        $coreMessage = '';
+        $emailFrom = TblParamPortailPeer::getValueByName('EMAIL_FROM');
+        $emailTo = TblParamPortailPeer::getValueByName('EMAIL_TO');
+        foreach ($this->mesFacturesNonPayes as $value) {
+            $civilite = $value->getTblAdherent()->getRefCivilite()->getLibelleCivilite();
+            $nomAdherent = $value->getTblAdherent()->getNomAdherent();
+            $preNomAdherent = $value->getTblAdherent()->getPrenomAdherent();
+            $prixFacture = $value->getPrixFacture();
+            $typeSport = $value->getTblAdherent()->getRefTypeSport()->getLibelle();
+            $dateReglement = $value->getDateReglement();
+            $coreMessage .= $civilite . ' <b>' . $preNomAdherent . ' ' . $nomAdherent . '</b> adhérent dans sport <b>' . $typeSport .
+                    '</b> n a pas payé la facture de <b>' . $prixFacture . 'DH</b>, derniere date de payement est <b>' . $dateReglement . '</b><br/>';
+        }
+        $message = $mailer->compose($emailFrom, $emailTo, 'Factures Non Payés', $coreMessage);
+        $message->setContentType('text/html');
+//        $message->addCc($this->form->getObject()->getDemandeMail());
+        $mailer->send($message);
+        return $this->renderText('1');
     }
 
 }
