@@ -90,6 +90,7 @@ propel:
   tbl_adherent:
     _attributes: { phpName: TblAdherent, idMethod: native }
     id_adherent: { phpName: IdAdherent, type: INTEGER, primaryKey: true, autoIncrement: true, required: true }
+    user_id: { phpName: UserId, type: INTEGER, required: false, foreignTable: tbl_user, foreignReference: user_id }
     entraineur_id: { phpName: EntraineurId, type: INTEGER, required: false, foreignTable: tbl_adherent, foreignReference: id_adherent }
     cin_adherent: { phpName: CinAdherent, type: VARCHAR, size: '10', required: false }
     nom_adherent: { phpName: NomAdherent, type: VARCHAR, size: '255', required: false }
@@ -107,14 +108,14 @@ propel:
     seance_horaire_id: { phpName: SeanceHoraireId, type: INTEGER, required: false, foreignTable: ref_seance_horaire, foreignReference: seance_horaire_id }
     updated_at: { phpName: UpdatedAt, type: TIMESTAMP, required: false }
     deleted_at: { phpName: DeletedAt, type: TIMESTAMP, required: false }
-    _indexes: { FK_tbl_client: [id_situation], FK_tbl_adherent_type_fonction: [id_type_adherent], FK_tbl_adherent_ref_type_sport: [id_type_sport], FK_tbl_adherent_civilite: [id_civilite], FK_tbl_adherent_niveau: [niveau_adherent_id], FK_tbl_adherent_horaire: [seance_horaire_id], FK_tbl_adherent_entraineur: [entraineur_id] }
+    _indexes: { FK_tbl_client: [id_situation], FK_tbl_adherent_type_fonction: [id_type_adherent], FK_tbl_adherent_ref_type_sport: [id_type_sport], FK_tbl_adherent_civilite: [id_civilite], FK_tbl_adherent_niveau: [niveau_adherent_id], FK_tbl_adherent_horaire: [seance_horaire_id], FK_tbl_adherent_entraineur: [entraineur_id], FK_tbl_adherent_tbl_user: [user_id] }
   tbl_assurance:
     _attributes: { phpName: TblAssurance, idMethod: native }
     assurance_id: { phpName: AssuranceId, type: INTEGER, primaryKey: true, autoIncrement: true, required: true }
     adherent_id: { phpName: AdherentId, type: INTEGER, required: false, foreignTable: tbl_adherent, foreignReference: id_adherent }
     ref_assurance_id: { phpName: RefAssuranceId, type: INTEGER, required: false, foreignTable: ref_assurance, foreignReference: assurance_id }
     prix_assurance: { phpName: PrixAssurance, type: DOUBLE, required: false }
-    etat_paiement: { phpName: EtatPaiement, type: BOOLEAN, size: '1', required: false, defaultValue: false }
+    etat_paiement: { phpName: EtatPaiement, type: BOOLEAN, size: '1', required: false, defaultValue: true }
     date_assurance: { phpName: DateAssurance, type: TIMESTAMP, required: false }
     created_at: { phpName: CreatedAt, type: TIMESTAMP, required: false }
     deleted_at: { phpName: DeletedAt, type: TIMESTAMP, required: false }

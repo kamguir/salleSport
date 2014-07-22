@@ -12,6 +12,7 @@ abstract class BaseTblAdherentFormFilter extends BaseFormFilterPropel
   public function setup()
   {
     $this->setWidgets(array(
+      'user_id'                             => new sfWidgetFormPropelChoice(array('model' => 'TblUser', 'add_empty' => true)),
       'entraineur_id'                       => new sfWidgetFormPropelChoice(array('model' => 'TblAdherent', 'add_empty' => true)),
       'cin_adherent'                        => new sfWidgetFormFilterInput(),
       'nom_adherent'                        => new sfWidgetFormFilterInput(),
@@ -34,6 +35,7 @@ abstract class BaseTblAdherentFormFilter extends BaseFormFilterPropel
     ));
 
     $this->setValidators(array(
+      'user_id'                             => new sfValidatorPropelChoice(array('required' => false, 'model' => 'TblUser', 'column' => 'user_id')),
       'entraineur_id'                       => new sfValidatorPropelChoice(array('required' => false, 'model' => 'TblAdherent', 'column' => 'id_adherent')),
       'cin_adherent'                        => new sfValidatorPass(array('required' => false)),
       'nom_adherent'                        => new sfValidatorPass(array('required' => false)),
@@ -121,6 +123,7 @@ abstract class BaseTblAdherentFormFilter extends BaseFormFilterPropel
   {
     return array(
       'id_adherent'                         => 'Number',
+      'user_id'                             => 'ForeignKey',
       'entraineur_id'                       => 'ForeignKey',
       'cin_adherent'                        => 'Text',
       'nom_adherent'                        => 'Text',

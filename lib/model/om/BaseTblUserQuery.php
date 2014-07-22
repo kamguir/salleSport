@@ -34,6 +34,10 @@
  * @method     TblUserQuery rightJoinLnkUserProfil($relationAlias = null) Adds a RIGHT JOIN clause to the query using the LnkUserProfil relation
  * @method     TblUserQuery innerJoinLnkUserProfil($relationAlias = null) Adds a INNER JOIN clause to the query using the LnkUserProfil relation
  *
+ * @method     TblUserQuery leftJoinTblAdherent($relationAlias = null) Adds a LEFT JOIN clause to the query using the TblAdherent relation
+ * @method     TblUserQuery rightJoinTblAdherent($relationAlias = null) Adds a RIGHT JOIN clause to the query using the TblAdherent relation
+ * @method     TblUserQuery innerJoinTblAdherent($relationAlias = null) Adds a INNER JOIN clause to the query using the TblAdherent relation
+ *
  * @method     TblUser findOne(PropelPDO $con = null) Return the first TblUser matching the query
  * @method     TblUser findOneOrCreate(PropelPDO $con = null) Return the first TblUser matching the query, or a new TblUser object populated from the query conditions when no match is found
  *
@@ -574,6 +578,79 @@ abstract class BaseTblUserQuery extends ModelCriteria
 		return $this
 			->joinLnkUserProfil($relationAlias, $joinType)
 			->useQuery($relationAlias ? $relationAlias : 'LnkUserProfil', 'LnkUserProfilQuery');
+	}
+
+	/**
+	 * Filter the query by a related TblAdherent object
+	 *
+	 * @param     TblAdherent $tblAdherent  the related object to use as filter
+	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+	 *
+	 * @return    TblUserQuery The current query, for fluid interface
+	 */
+	public function filterByTblAdherent($tblAdherent, $comparison = null)
+	{
+		if ($tblAdherent instanceof TblAdherent) {
+			return $this
+				->addUsingAlias(TblUserPeer::USER_ID, $tblAdherent->getUserId(), $comparison);
+		} elseif ($tblAdherent instanceof PropelCollection) {
+			return $this
+				->useTblAdherentQuery()
+				->filterByPrimaryKeys($tblAdherent->getPrimaryKeys())
+				->endUse();
+		} else {
+			throw new PropelException('filterByTblAdherent() only accepts arguments of type TblAdherent or PropelCollection');
+		}
+	}
+
+	/**
+	 * Adds a JOIN clause to the query using the TblAdherent relation
+	 *
+	 * @param     string $relationAlias optional alias for the relation
+	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+	 *
+	 * @return    TblUserQuery The current query, for fluid interface
+	 */
+	public function joinTblAdherent($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+	{
+		$tableMap = $this->getTableMap();
+		$relationMap = $tableMap->getRelation('TblAdherent');
+
+		// create a ModelJoin object for this join
+		$join = new ModelJoin();
+		$join->setJoinType($joinType);
+		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
+
+		// add the ModelJoin to the current object
+		if($relationAlias) {
+			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+			$this->addJoinObject($join, $relationAlias);
+		} else {
+			$this->addJoinObject($join, 'TblAdherent');
+		}
+
+		return $this;
+	}
+
+	/**
+	 * Use the TblAdherent relation TblAdherent object
+	 *
+	 * @see       useQuery()
+	 *
+	 * @param     string $relationAlias optional alias for the relation,
+	 *                                   to be used as main alias in the secondary query
+	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+	 *
+	 * @return    TblAdherentQuery A secondary query class using the current class as primary query
+	 */
+	public function useTblAdherentQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+	{
+		return $this
+			->joinTblAdherent($relationAlias, $joinType)
+			->useQuery($relationAlias ? $relationAlias : 'TblAdherent', 'TblAdherentQuery');
 	}
 
 	/**

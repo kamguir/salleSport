@@ -56,6 +56,7 @@ class TblUserTableMap extends TableMap
 	public function buildRelations()
 	{
 		$this->addRelation('LnkUserProfil', 'LnkUserProfil', RelationMap::ONE_TO_MANY, array('user_id' => 'user_id', ), null, null, 'LnkUserProfils');
+		$this->addRelation('TblAdherent', 'TblAdherent', RelationMap::ONE_TO_MANY, array('user_id' => 'user_id', ), null, null, 'TblAdherents');
 	} // buildRelations()
 
 	/**

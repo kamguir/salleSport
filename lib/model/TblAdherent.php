@@ -187,6 +187,10 @@ class TblAdherent extends BaseTblAdherent {
         return $objEntraineur->getNomAdherent().' '.$objEntraineur->getPrenomAdherent();
     }
 
+    protected function doInsert(PropelPDO $con) {
+        $this->setUserId( sfContext::getInstance()->getUser()->getAttribute('user_id'));
+        parent::doInsert($con);
+    }
 }
 
 // TblAdherent

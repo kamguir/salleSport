@@ -56,7 +56,7 @@ abstract class BaseTblAssurance extends BaseObject  implements Persistent
 
 	/**
 	 * The value for the etat_paiement field.
-	 * Note: this column has a database default value of: false
+	 * Note: this column has a database default value of: true
 	 * @var        boolean
 	 */
 	protected $etat_paiement;
@@ -111,7 +111,7 @@ abstract class BaseTblAssurance extends BaseObject  implements Persistent
 	 */
 	public function applyDefaultValues()
 	{
-		$this->etat_paiement = false;
+		$this->etat_paiement = true;
 	}
 
 	/**
@@ -480,7 +480,7 @@ abstract class BaseTblAssurance extends BaseObject  implements Persistent
 	 */
 	public function hasOnlyDefaultValues()
 	{
-			if ($this->etat_paiement !== false) {
+			if ($this->etat_paiement !== true) {
 				return false;
 			}
 

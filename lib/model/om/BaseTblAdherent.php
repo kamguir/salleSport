@@ -37,6 +37,12 @@ abstract class BaseTblAdherent extends BaseObject  implements Persistent
 	protected $id_adherent;
 
 	/**
+	 * The value for the user_id field.
+	 * @var        int
+	 */
+	protected $user_id;
+
+	/**
 	 * The value for the entraineur_id field.
 	 * @var        int
 	 */
@@ -137,6 +143,11 @@ abstract class BaseTblAdherent extends BaseObject  implements Persistent
 	 * @var        string
 	 */
 	protected $deleted_at;
+
+	/**
+	 * @var        TblUser
+	 */
+	protected $aTblUser;
 
 	/**
 	 * @var        TblAdherent
@@ -261,6 +272,16 @@ abstract class BaseTblAdherent extends BaseObject  implements Persistent
 	public function getIdAdherent()
 	{
 		return $this->id_adherent;
+	}
+
+	/**
+	 * Get the [user_id] column value.
+	 * 
+	 * @return     int
+	 */
+	public function getUserId()
+	{
+		return $this->user_id;
 	}
 
 	/**
@@ -536,6 +557,30 @@ abstract class BaseTblAdherent extends BaseObject  implements Persistent
 
 		return $this;
 	} // setIdAdherent()
+
+	/**
+	 * Set the value of [user_id] column.
+	 * 
+	 * @param      int $v new value
+	 * @return     TblAdherent The current object (for fluent API support)
+	 */
+	public function setUserId($v)
+	{
+		if ($v !== null) {
+			$v = (int) $v;
+		}
+
+		if ($this->user_id !== $v) {
+			$this->user_id = $v;
+			$this->modifiedColumns[] = TblAdherentPeer::USER_ID;
+		}
+
+		if ($this->aTblUser !== null && $this->aTblUser->getUserId() !== $v) {
+			$this->aTblUser = null;
+		}
+
+		return $this;
+	} // setUserId()
 
 	/**
 	 * Set the value of [entraineur_id] column.
@@ -944,23 +989,24 @@ abstract class BaseTblAdherent extends BaseObject  implements Persistent
 		try {
 
 			$this->id_adherent = ($row[$startcol + 0] !== null) ? (int) $row[$startcol + 0] : null;
-			$this->entraineur_id = ($row[$startcol + 1] !== null) ? (int) $row[$startcol + 1] : null;
-			$this->cin_adherent = ($row[$startcol + 2] !== null) ? (string) $row[$startcol + 2] : null;
-			$this->nom_adherent = ($row[$startcol + 3] !== null) ? (string) $row[$startcol + 3] : null;
-			$this->prenom_adherent = ($row[$startcol + 4] !== null) ? (string) $row[$startcol + 4] : null;
-			$this->id_civilite = ($row[$startcol + 5] !== null) ? (int) $row[$startcol + 5] : null;
-			$this->id_situation = ($row[$startcol + 6] !== null) ? (int) $row[$startcol + 6] : null;
-			$this->id_type_adherent = ($row[$startcol + 7] !== null) ? (int) $row[$startcol + 7] : null;
-			$this->niveau_adherent_id = ($row[$startcol + 8] !== null) ? (int) $row[$startcol + 8] : null;
-			$this->id_type_sport = ($row[$startcol + 9] !== null) ? (int) $row[$startcol + 9] : null;
-			$this->age_adherent = ($row[$startcol + 10] !== null) ? (int) $row[$startcol + 10] : null;
-			$this->num_tel = ($row[$startcol + 11] !== null) ? (int) $row[$startcol + 11] : null;
-			$this->adresse_adherent = ($row[$startcol + 12] !== null) ? (string) $row[$startcol + 12] : null;
-			$this->image_adherent = ($row[$startcol + 13] !== null) ? (string) $row[$startcol + 13] : null;
-			$this->date_adhesion = ($row[$startcol + 14] !== null) ? (string) $row[$startcol + 14] : null;
-			$this->seance_horaire_id = ($row[$startcol + 15] !== null) ? (int) $row[$startcol + 15] : null;
-			$this->updated_at = ($row[$startcol + 16] !== null) ? (string) $row[$startcol + 16] : null;
-			$this->deleted_at = ($row[$startcol + 17] !== null) ? (string) $row[$startcol + 17] : null;
+			$this->user_id = ($row[$startcol + 1] !== null) ? (int) $row[$startcol + 1] : null;
+			$this->entraineur_id = ($row[$startcol + 2] !== null) ? (int) $row[$startcol + 2] : null;
+			$this->cin_adherent = ($row[$startcol + 3] !== null) ? (string) $row[$startcol + 3] : null;
+			$this->nom_adherent = ($row[$startcol + 4] !== null) ? (string) $row[$startcol + 4] : null;
+			$this->prenom_adherent = ($row[$startcol + 5] !== null) ? (string) $row[$startcol + 5] : null;
+			$this->id_civilite = ($row[$startcol + 6] !== null) ? (int) $row[$startcol + 6] : null;
+			$this->id_situation = ($row[$startcol + 7] !== null) ? (int) $row[$startcol + 7] : null;
+			$this->id_type_adherent = ($row[$startcol + 8] !== null) ? (int) $row[$startcol + 8] : null;
+			$this->niveau_adherent_id = ($row[$startcol + 9] !== null) ? (int) $row[$startcol + 9] : null;
+			$this->id_type_sport = ($row[$startcol + 10] !== null) ? (int) $row[$startcol + 10] : null;
+			$this->age_adherent = ($row[$startcol + 11] !== null) ? (int) $row[$startcol + 11] : null;
+			$this->num_tel = ($row[$startcol + 12] !== null) ? (int) $row[$startcol + 12] : null;
+			$this->adresse_adherent = ($row[$startcol + 13] !== null) ? (string) $row[$startcol + 13] : null;
+			$this->image_adherent = ($row[$startcol + 14] !== null) ? (string) $row[$startcol + 14] : null;
+			$this->date_adhesion = ($row[$startcol + 15] !== null) ? (string) $row[$startcol + 15] : null;
+			$this->seance_horaire_id = ($row[$startcol + 16] !== null) ? (int) $row[$startcol + 16] : null;
+			$this->updated_at = ($row[$startcol + 17] !== null) ? (string) $row[$startcol + 17] : null;
+			$this->deleted_at = ($row[$startcol + 18] !== null) ? (string) $row[$startcol + 18] : null;
 			$this->resetModified();
 
 			$this->setNew(false);
@@ -969,7 +1015,7 @@ abstract class BaseTblAdherent extends BaseObject  implements Persistent
 				$this->ensureConsistency();
 			}
 
-			return $startcol + 18; // 18 = TblAdherentPeer::NUM_HYDRATE_COLUMNS.
+			return $startcol + 19; // 19 = TblAdherentPeer::NUM_HYDRATE_COLUMNS.
 
 		} catch (Exception $e) {
 			throw new PropelException("Error populating TblAdherent object", $e);
@@ -992,6 +1038,9 @@ abstract class BaseTblAdherent extends BaseObject  implements Persistent
 	public function ensureConsistency()
 	{
 
+		if ($this->aTblUser !== null && $this->user_id !== $this->aTblUser->getUserId()) {
+			$this->aTblUser = null;
+		}
 		if ($this->aTblAdherentRelatedByEntraineurId !== null && $this->entraineur_id !== $this->aTblAdherentRelatedByEntraineurId->getIdAdherent()) {
 			$this->aTblAdherentRelatedByEntraineurId = null;
 		}
@@ -1052,6 +1101,7 @@ abstract class BaseTblAdherent extends BaseObject  implements Persistent
 
 		if ($deep) {  // also de-associate any related objects?
 
+			$this->aTblUser = null;
 			$this->aTblAdherentRelatedByEntraineurId = null;
 			$this->aRefCivilite = null;
 			$this->aRefSituation = null;
@@ -1232,6 +1282,13 @@ abstract class BaseTblAdherent extends BaseObject  implements Persistent
 			// were passed to this object by their coresponding set
 			// method.  This object relates to these object(s) by a
 			// foreign key reference.
+
+			if ($this->aTblUser !== null) {
+				if ($this->aTblUser->isModified() || $this->aTblUser->isNew()) {
+					$affectedRows += $this->aTblUser->save($con);
+				}
+				$this->setTblUser($this->aTblUser);
+			}
 
 			if ($this->aTblAdherentRelatedByEntraineurId !== null) {
 				if ($this->aTblAdherentRelatedByEntraineurId->isModified() || $this->aTblAdherentRelatedByEntraineurId->isNew()) {
@@ -1423,6 +1480,9 @@ abstract class BaseTblAdherent extends BaseObject  implements Persistent
 		if ($this->isColumnModified(TblAdherentPeer::ID_ADHERENT)) {
 			$modifiedColumns[':p' . $index++]  = '`ID_ADHERENT`';
 		}
+		if ($this->isColumnModified(TblAdherentPeer::USER_ID)) {
+			$modifiedColumns[':p' . $index++]  = '`USER_ID`';
+		}
 		if ($this->isColumnModified(TblAdherentPeer::ENTRAINEUR_ID)) {
 			$modifiedColumns[':p' . $index++]  = '`ENTRAINEUR_ID`';
 		}
@@ -1487,6 +1547,9 @@ abstract class BaseTblAdherent extends BaseObject  implements Persistent
 				switch ($columnName) {
 					case '`ID_ADHERENT`':
 						$stmt->bindValue($identifier, $this->id_adherent, PDO::PARAM_INT);
+						break;
+					case '`USER_ID`':
+						$stmt->bindValue($identifier, $this->user_id, PDO::PARAM_INT);
 						break;
 					case '`ENTRAINEUR_ID`':
 						$stmt->bindValue($identifier, $this->entraineur_id, PDO::PARAM_INT);
@@ -1636,6 +1699,12 @@ abstract class BaseTblAdherent extends BaseObject  implements Persistent
 			// method.  This object relates to these object(s) by a
 			// foreign key reference.
 
+			if ($this->aTblUser !== null) {
+				if (!$this->aTblUser->validate($columns)) {
+					$failureMap = array_merge($failureMap, $this->aTblUser->getValidationFailures());
+				}
+			}
+
 			if ($this->aTblAdherentRelatedByEntraineurId !== null) {
 				if (!$this->aTblAdherentRelatedByEntraineurId->validate($columns)) {
 					$failureMap = array_merge($failureMap, $this->aTblAdherentRelatedByEntraineurId->getValidationFailures());
@@ -1769,54 +1838,57 @@ abstract class BaseTblAdherent extends BaseObject  implements Persistent
 				return $this->getIdAdherent();
 				break;
 			case 1:
-				return $this->getEntraineurId();
+				return $this->getUserId();
 				break;
 			case 2:
-				return $this->getCinAdherent();
+				return $this->getEntraineurId();
 				break;
 			case 3:
-				return $this->getNomAdherent();
+				return $this->getCinAdherent();
 				break;
 			case 4:
-				return $this->getPrenomAdherent();
+				return $this->getNomAdherent();
 				break;
 			case 5:
-				return $this->getIdCivilite();
+				return $this->getPrenomAdherent();
 				break;
 			case 6:
-				return $this->getIdSituation();
+				return $this->getIdCivilite();
 				break;
 			case 7:
-				return $this->getIdTypeAdherent();
+				return $this->getIdSituation();
 				break;
 			case 8:
-				return $this->getNiveauAdherentId();
+				return $this->getIdTypeAdherent();
 				break;
 			case 9:
-				return $this->getIdTypeSport();
+				return $this->getNiveauAdherentId();
 				break;
 			case 10:
-				return $this->getAgeAdherent();
+				return $this->getIdTypeSport();
 				break;
 			case 11:
-				return $this->getNumTel();
+				return $this->getAgeAdherent();
 				break;
 			case 12:
-				return $this->getAdresseAdherent();
+				return $this->getNumTel();
 				break;
 			case 13:
-				return $this->getImageAdherent();
+				return $this->getAdresseAdherent();
 				break;
 			case 14:
-				return $this->getDateAdhesion();
+				return $this->getImageAdherent();
 				break;
 			case 15:
-				return $this->getSeanceHoraireId();
+				return $this->getDateAdhesion();
 				break;
 			case 16:
-				return $this->getUpdatedAt();
+				return $this->getSeanceHoraireId();
 				break;
 			case 17:
+				return $this->getUpdatedAt();
+				break;
+			case 18:
 				return $this->getDeletedAt();
 				break;
 			default:
@@ -1849,25 +1921,29 @@ abstract class BaseTblAdherent extends BaseObject  implements Persistent
 		$keys = TblAdherentPeer::getFieldNames($keyType);
 		$result = array(
 			$keys[0] => $this->getIdAdherent(),
-			$keys[1] => $this->getEntraineurId(),
-			$keys[2] => $this->getCinAdherent(),
-			$keys[3] => $this->getNomAdherent(),
-			$keys[4] => $this->getPrenomAdherent(),
-			$keys[5] => $this->getIdCivilite(),
-			$keys[6] => $this->getIdSituation(),
-			$keys[7] => $this->getIdTypeAdherent(),
-			$keys[8] => $this->getNiveauAdherentId(),
-			$keys[9] => $this->getIdTypeSport(),
-			$keys[10] => $this->getAgeAdherent(),
-			$keys[11] => $this->getNumTel(),
-			$keys[12] => $this->getAdresseAdherent(),
-			$keys[13] => $this->getImageAdherent(),
-			$keys[14] => $this->getDateAdhesion(),
-			$keys[15] => $this->getSeanceHoraireId(),
-			$keys[16] => $this->getUpdatedAt(),
-			$keys[17] => $this->getDeletedAt(),
+			$keys[1] => $this->getUserId(),
+			$keys[2] => $this->getEntraineurId(),
+			$keys[3] => $this->getCinAdherent(),
+			$keys[4] => $this->getNomAdherent(),
+			$keys[5] => $this->getPrenomAdherent(),
+			$keys[6] => $this->getIdCivilite(),
+			$keys[7] => $this->getIdSituation(),
+			$keys[8] => $this->getIdTypeAdherent(),
+			$keys[9] => $this->getNiveauAdherentId(),
+			$keys[10] => $this->getIdTypeSport(),
+			$keys[11] => $this->getAgeAdherent(),
+			$keys[12] => $this->getNumTel(),
+			$keys[13] => $this->getAdresseAdherent(),
+			$keys[14] => $this->getImageAdherent(),
+			$keys[15] => $this->getDateAdhesion(),
+			$keys[16] => $this->getSeanceHoraireId(),
+			$keys[17] => $this->getUpdatedAt(),
+			$keys[18] => $this->getDeletedAt(),
 		);
 		if ($includeForeignObjects) {
+			if (null !== $this->aTblUser) {
+				$result['TblUser'] = $this->aTblUser->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+			}
 			if (null !== $this->aTblAdherentRelatedByEntraineurId) {
 				$result['TblAdherentRelatedByEntraineurId'] = $this->aTblAdherentRelatedByEntraineurId->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
 			}
@@ -1942,54 +2018,57 @@ abstract class BaseTblAdherent extends BaseObject  implements Persistent
 				$this->setIdAdherent($value);
 				break;
 			case 1:
-				$this->setEntraineurId($value);
+				$this->setUserId($value);
 				break;
 			case 2:
-				$this->setCinAdherent($value);
+				$this->setEntraineurId($value);
 				break;
 			case 3:
-				$this->setNomAdherent($value);
+				$this->setCinAdherent($value);
 				break;
 			case 4:
-				$this->setPrenomAdherent($value);
+				$this->setNomAdherent($value);
 				break;
 			case 5:
-				$this->setIdCivilite($value);
+				$this->setPrenomAdherent($value);
 				break;
 			case 6:
-				$this->setIdSituation($value);
+				$this->setIdCivilite($value);
 				break;
 			case 7:
-				$this->setIdTypeAdherent($value);
+				$this->setIdSituation($value);
 				break;
 			case 8:
-				$this->setNiveauAdherentId($value);
+				$this->setIdTypeAdherent($value);
 				break;
 			case 9:
-				$this->setIdTypeSport($value);
+				$this->setNiveauAdherentId($value);
 				break;
 			case 10:
-				$this->setAgeAdherent($value);
+				$this->setIdTypeSport($value);
 				break;
 			case 11:
-				$this->setNumTel($value);
+				$this->setAgeAdherent($value);
 				break;
 			case 12:
-				$this->setAdresseAdherent($value);
+				$this->setNumTel($value);
 				break;
 			case 13:
-				$this->setImageAdherent($value);
+				$this->setAdresseAdherent($value);
 				break;
 			case 14:
-				$this->setDateAdhesion($value);
+				$this->setImageAdherent($value);
 				break;
 			case 15:
-				$this->setSeanceHoraireId($value);
+				$this->setDateAdhesion($value);
 				break;
 			case 16:
-				$this->setUpdatedAt($value);
+				$this->setSeanceHoraireId($value);
 				break;
 			case 17:
+				$this->setUpdatedAt($value);
+				break;
+			case 18:
 				$this->setDeletedAt($value);
 				break;
 		} // switch()
@@ -2017,23 +2096,24 @@ abstract class BaseTblAdherent extends BaseObject  implements Persistent
 		$keys = TblAdherentPeer::getFieldNames($keyType);
 
 		if (array_key_exists($keys[0], $arr)) $this->setIdAdherent($arr[$keys[0]]);
-		if (array_key_exists($keys[1], $arr)) $this->setEntraineurId($arr[$keys[1]]);
-		if (array_key_exists($keys[2], $arr)) $this->setCinAdherent($arr[$keys[2]]);
-		if (array_key_exists($keys[3], $arr)) $this->setNomAdherent($arr[$keys[3]]);
-		if (array_key_exists($keys[4], $arr)) $this->setPrenomAdherent($arr[$keys[4]]);
-		if (array_key_exists($keys[5], $arr)) $this->setIdCivilite($arr[$keys[5]]);
-		if (array_key_exists($keys[6], $arr)) $this->setIdSituation($arr[$keys[6]]);
-		if (array_key_exists($keys[7], $arr)) $this->setIdTypeAdherent($arr[$keys[7]]);
-		if (array_key_exists($keys[8], $arr)) $this->setNiveauAdherentId($arr[$keys[8]]);
-		if (array_key_exists($keys[9], $arr)) $this->setIdTypeSport($arr[$keys[9]]);
-		if (array_key_exists($keys[10], $arr)) $this->setAgeAdherent($arr[$keys[10]]);
-		if (array_key_exists($keys[11], $arr)) $this->setNumTel($arr[$keys[11]]);
-		if (array_key_exists($keys[12], $arr)) $this->setAdresseAdherent($arr[$keys[12]]);
-		if (array_key_exists($keys[13], $arr)) $this->setImageAdherent($arr[$keys[13]]);
-		if (array_key_exists($keys[14], $arr)) $this->setDateAdhesion($arr[$keys[14]]);
-		if (array_key_exists($keys[15], $arr)) $this->setSeanceHoraireId($arr[$keys[15]]);
-		if (array_key_exists($keys[16], $arr)) $this->setUpdatedAt($arr[$keys[16]]);
-		if (array_key_exists($keys[17], $arr)) $this->setDeletedAt($arr[$keys[17]]);
+		if (array_key_exists($keys[1], $arr)) $this->setUserId($arr[$keys[1]]);
+		if (array_key_exists($keys[2], $arr)) $this->setEntraineurId($arr[$keys[2]]);
+		if (array_key_exists($keys[3], $arr)) $this->setCinAdherent($arr[$keys[3]]);
+		if (array_key_exists($keys[4], $arr)) $this->setNomAdherent($arr[$keys[4]]);
+		if (array_key_exists($keys[5], $arr)) $this->setPrenomAdherent($arr[$keys[5]]);
+		if (array_key_exists($keys[6], $arr)) $this->setIdCivilite($arr[$keys[6]]);
+		if (array_key_exists($keys[7], $arr)) $this->setIdSituation($arr[$keys[7]]);
+		if (array_key_exists($keys[8], $arr)) $this->setIdTypeAdherent($arr[$keys[8]]);
+		if (array_key_exists($keys[9], $arr)) $this->setNiveauAdherentId($arr[$keys[9]]);
+		if (array_key_exists($keys[10], $arr)) $this->setIdTypeSport($arr[$keys[10]]);
+		if (array_key_exists($keys[11], $arr)) $this->setAgeAdherent($arr[$keys[11]]);
+		if (array_key_exists($keys[12], $arr)) $this->setNumTel($arr[$keys[12]]);
+		if (array_key_exists($keys[13], $arr)) $this->setAdresseAdherent($arr[$keys[13]]);
+		if (array_key_exists($keys[14], $arr)) $this->setImageAdherent($arr[$keys[14]]);
+		if (array_key_exists($keys[15], $arr)) $this->setDateAdhesion($arr[$keys[15]]);
+		if (array_key_exists($keys[16], $arr)) $this->setSeanceHoraireId($arr[$keys[16]]);
+		if (array_key_exists($keys[17], $arr)) $this->setUpdatedAt($arr[$keys[17]]);
+		if (array_key_exists($keys[18], $arr)) $this->setDeletedAt($arr[$keys[18]]);
 	}
 
 	/**
@@ -2046,6 +2126,7 @@ abstract class BaseTblAdherent extends BaseObject  implements Persistent
 		$criteria = new Criteria(TblAdherentPeer::DATABASE_NAME);
 
 		if ($this->isColumnModified(TblAdherentPeer::ID_ADHERENT)) $criteria->add(TblAdherentPeer::ID_ADHERENT, $this->id_adherent);
+		if ($this->isColumnModified(TblAdherentPeer::USER_ID)) $criteria->add(TblAdherentPeer::USER_ID, $this->user_id);
 		if ($this->isColumnModified(TblAdherentPeer::ENTRAINEUR_ID)) $criteria->add(TblAdherentPeer::ENTRAINEUR_ID, $this->entraineur_id);
 		if ($this->isColumnModified(TblAdherentPeer::CIN_ADHERENT)) $criteria->add(TblAdherentPeer::CIN_ADHERENT, $this->cin_adherent);
 		if ($this->isColumnModified(TblAdherentPeer::NOM_ADHERENT)) $criteria->add(TblAdherentPeer::NOM_ADHERENT, $this->nom_adherent);
@@ -2125,6 +2206,7 @@ abstract class BaseTblAdherent extends BaseObject  implements Persistent
 	 */
 	public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
 	{
+		$copyObj->setUserId($this->getUserId());
 		$copyObj->setEntraineurId($this->getEntraineurId());
 		$copyObj->setCinAdherent($this->getCinAdherent());
 		$copyObj->setNomAdherent($this->getNomAdherent());
@@ -2232,6 +2314,55 @@ abstract class BaseTblAdherent extends BaseObject  implements Persistent
 			self::$peer = new TblAdherentPeer();
 		}
 		return self::$peer;
+	}
+
+	/**
+	 * Declares an association between this object and a TblUser object.
+	 *
+	 * @param      TblUser $v
+	 * @return     TblAdherent The current object (for fluent API support)
+	 * @throws     PropelException
+	 */
+	public function setTblUser(TblUser $v = null)
+	{
+		if ($v === null) {
+			$this->setUserId(NULL);
+		} else {
+			$this->setUserId($v->getUserId());
+		}
+
+		$this->aTblUser = $v;
+
+		// Add binding for other direction of this n:n relationship.
+		// If this object has already been added to the TblUser object, it will not be re-added.
+		if ($v !== null) {
+			$v->addTblAdherent($this);
+		}
+
+		return $this;
+	}
+
+
+	/**
+	 * Get the associated TblUser object
+	 *
+	 * @param      PropelPDO Optional Connection object.
+	 * @return     TblUser The associated TblUser object.
+	 * @throws     PropelException
+	 */
+	public function getTblUser(PropelPDO $con = null)
+	{
+		if ($this->aTblUser === null && ($this->user_id !== null)) {
+			$this->aTblUser = TblUserQuery::create()->findPk($this->user_id, $con);
+			/* The following can be used additionally to
+				guarantee the related object contains a reference
+				to this object.  This level of coupling may, however, be
+				undesirable since it could result in an only partially populated collection
+				in the referenced object.
+				$this->aTblUser->addTblAdherents($this);
+			 */
+		}
+		return $this->aTblUser;
 	}
 
 	/**
@@ -3119,6 +3250,31 @@ abstract class BaseTblAdherent extends BaseObject  implements Persistent
 	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
 	 * @return     PropelCollection|array TblAdherent[] List of TblAdherent objects
 	 */
+	public function getTblAdherentsRelatedByIdAdherentJoinTblUser($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = TblAdherentQuery::create(null, $criteria);
+		$query->joinWith('TblUser', $join_behavior);
+
+		return $this->getTblAdherentsRelatedByIdAdherent($query, $con);
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this TblAdherent is new, it will return
+	 * an empty collection; or if this TblAdherent has previously
+	 * been saved, it will retrieve related TblAdherentsRelatedByIdAdherent from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in TblAdherent.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array TblAdherent[] List of TblAdherent objects
+	 */
 	public function getTblAdherentsRelatedByIdAdherentJoinRefCivilite($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$query = TblAdherentQuery::create(null, $criteria);
@@ -3827,6 +3983,7 @@ abstract class BaseTblAdherent extends BaseObject  implements Persistent
 	public function clear()
 	{
 		$this->id_adherent = null;
+		$this->user_id = null;
 		$this->entraineur_id = null;
 		$this->cin_adherent = null;
 		$this->nom_adherent = null;
@@ -3920,6 +4077,7 @@ abstract class BaseTblAdherent extends BaseObject  implements Persistent
 			$this->collTblFactures->clearIterator();
 		}
 		$this->collTblFactures = null;
+		$this->aTblUser = null;
 		$this->aTblAdherentRelatedByEntraineurId = null;
 		$this->aRefCivilite = null;
 		$this->aRefSituation = null;

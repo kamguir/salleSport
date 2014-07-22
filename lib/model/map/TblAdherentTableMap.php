@@ -39,6 +39,7 @@ class TblAdherentTableMap extends TableMap
 		$this->setUseIdGenerator(true);
 		// columns
 		$this->addPrimaryKey('ID_ADHERENT', 'IdAdherent', 'INTEGER', true, null, null);
+		$this->addForeignKey('USER_ID', 'UserId', 'INTEGER', 'tbl_user', 'USER_ID', false, null, null);
 		$this->addForeignKey('ENTRAINEUR_ID', 'EntraineurId', 'INTEGER', 'tbl_adherent', 'ID_ADHERENT', false, null, null);
 		$this->addColumn('CIN_ADHERENT', 'CinAdherent', 'VARCHAR', false, 10, null);
 		$this->addColumn('NOM_ADHERENT', 'NomAdherent', 'VARCHAR', false, 255, null);
@@ -64,6 +65,7 @@ class TblAdherentTableMap extends TableMap
 	 */
 	public function buildRelations()
 	{
+		$this->addRelation('TblUser', 'TblUser', RelationMap::MANY_TO_ONE, array('user_id' => 'user_id', ), null, null);
 		$this->addRelation('TblAdherentRelatedByEntraineurId', 'TblAdherent', RelationMap::MANY_TO_ONE, array('entraineur_id' => 'id_adherent', ), null, null);
 		$this->addRelation('RefCivilite', 'RefCivilite', RelationMap::MANY_TO_ONE, array('id_civilite' => 'id_civilite', ), null, null);
 		$this->addRelation('RefSituation', 'RefSituation', RelationMap::MANY_TO_ONE, array('id_situation' => 'id_situation', ), null, null);

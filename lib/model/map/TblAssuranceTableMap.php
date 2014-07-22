@@ -42,7 +42,7 @@ class TblAssuranceTableMap extends TableMap
 		$this->addForeignKey('ADHERENT_ID', 'AdherentId', 'INTEGER', 'tbl_adherent', 'ID_ADHERENT', false, null, null);
 		$this->addForeignKey('REF_ASSURANCE_ID', 'RefAssuranceId', 'INTEGER', 'ref_assurance', 'ASSURANCE_ID', false, null, null);
 		$this->addColumn('PRIX_ASSURANCE', 'PrixAssurance', 'DOUBLE', false, null, null);
-		$this->addColumn('ETAT_PAIEMENT', 'EtatPaiement', 'BOOLEAN', false, 1, false);
+		$this->addColumn('ETAT_PAIEMENT', 'EtatPaiement', 'BOOLEAN', false, 1, true);
 		$this->addColumn('DATE_ASSURANCE', 'DateAssurance', 'TIMESTAMP', false, null, null);
 		$this->addColumn('CREATED_AT', 'CreatedAt', 'TIMESTAMP', false, null, null);
 		$this->addColumn('DELETED_AT', 'DeletedAt', 'TIMESTAMP', false, null, null);

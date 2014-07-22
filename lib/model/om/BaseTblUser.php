@@ -90,6 +90,11 @@ abstract class BaseTblUser extends BaseObject  implements Persistent
 	protected $collLnkUserProfils;
 
 	/**
+	 * @var        array TblAdherent[] Collection to store aggregation of TblAdherent objects.
+	 */
+	protected $collTblAdherents;
+
+	/**
 	 * Flag to prevent endless save loop, if this object is referenced
 	 * by another object which falls in this transaction.
 	 * @var        boolean
@@ -108,6 +113,12 @@ abstract class BaseTblUser extends BaseObject  implements Persistent
 	 * @var		array
 	 */
 	protected $lnkUserProfilsScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $tblAdherentsScheduledForDeletion = null;
 
 	/**
 	 * Get the [user_id] column value.
@@ -530,6 +541,8 @@ abstract class BaseTblUser extends BaseObject  implements Persistent
 
 			$this->collLnkUserProfils = null;
 
+			$this->collTblAdherents = null;
+
 		} // if (deep)
 	}
 
@@ -694,6 +707,23 @@ abstract class BaseTblUser extends BaseObject  implements Persistent
 
 			if ($this->collLnkUserProfils !== null) {
 				foreach ($this->collLnkUserProfils as $referrerFK) {
+					if (!$referrerFK->isDeleted()) {
+						$affectedRows += $referrerFK->save($con);
+					}
+				}
+			}
+
+			if ($this->tblAdherentsScheduledForDeletion !== null) {
+				if (!$this->tblAdherentsScheduledForDeletion->isEmpty()) {
+					TblAdherentQuery::create()
+						->filterByPrimaryKeys($this->tblAdherentsScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->tblAdherentsScheduledForDeletion = null;
+				}
+			}
+
+			if ($this->collTblAdherents !== null) {
+				foreach ($this->collTblAdherents as $referrerFK) {
 					if (!$referrerFK->isDeleted()) {
 						$affectedRows += $referrerFK->save($con);
 					}
@@ -895,6 +925,14 @@ abstract class BaseTblUser extends BaseObject  implements Persistent
 					}
 				}
 
+				if ($this->collTblAdherents !== null) {
+					foreach ($this->collTblAdherents as $referrerFK) {
+						if (!$referrerFK->validate($columns)) {
+							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
+						}
+					}
+				}
+
 
 			$this->alreadyInValidation = false;
 		}
@@ -997,6 +1035,9 @@ abstract class BaseTblUser extends BaseObject  implements Persistent
 		if ($includeForeignObjects) {
 			if (null !== $this->collLnkUserProfils) {
 				$result['LnkUserProfils'] = $this->collLnkUserProfils->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+			}
+			if (null !== $this->collTblAdherents) {
+				$result['TblAdherents'] = $this->collTblAdherents->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
 			}
 		}
 		return $result;
@@ -1193,6 +1234,12 @@ abstract class BaseTblUser extends BaseObject  implements Persistent
 				}
 			}
 
+			foreach ($this->getTblAdherents() as $relObj) {
+				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+					$copyObj->addTblAdherent($relObj->copy($deepCopy));
+				}
+			}
+
 			//unflag object copy
 			$this->startCopy = false;
 		} // if ($deepCopy)
@@ -1254,6 +1301,9 @@ abstract class BaseTblUser extends BaseObject  implements Persistent
 	{
 		if ('LnkUserProfil' == $relationName) {
 			return $this->initLnkUserProfils();
+		}
+		if ('TblAdherent' == $relationName) {
+			return $this->initTblAdherents();
 		}
 	}
 
@@ -1431,6 +1481,329 @@ abstract class BaseTblUser extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Clears out the collTblAdherents collection
+	 *
+	 * This does not modify the database; however, it will remove any associated objects, causing
+	 * them to be refetched by subsequent calls to accessor method.
+	 *
+	 * @return     void
+	 * @see        addTblAdherents()
+	 */
+	public function clearTblAdherents()
+	{
+		$this->collTblAdherents = null; // important to set this to NULL since that means it is uninitialized
+	}
+
+	/**
+	 * Initializes the collTblAdherents collection.
+	 *
+	 * By default this just sets the collTblAdherents collection to an empty array (like clearcollTblAdherents());
+	 * however, you may wish to override this method in your stub class to provide setting appropriate
+	 * to your application -- for example, setting the initial array to the values stored in database.
+	 *
+	 * @param      boolean $overrideExisting If set to true, the method call initializes
+	 *                                        the collection even if it is not empty
+	 *
+	 * @return     void
+	 */
+	public function initTblAdherents($overrideExisting = true)
+	{
+		if (null !== $this->collTblAdherents && !$overrideExisting) {
+			return;
+		}
+		$this->collTblAdherents = new PropelObjectCollection();
+		$this->collTblAdherents->setModel('TblAdherent');
+	}
+
+	/**
+	 * Gets an array of TblAdherent objects which contain a foreign key that references this object.
+	 *
+	 * If the $criteria is not null, it is used to always fetch the results from the database.
+	 * Otherwise the results are fetched from the database the first time, then cached.
+	 * Next time the same method is called without $criteria, the cached collection is returned.
+	 * If this TblUser is new, it will return
+	 * an empty collection or the current collection; the criteria is ignored on a new object.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @return     PropelCollection|array TblAdherent[] List of TblAdherent objects
+	 * @throws     PropelException
+	 */
+	public function getTblAdherents($criteria = null, PropelPDO $con = null)
+	{
+		if(null === $this->collTblAdherents || null !== $criteria) {
+			if ($this->isNew() && null === $this->collTblAdherents) {
+				// return empty collection
+				$this->initTblAdherents();
+			} else {
+				$collTblAdherents = TblAdherentQuery::create(null, $criteria)
+					->filterByTblUser($this)
+					->find($con);
+				if (null !== $criteria) {
+					return $collTblAdherents;
+				}
+				$this->collTblAdherents = $collTblAdherents;
+			}
+		}
+		return $this->collTblAdherents;
+	}
+
+	/**
+	 * Sets a collection of TblAdherent objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $tblAdherents A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setTblAdherents(PropelCollection $tblAdherents, PropelPDO $con = null)
+	{
+		$this->tblAdherentsScheduledForDeletion = $this->getTblAdherents(new Criteria(), $con)->diff($tblAdherents);
+
+		foreach ($tblAdherents as $tblAdherent) {
+			// Fix issue with collection modified by reference
+			if ($tblAdherent->isNew()) {
+				$tblAdherent->setTblUser($this);
+			}
+			$this->addTblAdherent($tblAdherent);
+		}
+
+		$this->collTblAdherents = $tblAdherents;
+	}
+
+	/**
+	 * Returns the number of related TblAdherent objects.
+	 *
+	 * @param      Criteria $criteria
+	 * @param      boolean $distinct
+	 * @param      PropelPDO $con
+	 * @return     int Count of related TblAdherent objects.
+	 * @throws     PropelException
+	 */
+	public function countTblAdherents(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+	{
+		if(null === $this->collTblAdherents || null !== $criteria) {
+			if ($this->isNew() && null === $this->collTblAdherents) {
+				return 0;
+			} else {
+				$query = TblAdherentQuery::create(null, $criteria);
+				if($distinct) {
+					$query->distinct();
+				}
+				return $query
+					->filterByTblUser($this)
+					->count($con);
+			}
+		} else {
+			return count($this->collTblAdherents);
+		}
+	}
+
+	/**
+	 * Method called to associate a TblAdherent object to this object
+	 * through the TblAdherent foreign key attribute.
+	 *
+	 * @param      TblAdherent $l TblAdherent
+	 * @return     TblUser The current object (for fluent API support)
+	 */
+	public function addTblAdherent(TblAdherent $l)
+	{
+		if ($this->collTblAdherents === null) {
+			$this->initTblAdherents();
+		}
+		if (!$this->collTblAdherents->contains($l)) { // only add it if the **same** object is not already associated
+			$this->doAddTblAdherent($l);
+		}
+
+		return $this;
+	}
+
+	/**
+	 * @param	TblAdherent $tblAdherent The tblAdherent object to add.
+	 */
+	protected function doAddTblAdherent($tblAdherent)
+	{
+		$this->collTblAdherents[]= $tblAdherent;
+		$tblAdherent->setTblUser($this);
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this TblUser is new, it will return
+	 * an empty collection; or if this TblUser has previously
+	 * been saved, it will retrieve related TblAdherents from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in TblUser.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array TblAdherent[] List of TblAdherent objects
+	 */
+	public function getTblAdherentsJoinTblAdherentRelatedByEntraineurId($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = TblAdherentQuery::create(null, $criteria);
+		$query->joinWith('TblAdherentRelatedByEntraineurId', $join_behavior);
+
+		return $this->getTblAdherents($query, $con);
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this TblUser is new, it will return
+	 * an empty collection; or if this TblUser has previously
+	 * been saved, it will retrieve related TblAdherents from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in TblUser.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array TblAdherent[] List of TblAdherent objects
+	 */
+	public function getTblAdherentsJoinRefCivilite($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = TblAdherentQuery::create(null, $criteria);
+		$query->joinWith('RefCivilite', $join_behavior);
+
+		return $this->getTblAdherents($query, $con);
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this TblUser is new, it will return
+	 * an empty collection; or if this TblUser has previously
+	 * been saved, it will retrieve related TblAdherents from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in TblUser.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array TblAdherent[] List of TblAdherent objects
+	 */
+	public function getTblAdherentsJoinRefSituation($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = TblAdherentQuery::create(null, $criteria);
+		$query->joinWith('RefSituation', $join_behavior);
+
+		return $this->getTblAdherents($query, $con);
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this TblUser is new, it will return
+	 * an empty collection; or if this TblUser has previously
+	 * been saved, it will retrieve related TblAdherents from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in TblUser.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array TblAdherent[] List of TblAdherent objects
+	 */
+	public function getTblAdherentsJoinRefTypeAdherent($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = TblAdherentQuery::create(null, $criteria);
+		$query->joinWith('RefTypeAdherent', $join_behavior);
+
+		return $this->getTblAdherents($query, $con);
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this TblUser is new, it will return
+	 * an empty collection; or if this TblUser has previously
+	 * been saved, it will retrieve related TblAdherents from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in TblUser.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array TblAdherent[] List of TblAdherent objects
+	 */
+	public function getTblAdherentsJoinRefNiveauAdherent($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = TblAdherentQuery::create(null, $criteria);
+		$query->joinWith('RefNiveauAdherent', $join_behavior);
+
+		return $this->getTblAdherents($query, $con);
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this TblUser is new, it will return
+	 * an empty collection; or if this TblUser has previously
+	 * been saved, it will retrieve related TblAdherents from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in TblUser.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array TblAdherent[] List of TblAdherent objects
+	 */
+	public function getTblAdherentsJoinRefTypeSport($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = TblAdherentQuery::create(null, $criteria);
+		$query->joinWith('RefTypeSport', $join_behavior);
+
+		return $this->getTblAdherents($query, $con);
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this TblUser is new, it will return
+	 * an empty collection; or if this TblUser has previously
+	 * been saved, it will retrieve related TblAdherents from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in TblUser.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array TblAdherent[] List of TblAdherent objects
+	 */
+	public function getTblAdherentsJoinRefSeanceHoraire($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = TblAdherentQuery::create(null, $criteria);
+		$query->joinWith('RefSeanceHoraire', $join_behavior);
+
+		return $this->getTblAdherents($query, $con);
+	}
+
+	/**
 	 * Clears the current object and sets all attributes to their default values
 	 */
 	public function clear()
@@ -1469,12 +1842,21 @@ abstract class BaseTblUser extends BaseObject  implements Persistent
 					$o->clearAllReferences($deep);
 				}
 			}
+			if ($this->collTblAdherents) {
+				foreach ($this->collTblAdherents as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
 		} // if ($deep)
 
 		if ($this->collLnkUserProfils instanceof PropelCollection) {
 			$this->collLnkUserProfils->clearIterator();
 		}
 		$this->collLnkUserProfils = null;
+		if ($this->collTblAdherents instanceof PropelCollection) {
+			$this->collTblAdherents->clearIterator();
+		}
+		$this->collTblAdherents = null;
 	}
 
 	/**
