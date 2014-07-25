@@ -30,7 +30,7 @@
                 <ul id="icon-nav">
                     <li>
                         <a href="<?php echo url_for('adherent/listeMembres') ?>" data-original-title="" title="">
-                            <i class="glyphicon glyphicon-user"></i>
+                            <i class="glyphicon glyphicon-list"></i>
                             <span class="count-label"></span>
                         </a>
                     </li>
@@ -136,9 +136,9 @@
                     <!-- Breadcrumb nav start -->
                     <div class="col-md-3 col-sm-4 col-xs-6">
                         <h2><?php echo $sf_context->getModuleName(); ?></h2>
-                        <ul class="breadcrumb">
-<!--                            <li>Home</li>
-                            <li>Gallery</li>-->
+                        <ul class="breadcrumb" style="margin-left: 30%">
+                            <li><a href="<?php echo url_for('adherent/new') ?>" class="glyphicon glyphicon-user"></a></li>
+                            <li><a href="<?php echo url_for('adherent/planningEntraineurs') ?>" class="glyphicon glyphicon-time"></a></li>
                         </ul>
                     </div>
                     <!-- Breadcrumb nav end -->

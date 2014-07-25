@@ -30,7 +30,8 @@ class TblAdherentForm extends BaseTblAdherentForm {
         } else {
             $this->widgetSchema['entraineur_id'] = new sfWidgetFormPropelChoice(array('model' => 'tblAdherent', 'criteria' => $qlisteAdherents));
         }
-        $this->validatorSchema['entraineur_id'] = new sfValidatorPropelChoice(array('model' => 'tblAdherent', 'required' => true));
+        $this->validatorSchema['entraineur_id'] = new sfValidatorPropelChoice(array('model' => 'tblAdherent', 'required' => 'The message field is required'));
+        $this->validatorSchema['entraineur_id']->setMessage('required', 'L\'entraineur est Obligatoire');
         $this->widgetSchema['entraineur_id']->setAttribute("class", "form-control");
         $this->getWidget("entraineur_id")->setOption("add_empty", '-- Aucun --');
 

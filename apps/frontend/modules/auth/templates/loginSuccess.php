@@ -6,7 +6,7 @@
                     <!--<div class="modal-header">-->
                     <div class="logoLockOpen">
                         <!--<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>-->
-                        <h1 class="text-center" style="margin-left: 40%;">Authentification</h1>
+                        <h2 class="text-center" style="margin-left: 40%;">Authentification</h2>
                     </div>
                     <div class="modal-body">
                         <form action="<?php echo url_for('auth/login') ?>" method="post" class="form-signin">

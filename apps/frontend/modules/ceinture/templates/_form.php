@@ -1,10 +1,10 @@
 <?php use_stylesheets_for_form($form) ?>
 <?php use_javascripts_for_form($form) ?>
 
-<form action="<?php echo url_for('ceinture/'.($form->getObject()->isNew() ? 'create' : 'update').(!$form->getObject()->isNew() ? '?ceinture_id='.$form->getObject()->getCeintureId() : '')) ?>" method="post" <?php $form->isMultipart() and print 'enctype="multipart/form-data" ' ?>>
-<?php if (!$form->getObject()->isNew()): ?>
-<input type="hidden" name="sf_method" value="put" />
-<?php endif; ?>
+<form action="<?php echo url_for('ceinture/' . ($form->getObject()->isNew() ? 'create' : 'update') . (!$form->getObject()->isNew() ? '?ceinture_id=' . $form->getObject()->getCeintureId() : '')) ?>" method="post" <?php $form->isMultipart() and print 'enctype="multipart/form-data" ' ?>>
+    <?php if (!$form->getObject()->isNew()): ?>
+        <input type="hidden" name="sf_method" value="put" />
+    <?php endif; ?>
     <div class="row">
         <label class="col-xs-5" ><?php echo $form['adherent_id']->renderLabel() ?></label>
         <div class="col-xs-5">
@@ -12,7 +12,7 @@
             <?php echo $form['adherent_id'] ?>
         </div>
     </div>
-    <div class="row">
+    <div class="row" id="titreEntraineur">
         <label class="col-xs-5" ><?php echo $form['titre_entraineur_id']->renderLabel() ?></label>
         <div class="col-xs-5">
             <?php echo $form['titre_entraineur_id']->renderError() ?>
@@ -59,3 +59,27 @@
         <input class="btn btn-primary" id="valider" type="submit" value="Enregistrer" />
     </div>
 </form>
+
+<script>
+    $(function() {
+
+        $("#tbl_ceinture_adherent_id").change(hideTitreEntraineur);
+
+        function hideTitreEntraineur()
+        {
+            typeAdherent = $("#tbl_ceinture_adherent_id").val();
+
+            if (typeAdherent == <?php echo RefTypeAdherentPeer::ADHERENT ?>)
+            {
+                $("#titreEntraineur").show();
+            }
+            else
+            {
+                $("#titreEntraineur").hide();
+            }
+        }
+        hideTitreEntraineur();
+
+    });
+
+</script>

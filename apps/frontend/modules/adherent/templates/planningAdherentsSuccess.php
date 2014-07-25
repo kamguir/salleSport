@@ -19,6 +19,7 @@
                             <th><?php echo __('Type Sport') ?></th>
                             <th><?php echo __('Niveau') ?></th>
                             <th><?php echo __('Ceinture') ?></th>
+                            <th><?php echo __('Entraineur') ?></th>
                             <th><?php echo __('Jours Entrainement') ?></th>
                             <th><?php echo __('Horaires') ?></th>
                         </tr>   

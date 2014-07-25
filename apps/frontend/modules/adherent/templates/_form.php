@@ -8,6 +8,8 @@
     <?php echo $form->renderGlobalErrors() ?>
     <!--<div class="panel-body" style="padding: 6px;">-->
     <div class="row">
+        <div id="ajax_div" style="padding:10px;text-align: center;">
+        </div>
         <div class="col-xs-8 col-sm-6" style="width: 45%;"> <br>
             <div class="row">
                 <label class="col-xs-4"><?php echo $form['id_type_adherent']->renderLabel() ?></label>
@@ -130,7 +132,7 @@
         function changeTypeAdherent()
         {
             typeAdherent = $("#tbl_adherent_id_type_adherent").val();
-            
+
             if (typeAdherent == <?php echo RefTypeAdherentPeer::ENTRAINEUR ?>)
             {
                 $("#entraineurID_form").hide();
@@ -159,15 +161,19 @@
 
     $(document).ready(function() {
         $("#tbl_adherent_entraineur_id").live("change", function() {
+            $('#ajax_div').html('<img src="/images/pictos/gif-load.gif" />');
             adherent_id = $('#tbl_adherent_entraineur_id').val();
             $.post("<?php echo url_for("adherent/jourhoraireByIdEntraineurAjax") ?>", {adherent_id: adherent_id}, function(html) {
                 $('#jourHoraire_form').html(html);
+                $('#ajax_div').html('');
             });
         });
         $("#tbl_adherent_id_type_sport").live("change", function() {
+            $('#ajax_div').html('<img src="/images/pictos/gif-load.gif" />');
             entraineur_id = $('#tbl_adherent_id_type_sport').val();
             $.post("<?php echo url_for("adherent/entraineursByTypeSportAjax") ?>", {entraineur_id: entraineur_id}, function(html) {
                 $('#entraineurID_form').html(html);
+                $('#ajax_div').html('');
             });
         });
     });

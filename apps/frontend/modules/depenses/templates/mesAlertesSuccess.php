@@ -1,7 +1,7 @@
 <div>
     <div class="panel panel-default">
         <div class="panel-heading clearfix">
-            <i class="glyphicon glyphicon-list" id="envoiMail"></i>
+            <i class="glyphicon glyphicon-list" id="envoiMail" style="cursor:  pointer;"></i>
             <h3 class="panel-title">Liste des alerts du mois ( <?php echo date('m'); ?> )</h3>
         </div>
 
@@ -16,6 +16,7 @@
             $typeSport = '';
             $dateReglement = '';
             $coreMessage = '';
+            $coreMessageDepenses = '';
             foreach ($mesFacturesNonPayes as $value) {
                 $civilite = $value->getTblAdherent()->getRefCivilite()->getLibelleCivilite();
                 $nomAdherent = $value->getTblAdherent()->getNomAdherent();
@@ -33,6 +34,31 @@
                         </button>
                         <p>
                             <?php echo $coreMessage; ?>
+                        </p>
+                    </div>
+                </div>
+                <?php
+            };
+            ?>
+        <?php endif; ?>
+        <?php if ($mesDepensesNonPayes): ?>
+            <?php
+            $typeDepenses = '';
+            $montantDepenses = '';
+            foreach ($mesDepensesNonPayes as $value) {
+                $montantDepenses = $value->getMontantDepenses();
+                $typeDepenses = $value->getRefDepenses()->getLibelleDepenses();
+                $dateReglement = $value->getDateDepenses();
+                $coreMessageDepenses .= 'La factures <b>' . $typeDepenses . '</b> reçu le <b>' . $dateReglement .
+                        '</b> avec montant <b>' . $montantDepenses . 'DH</b><br/>';
+                ?>
+                <div class="panel-body" style="padding: 4px;" >
+                    <div class="alert alert-block alert-danger fade in">
+                        <button data-dismiss="alert" class="close" type="button" data-original-title="">
+                            x
+                        </button>
+                        <p>
+                            <?php echo $coreMessageDepenses; ?>
                         </p>
                     </div>
                 </div>

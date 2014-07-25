@@ -53,4 +53,17 @@ class TblCeintureForm extends BaseTblCeintureForm {
         ));
     }
 
+    public function bind(array $taintedValues = null, array $taintedFiles = null) {
+
+        $objAdherent = TblAdherentQuery::create()
+                ->filterByIdAdherent($taintedValues['adherent_id'])
+                ->findOne();
+        if ($objAdherent) {
+            if ($objAdherent->getIdTypeAdherent() == RefTypeAdherent::ADHERENT) {
+                $this->getValidator('titre_entraineur_id')->setOption('required', false);
+            }
+        }
+        parent::bind($taintedValues, $taintedFiles);
+    }
+
 }

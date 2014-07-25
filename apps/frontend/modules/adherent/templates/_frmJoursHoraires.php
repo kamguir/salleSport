@@ -1,6 +1,6 @@
-<div class="col-xs-8 col-md-offset-3" style="width: 60%;float: initial;margin-top: 4%;">
+<div class="col-xs-8 col-md-offset-4" style="width: 60%;float: initial;margin-top: 4%;">
     <label class="col-xs-2" ><?php echo $form['seance_horaire_id']->renderLabel() ?></label>
-    <div class="col-xs-3">
+    <div class="col-xs-4">
         <?php echo $form['seance_horaire_id']->renderError() ?>
         <?php echo $form['seance_horaire_id'] ?>
     </div>

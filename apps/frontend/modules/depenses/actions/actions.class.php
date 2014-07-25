@@ -102,6 +102,9 @@ class depensesActions extends sfActions {
 //        $this->tblDepensess = tblDepensesQuery::create()->find();
         $obj = new TblFacture;
         $this->mesFacturesNonPayes = $obj->getFactureNonPayes();
+
+        $objDepenses = new TblDepenses;
+        $this->mesDepensesNonPayes = $objDepenses->getDepensesNonPayes();
     }
 
     public function executeAlertes(sfWebRequest $request) {
@@ -133,9 +136,12 @@ class depensesActions extends sfActions {
     }
 
     public function executeEnvoiMail($param) {
-        
+
         $obj = new TblFacture;
         $this->mesFacturesNonPayes = $obj->getFactureNonPayes();
+
+        $objDepenses = new TblDepenses;
+        $this->mesDepensesNonPayes = $objDepenses->getDepensesNonPayes();
 
         $mailer = sfContext::getInstance()->getMailer();
         $civilite = '';
@@ -147,6 +153,9 @@ class depensesActions extends sfActions {
         $coreMessage = '';
         $emailFrom = TblParamPortailPeer::getValueByName('EMAIL_FROM');
         $emailTo = TblParamPortailPeer::getValueByName('EMAIL_TO');
+        $typeDepenses = '';
+        $montantDepenses = '';
+
         foreach ($this->mesFacturesNonPayes as $value) {
             $civilite = $value->getTblAdherent()->getRefCivilite()->getLibelleCivilite();
             $nomAdherent = $value->getTblAdherent()->getNomAdherent();
@@ -157,7 +166,14 @@ class depensesActions extends sfActions {
             $coreMessage .= $civilite . ' <b>' . $preNomAdherent . ' ' . $nomAdherent . '</b> adhérent dans sport <b>' . $typeSport .
                     '</b> n a pas payé la facture de <b>' . $prixFacture . 'DH</b>, derniere date de payement est <b>' . $dateReglement . '</b><br/>';
         }
-        $message = $mailer->compose($emailFrom, $emailTo, 'Factures Non Payés', $coreMessage);
+        foreach ($this->mesDepensesNonPayes as $value) {
+            $montantDepenses = $value->getMontantDepenses();
+            $typeDepenses = $value->getRefDepenses()->getLibelleDepenses();
+            $dateReglement = $value->getDateDepenses();
+            $coreMessage .= 'La factures <b>' . $typeDepenses . '</b> reçu le <b>' . $dateReglement .
+                    '</b> avec montant <b>' . $montantDepenses . 'DH</b><br/>';
+        }
+        $message = $mailer->compose($emailFrom, $emailTo, 'Alerts -- Factures & Dépenses non payés', $coreMessage);
         $message->setContentType('text/html');
 //        $message->addCc($this->form->getObject()->getDemandeMail());
         $mailer->send($message);

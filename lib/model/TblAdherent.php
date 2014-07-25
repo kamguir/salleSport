@@ -126,6 +126,7 @@ class TblAdherent extends BaseTblAdherent {
         $pathCeinture = '75px-Ceinture_blanche.png';
         $libelleSport = ' -- ';
         $horaire = '';
+        $entraineur = '';
         if ($this->getRefTypeSport()) {
             $libelleSport = $this->getRefTypeSport()->getLibelle();
         }
@@ -140,6 +141,11 @@ class TblAdherent extends BaseTblAdherent {
         if ($this->getSeanceHoraireId()) {
             $horaire .= $this->getRefSeanceHoraire()->getSeanceHoraire() . " </br> ";
         }
+        if ($this->getEntraineurId()) {
+            $obj = new TblAdherent;
+            $objEntraineur = $obj->getEntraineurById($this->getEntraineurId());
+            $entraineur = $objEntraineur;
+        }
 
         if ($this->getEntraineurId()) {
             $mesJoursEntrainements = LnkJourEntrainementAdherentQuery::create()
@@ -148,17 +154,17 @@ class TblAdherent extends BaseTblAdherent {
                     ->withColumn(RefJourPeer::LIBELLE_JOUR, 'libelleJour')
                     ->find();
 
-
             foreach ($mesJoursEntrainements as $mesJoursEntrainement) {
                 $joursPlanning .= $mesJoursEntrainement->getLibelleJour() . " </br> ";
             }
         }
 
         return array(
-            $this->getRefCivilite()->getLibelleCivilite() . ' ' . ucfirst($this->getNomAdherent()) . ',' . ucfirst($this->getPrenomAdherent()),
+            $this->getRefCivilite()->getLibelleCivilite() . ' ' . ucfirst($this->getPrenomAdherent()) . ',' . ucfirst($this->getNomAdherent()),
             $libelleSport,
             $niveau,
             "<img src=/images/niveau_ceinture/" . $pathCeinture . ">",
+            $entraineur,
             $joursPlanning,
             $horaire,
             "DT_RowId" => "row_" . $this->getIdAdherent()
@@ -179,18 +185,19 @@ class TblAdherent extends BaseTblAdherent {
             "DT_RowId" => "row_" . $this->getIdAdherent()
         );
     }
-    
+
     public function getEntraineurById($idEntraineur) {
         $objEntraineur = TblAdherentQuery::create()
                 ->filterByIdAdherent($idEntraineur)
                 ->findOne();
-        return $objEntraineur->getNomAdherent().' '.$objEntraineur->getPrenomAdherent();
+        return $objEntraineur->getNomAdherent() . ' ' . $objEntraineur->getPrenomAdherent();
     }
 
     protected function doInsert(PropelPDO $con) {
-        $this->setUserId( sfContext::getInstance()->getUser()->getAttribute('user_id'));
+        $this->setUserId(sfContext::getInstance()->getUser()->getAttribute('user_id'));
         parent::doInsert($con);
     }
+
 }
 
 // TblAdherent

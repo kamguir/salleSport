@@ -87,8 +87,6 @@ class TblFacture extends BaseTblFacture {
         $totalFacturesNonPayéParMois = TblFactureQuery::create()
                 ->filterByDateReglement(array("min" => date('Y') . '-' . date('m') . '-01', "max" => date('Y') . '-' . date('m') . '-31'))
                 ->filterByEtatPaiement(FALSE)
-//                ->withColumn('SUM(' . TblFacturePeer::PRIX_FACTURE . ')', "montantTotal")
-//                ->select('montantTotal')
                 ->find();
 
         return $totalFacturesNonPayéParMois;

@@ -32,6 +32,16 @@ class TblDepenses extends BaseTblDepenses {
         );
     }
 
+    public function getDepensesNonPayes() {
+
+        $listeDepensesNonPayéParMois = TblDepensesQuery::create()
+                ->filterByDateDepenses(array("min" => date('Y') . '-' . date('m') . '-01', "max" => date('Y') . '-' . date('m') . '-31'))
+                ->filterByEtatPaiement(FALSE)
+                ->find();
+
+        return $listeDepensesNonPayéParMois;
+    }
+
 }
 
 // TblDepenses
